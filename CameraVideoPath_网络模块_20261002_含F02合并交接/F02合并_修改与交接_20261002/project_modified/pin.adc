@@ -1,0 +1,29 @@
+
+set_pin_assignment	{ I_sys_clk }			{ LOCATION = C4; IOSTANDARD  = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rst_n }				{ LOCATION = R10; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+
+set_pin_assignment	{ O_cam_scl }		{ LOCATION = T9; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ IO_cam_sda }		{ LOCATION = U9; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ O_cam_24m }	{ LOCATION = V9; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ O_cam_rst }		{ LOCATION = V8; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+
+set_pin_assignment	{ I_button[0] }			{ LOCATION = N2;  IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_button[1] }			{ LOCATION = J14; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+
+set_pin_assignment	{ O_screen_pwm } 		{ LOCATION = R11; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLDOWN; }
+
+set_pin_assignment	{ O_uart_tx }			{ LOCATION = J3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+
+# ---- CAM CHECK/NET: ETHA 网口(引脚依据《04_以太网管脚定义表-J1.xlsx》,
+#      并与 05_rgmii_loop 例程约束交叉验证一致; TXCK 的 OUTDEL 为 MAC 侧延时) ----
+set_pin_assignment	{ O_eth_rgmii_txd[0] }	{ LOCATION = P3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_eth_rgmii_txd[1] }	{ LOCATION = R1; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_eth_rgmii_txd[2] }	{ LOCATION = R2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_eth_rgmii_txd[3] }	{ LOCATION = U1; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_eth_rgmii_tx_ctl }	{ LOCATION = L2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_eth_rgmii_txc }		{ LOCATION = R3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; OUTDEL = 3; }
+set_pin_assignment	{ O_eth_mdc }			{ LOCATION = M5; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
+set_pin_assignment	{ IO_eth_mdio }			{ LOCATION = V1; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ O_eth_rst_n }			{ LOCATION = H2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+
+
