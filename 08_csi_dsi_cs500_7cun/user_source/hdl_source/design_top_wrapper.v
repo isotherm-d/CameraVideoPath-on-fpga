@@ -95,7 +95,7 @@ module design_top_wrapper (
 	wire 			S_ISP_O_tuser ;
 	wire 			S_ISP_O_tvalid; 
 
-	// ---- 720P30: 显示通路裁剪(ISP 1280x720 -> DSI 屏 1024x600 居中窗口) ----
+	// ---- 显示通路直通(传感器输出 1024x600 = DSI 屏原生分辨率) ----
 	wire 			S_crop_tuser;
 	wire 			S_crop_tvalid;
 	wire [127:0]	S_crop_tdata;
@@ -352,8 +352,8 @@ raw10_unpacket_2lane u_raw10_unpacket (
 
 //将数据转为stream流
 uial2axis #(
-.IMG_WIDTH(1280),
-.IMG_HEIGHT(720),
+.IMG_WIDTH(1024),
+.IMG_HEIGHT(600),
 .INPUT_DATA_WIDTH(40)
 ) 
 u_uial2axis (
@@ -427,10 +427,11 @@ isp_top u_isp_top (
   );
 
 
-    // 720P30: ISP 输出 1280x720, 居中裁出 1024x600 给 DSI 屏(网口走上面的 O_awb 全幅)
+    // 传感器输出 1024x600 = DSI 屏原生分辨率, 裁剪模块为参数化直通(IN==OUT);
+    // 网口走下面的 O_awb 全幅观测口, 不经过本模块
     rgb_frame_crop #(
-        .IN_W  ( 1280 ),
-        .IN_H  (  720 ),
+        .IN_W  ( 1024 ),
+        .IN_H  (  600 ),
         .OUT_W ( 1024 ),
         .OUT_H (  600 )
     ) u_rgb_frame_crop (
@@ -769,11 +770,10 @@ isp_top u_isp_top (
     );
 
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
-    // 720p 每帧都发 = 30fps, 1920包/帧, 约 700Mbps(千兆内偏满, 若 PC 端丢块把 FRAME_SKIP 改 2=15fps);
-    // 电脑端工具见 08_csi_dsi_cs500_7cun/tools/eth_video_rx.py --width 1280 --height 720)
+    // 1024x600 每帧都发 ≈20fps, 1280包/帧, 约310Mbps; 电脑端: eth_video_rx.py --width 1024 --height 600)
     cvp_eth_dbg #(
-        .IMG_W       ( 1280      ),
-        .IMG_H       ( 720       ),
+        .IMG_W       ( 1024      ),
+        .IMG_H       ( 600       ),
         .FRAME_SKIP  ( 1         ),
         .DATA_BYTES  ( 1440      ),
         .GEN_TESTPAT ( 0         ),

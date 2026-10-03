@@ -58,8 +58,8 @@ wire         m_aixs_tvalid;  //synthesis keep
  
  
 demosaic #(
-    .IMG_HEIGHT          (720),   // 720P30 (1080p 时代遗留注释: 原为 1080, 再往前为 1024x600 小屏)
-    .IMG_WIDTH           (1280),  // 720P30: 行缓冲按 IMG_WIDTH/4=320 拍折行, 必须与实际流宽一致
+    .IMG_HEIGHT          (600),   // 1024x600(厂验传感器输出, 与 DSI 屏原生一致)
+    .IMG_WIDTH           (1024),  // 行缓冲按 IMG_WIDTH/4=256 拍折行, 必须与实际流宽一致
     .data_complete_delay (50  ),
     .BAYER_MODE          ("BGGR")
 )
@@ -86,8 +86,8 @@ data128_96 u_data128_96 (
 );
 
 awb #(
-    .IMG_HEIGHT(720),
-    .IMG_WIDTH (1280)
+    .IMG_HEIGHT(600),
+    .IMG_WIDTH (1024)
 ) u_awb (
     .I_clk   (axi4s_video_aclk),
     .I_rst_n (I_rst_n),
