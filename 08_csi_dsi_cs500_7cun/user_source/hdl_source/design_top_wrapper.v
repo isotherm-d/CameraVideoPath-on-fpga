@@ -94,6 +94,11 @@ module design_top_wrapper (
 	wire 			S_ISP_O_tlast ;
 	wire 			S_ISP_O_tuser ;
 	wire 			S_ISP_O_tvalid; 
+
+	// ---- 720P30: 显示通路裁剪(ISP 1280x720 -> DSI 屏 1024x600 居中窗口) ----
+	wire 			S_crop_tuser;
+	wire 			S_crop_tvalid;
+	wire [127:0]	S_crop_tdata;
 	
 
     wire        S_ddr_clk;
@@ -347,8 +352,8 @@ raw10_unpacket_2lane u_raw10_unpacket (
 
 //将数据转为stream流
 uial2axis #(
-.IMG_WIDTH(1920),
-.IMG_HEIGHT(1080),
+.IMG_WIDTH(1280),
+.IMG_HEIGHT(720),
 .INPUT_DATA_WIDTH(40)
 ) 
 u_uial2axis (
@@ -416,19 +421,39 @@ isp_top u_isp_top (
 .O_tuser         (S_ISP_O_tuser ),
 .O_tvalid        (S_ISP_O_tvalid),
 .I_tready        (),
-.O_awb_tdata     (S_awb_tdata ),
-.O_awb_tuser     (S_awb_tuser ),
-.O_awb_tvalid    (S_awb_tvalid)
+	.O_awb_tdata     (S_awb_tdata ),
+	.O_awb_tuser     (S_awb_tuser ),
+	.O_awb_tvalid    (S_awb_tvalid)
   );
+
+
+    // 720P30: ISP 输出 1280x720, 居中裁出 1024x600 给 DSI 屏(网口走上面的 O_awb 全幅)
+    rgb_frame_crop #(
+        .IN_W  ( 1280 ),
+        .IN_H  (  720 ),
+        .OUT_W ( 1024 ),
+        .OUT_H (  600 )
+    ) u_rgb_frame_crop (
+        .I_clk    ( S_csi_rx_clk ),
+        .I_rst_n  ( S_rst_n      ),
+
+        .I_tuser  ( S_ISP_O_tuser  ),
+        .I_tvalid ( S_ISP_O_tvalid ),
+        .I_tdata  ( S_ISP_O_tdata  ),
+
+        .O_tuser  ( S_crop_tuser  ),
+        .O_tvalid ( S_crop_tvalid ),
+        .O_tdata  ( S_crop_tdata  )
+    );
 
 
     video_in u_video_in(
         .I_rst_n              (  S_rst_n             ),
 
         .I_camera_clk         ( S_csi_rx_clk          ),
-        .I_camera_frame_start ( S_ISP_O_tuser  ),
-        .I_camera_valid       ( S_ISP_O_tvalid ),
-        .I_camera_data        ( S_ISP_O_tdata  ),
+        .I_camera_frame_start ( S_crop_tuser  ),
+        .I_camera_valid       ( S_crop_tvalid ),
+        .I_camera_data        ( S_crop_tdata  ),
         .I_mipi_rx_error      ( 1'b0			      ),
 
         .I_ddr_clk            ( S_ddr_clk             ),
@@ -744,11 +769,12 @@ isp_top u_isp_top (
     );
 
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
-    // 1080p 每 2 帧发 1 帧 = 10fps, 约 500Mbps; 电脑端工具见网络模块包 tools/eth_video_rx.py)
+    // 720p 每帧都发 = 30fps, 1920包/帧, 约 700Mbps(千兆内偏满, 若 PC 端丢块把 FRAME_SKIP 改 2=15fps);
+    // 电脑端工具见 08_csi_dsi_cs500_7cun/tools/eth_video_rx.py --width 1280 --height 720)
     cvp_eth_dbg #(
-        .IMG_W       ( 1920      ),
-        .IMG_H       ( 1080      ),
-        .FRAME_SKIP  ( 2         ),
+        .IMG_W       ( 1280      ),
+        .IMG_H       ( 720       ),
+        .FRAME_SKIP  ( 1         ),
         .DATA_BYTES  ( 1440      ),
         .GEN_TESTPAT ( 0         ),
         .PHY_ADDR    ( 5'd1      )

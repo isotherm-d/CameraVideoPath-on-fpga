@@ -58,8 +58,8 @@ wire         m_aixs_tvalid;  //synthesis keep
  
  
 demosaic #(
-    .IMG_HEIGHT          (1080),  // 图像高度(原 600 为 1024x600 小屏遗留参数, 实际相机流为 1080p)
-    .IMG_WIDTH           (1920),   // 图像宽度(原 1024, 行缓冲宽度不匹配会造成整行错位剪切)
+    .IMG_HEIGHT          (720),   // 720P30 (1080p 时代遗留注释: 原为 1080, 再往前为 1024x600 小屏)
+    .IMG_WIDTH           (1280),  // 720P30: 行缓冲按 IMG_WIDTH/4=320 拍折行, 必须与实际流宽一致
     .data_complete_delay (50  ),
     .BAYER_MODE          ("BGGR")
 )
@@ -86,8 +86,8 @@ data128_96 u_data128_96 (
 );
 
 awb #(
-    .IMG_HEIGHT(1080),
-    .IMG_WIDTH (1920)
+    .IMG_HEIGHT(720),
+    .IMG_WIDTH (1280)
 ) u_awb (
     .I_clk   (axi4s_video_aclk),
     .I_rst_n (I_rst_n),

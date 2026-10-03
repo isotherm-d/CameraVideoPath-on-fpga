@@ -99,6 +99,14 @@
                     <Attr Name="CompileOrder" Val="68"/>
                 </FileInfo>
             </File>
+            <File Path="../user_source/hdl_source/rgb_frame_crop.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="69"/>
+                </FileInfo>
+            </File>
             <File Path="../user_source/hdl_source/video_in.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
