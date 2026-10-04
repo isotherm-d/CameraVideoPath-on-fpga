@@ -140,6 +140,15 @@
                     <Attr Name="CompileOrder" Val="58"/>
                 </FileInfo>
             </File>
+            <File Path="../user_source/hdl_source/isp2/cvp_awb.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="59"/>
+                </FileInfo>
+            </File>
             <File Path="../user_source/hdl_source/isp2/color_correct.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
@@ -182,6 +191,7 @@
             </File>
             <File Path="../user_source/hdl_source/isp2/ae_mux.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -386,6 +396,15 @@
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
                     <Attr Name="CompileOrder" Val="42"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/uiisp_beta/ae_set.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="43"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/line_retimer.v">

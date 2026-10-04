@@ -58,7 +58,7 @@ module ae_mux #(
             if (I_mode == 2'd2) begin
                 // 网络值通道(上位机/开发板命令)
                 // 曝光钳位: I_AE=124 -> 曝光码 1984 半行=992 行(720p30 上限 1996 内)
-                O_ae     <= (I_net_ae > 16'd124) ? 16'd124 : I_net_ae;
+                O_ae     <= (I_net_ae > 16'd186) ? 16'd186 : I_net_ae;   // v22: 上限 186(=2976 半行=1488 行 < VTS1500)
                 O_ag     <= I_net_ag;
                 O_ae_req <= I_man_req;      // 网络命令到达时由命令模块发脉冲
             end else if (I_mode == 2'd1) begin
