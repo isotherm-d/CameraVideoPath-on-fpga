@@ -361,8 +361,8 @@ raw10_unpacket_2lane u_raw10_unpacket (
 
 //将数据转为stream流
 uial2axis #(
-.IMG_WIDTH(1920),
-.IMG_HEIGHT(1080),
+.IMG_WIDTH(1280),
+.IMG_HEIGHT(720),
 .INPUT_DATA_WIDTH(40)
 ) 
 u_uial2axis (
@@ -383,8 +383,8 @@ u_uial2axis (
 // 255~256 抖动, 心跳监视器读数), 其 H_valid 窗口/间隙检测与上游 tlast 相互
 // 作用产生行错位; 本模块按帧内 valid 序号强制重切(256拍x600行), 免疫抖动。
 line_retimer #(
-    .BEATS_PER_LINE ( 480 ),
-    .LINES          ( 1080 )
+    .BEATS_PER_LINE ( 320 ),
+    .LINES          ( 720 )
 ) u_line_retimer (
     .I_clk    ( S_csi_rx_clk  ),
     .I_rst_n  ( S_rst_n       ),
@@ -445,8 +445,8 @@ group_fifo u_group_fifo (
 );
 
 cvp_proc #(
-    .IMG_W  ( 1920 ),
-    .IMG_H  ( 1080 )
+    .IMG_W  ( 1280 ),
+    .IMG_H  (  720 )
 ) u_cvp_proc (
     .i_clk              ( S_100m_clk ),
     .i_rst_n            ( S_rst_n      ),
@@ -475,8 +475,8 @@ wire        S_awb1_fs;
 wire [23:0] S_awb1_rgb;
 
 cvp_awb #(
-    .IMG_W  ( 1920 ),
-    .IMG_H  ( 1080 )
+    .IMG_W  ( 1280 ),
+    .IMG_H  (  720 )
 ) u_cvp_awb (
     .i_clk          ( S_100m_clk      ),
     .i_rst_n        ( S_rst_n         ),
@@ -536,8 +536,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     // 传感器输出 1024x600 = DSI 屏原生分辨率, 裁剪模块为参数化直通(IN==OUT);
     // 网口走下面的 O_awb 全幅观测口, 不经过本模块
     rgb_frame_crop #(
-        .IN_W  ( 1920 ),   // v15: 1080p 相机流居中裁 1024x600 供 DSI 屏
-        .IN_H  ( 1080 ),
+        .IN_W  ( 1280 ),   // v16: 720p 流居中裁 1024x600 供 DSI 屏
+        .IN_H  (  720 ),
         .OUT_W ( 1024 ),
         .OUT_H (  600 )
     ) u_rgb_frame_crop (
@@ -949,8 +949,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
     // 1024x600 每帧都发 ≈20fps, 1280包/帧, 约310Mbps; 电脑端: eth_video_rx.py --width 1024 --height 600)
     cvp_eth_dbg #(
-        .IMG_W       ( 1920      ),
-        .IMG_H       ( 1080      ),
+        .IMG_W       ( 1280      ),
+        .IMG_H       ( 720       ),
         .FRAME_SKIP  ( 1         ),
         .DATA_BYTES  ( 1440      ),
         .GEN_TESTPAT ( 0         ),   // 0=相机流(彩条分诊已于 v11b 验证通路正确)
