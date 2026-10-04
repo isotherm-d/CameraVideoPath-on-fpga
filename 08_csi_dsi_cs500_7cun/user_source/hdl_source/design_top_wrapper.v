@@ -1018,7 +1018,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( S_cvp_ae_dbg ),  // DIAG: [10:8]=AE状态机, [7:0]=eq_q8 高 8 位  // DIAG: raw10 层段长(行) min/max 偏差(248基)
+        .i_scan_word    ( S_cvp_ae_exp[10:0] ),  // DIAG: 实际曝光码(半行, 期望 1996=998 行封顶)  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),

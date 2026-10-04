@@ -7,7 +7,9 @@
  i_mode: 0=手动(ae_set 按键值) 1=自动(cvp_ae 闭环)
  o_req: 自动模式转发 cvp_ae 的 o_req(保持一帧的电平, 跨到 24M 域安全)
 *****************************************************************/
-module ae_mux (
+module ae_mux #(
+    parameter [20:0] FORCE_EXP_CODE = 21'd1996   // DIAG: 注入常量曝光码(998 行满帧)
+) (
     input          I_clk,          // 100M(与 ae_set/cvp_ae 同域)
     input          I_rst_n,
     input          I_mode_auto,    // 1=自动曝光
@@ -28,7 +30,8 @@ module ae_mux (
     output reg  [15:0] O_ag
 );
     // 曝光寄存器码(半行) -> I_AE: I_AE = 码 >> 4 (uics500regAE 铺位后 x16 还原)
-    wire [15:0] w_auto_ae = I_auto_exp[19:4];
+    wire [20:0] w_exp_sel = FORCE_EXP_CODE;      // DIAG: 常量注入(原: I_auto_exp)
+    wire [15:0] w_auto_ae = w_exp_sel[19:4];
 
     // cvp_ae 的 o_req 是 100M 电平(保持约一帧 33ms), 打两拍进 24M 域时
     // 由 uicfgcs500 电平采样即可; 这里在 100M 侧把电平收窄为单帧一次事件
