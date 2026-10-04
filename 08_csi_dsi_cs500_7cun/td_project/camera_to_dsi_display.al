@@ -13,7 +13,6 @@
         <Verilog>
             <File Path="../user_source/hdl_source/design_top_wrapper.v">
                 <FileInfo>
-                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -395,14 +394,6 @@
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
                     <Attr Name="CompileOrder" Val="42"/>
-                </FileInfo>
-            </File>
-            <File Path="../user_source/hdl_source/uiisp_beta/ae_set.v">
-                <FileInfo>
-                    <Attr Name="UsedInSyn" Val="true"/>
-                    <Attr Name="UsedInP&R" Val="true"/>
-                    <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="43"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/line_retimer.v">

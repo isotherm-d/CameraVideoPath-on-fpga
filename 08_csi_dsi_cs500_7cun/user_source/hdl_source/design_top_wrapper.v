@@ -67,7 +67,6 @@ module design_top_wrapper (
     wire 			S_ae_cfg_done;
     wire 		S_ae_req;
     wire [15:0] S_ae, S_ag;
-    wire        S_ae_req_man;
     wire [15:0] S_ae_man, S_ag_man;
 
     // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
@@ -267,39 +266,6 @@ module design_top_wrapper (
 	
 
   
-  ae_set u_ae_set (
-      .I_clk(S_24m_clk),
-      .I_rst(~S_rst_n),
-      .I_btn({I_button,2'b11}),
-      .I_cam_cfg_done(S_cam_cfg_done),
-      .I_ae_cfg_done(S_ae_cfg_done),
-      .O_ae_req(S_ae_req_man),
-      .O_ae(S_ae_man),
-      .O_ag(S_ag_man)
-  );
-
-  // v19: 自动/手动曝光选择 —— 自动=cvp_ae 闭环(逐帧统计亮度调曝光码),
-  // 手动=ae_set 按键值。I_AE 格式: uics500regAE 铺位后曝光码 = I_AE x 16 半行。
-  // cvp_ae 输出 o_exp 为曝光码(半行), 转换 I_AE = o_exp >> 4 在 ae_mux 内。
-  ae_mux u_ae_mux (
-      .I_clk       ( S_100m_clk   ),
-      .I_rst_n     ( S_rst_n      ),
-      .I_mode      ( S_cmd_mode   ),   // v20: 网络命令控制(0手动/1自动/2网络值)
-      .I_net_ae    ( S_cmd_ae     ),
-      .I_net_ag    ( 16'h0f20     ),   // 网络增益固定 4.0x(白平衡走 color_correct 通道)
-
-      .I_man_req   ( S_ae_req_man ),
-      .I_man_ae    ( S_ae_man     ),
-      .I_man_ag    ( S_ag_man     ),
-
-      .I_auto_req  ( S_cvp_ae_req  ),
-      .I_auto_exp  ( S_cvp_ae_exp  ),
-      .I_auto_gain ( S_cvp_ae_gain ),
-
-      .O_ae_req    ( S_ae_req     ),
-      .O_ae        ( S_ae         ),
-      .O_ag        ( S_ag         )
-  );
   
     uicfgcs500 #(
       .CLK_DIV(24000000 / 100000 - 1)
