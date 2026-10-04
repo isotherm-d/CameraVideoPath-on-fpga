@@ -362,7 +362,7 @@ raw10_unpacket_2lane u_raw10_unpacket (
 //将数据转为stream流
 uial2axis #(
 .IMG_WIDTH(1280),
-.IMG_HEIGHT(727),   // v18c: 传感器采窗 727 行(输出 1280x720 为 crop 模式行数) —— tuser 必须按真实行数对齐,
+.IMG_HEIGHT(uial2axis_img_h),   // v18c: 传感器采窗 727 行(输出 1280x720 为 crop 模式行数) —— tuser 必须按真实行数对齐,
                     // 设 720 会使帧头早 7 行 -> 底部行绕到顶部(line_retimer 取错窗口)
 .INPUT_DATA_WIDTH(40)
 ) 
@@ -900,6 +900,9 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
     wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
 
+    // v18e: uial2axis IMG_HEIGHT 参数指纹(11bit 心跳直读, 烧没烧对一目了然)
+    localparam [10:0] uial2axis_img_h = 11'd727;
+
     // v18d DIAG: S_axis 层 tuser 间隔探针(量化真实帧结构: 期望间隔 = 727 行 x 320 拍 = 232640 拍)
     reg [12:0] r_tu_gap;
     reg [23:0] r_tu_cnt;
@@ -985,7 +988,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( {3'b000, r_tu_gap_lat} ),  // DIAG: tuser 间隔样本(拍)  // DIAG: raw10 层段长(行) min/max 偏差(248基)
+        .i_scan_word    ( {5'b0, r_tu_cnt[5:0], 1'b0, uial2axis_img_h} ),  // DIAG: [10:0]=uial2axis IMG_HEIGHT 参数值(720旧/727新), [5:0]=tuser计数低位  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
