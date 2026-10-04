@@ -73,12 +73,12 @@ reg 	[3:0] 	r_button_0 = 0, r_button_1 = 0;
 // AE 值经 uics500regAE 映射: 曝光(半行) = I_AE<<4。上限 140 -> 2240 半行 = 1120 行,
 // 恰为 VTS=1127 的满帧曝光(数据手册上限 2*VTS-10=2244 半行)。
 // 原例程初值 3000(=24000 行曝光) 是非法值, 会导致帧周期被曝光拉长到秒级且画面饱和。
-reg 	[15:0] 	r_ae_set = 2244, r_ag_set = 88;   // v14b: 10fps 高曝光(I_AE=280 -> 曝光4480半行=2240行), 增益档80
+reg 	[15:0] 	r_ae_set = 1400, r_ag_set = 88;   // v14b: 10fps 高曝光(I_AE=280 -> 曝光4480半行=2240行), 增益档80
 always @(posedge I_clk or posedge I_rst) begin
 	if(I_rst) begin
 		r_button_0 <= 0; 
 		r_button_1 <= 0; 
-		r_ae_set <= 2244; 
+		r_ae_set <= 1400; 
 		r_ag_set <= 88; 
 	end else begin
 	//	When button pressed, r_button_1 bit is 1. 
@@ -88,7 +88,7 @@ always @(posedge I_clk or posedge I_rst) begin
 		if(r_button_1[0]) begin
 			r_ae_set <= (r_ae_set > 2) ? r_ae_set - r_ae_tick : r_ae_set; 
 		end else if(r_button_1[1]) begin
-			r_ae_set <= (r_ae_set < 2244) ? r_ae_set + r_ae_tick : r_ae_set;
+			r_ae_set <= (r_ae_set < 1400) ? r_ae_set + r_ae_tick : r_ae_set;
 		end 
 		if(r_button_1[2]) begin
 				r_ag_set <= (r_ag_set > 16) ? r_ag_set - r_ag_tick : r_ag_set; 
@@ -109,7 +109,7 @@ assign O_ae_req = r_ae_req;
 always @(posedge I_clk or posedge I_rst) begin
 	if(I_rst) begin
 		r_ae_req <= 0;
-		r_ae     <= 2244;
+		r_ae     <= 1400;
 		r_ag     <= 88;
 	end else if(r_ae_req) begin
 		r_ae_req <= 0; 
