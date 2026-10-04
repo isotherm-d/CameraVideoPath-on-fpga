@@ -67,19 +67,27 @@ wire         m_aixs_tvalid;  //synthesis keep
   //assign O_tvalid = m_aixs_tvalid   ;
  
  
-// v12b DIAG: demosaic 旁路(灰度直通) —— 判决行错位是否在 demosaic 内部
-bypass_demosaic u_demosaic (
-    .I_clk    (axi4s_video_aclk),
-    .I_rst_n  (I_rst_n),
-    .I_tvalid (axi4s_video_tvalid),
-    .I_tuser  (axi4s_video_tuser),
-    .I_tlast  (axi4s_video_tlast),
-    .I_tdata  ({axi4s_video_tdata[31:24], axi4s_video_tdata[23:16],
-                axi4s_video_tdata[15:8],  axi4s_video_tdata[7:0]}),
-    .O_tvalid (m_aixs_tvalid),
-    .O_tuser  (m_aixs_tuser),
-    .O_tlast  (m_aixs_tlast),
-    .O_tdata  (m_aixs_tdata_96)
+demosaic #(
+    .IMG_HEIGHT          (600),   // 1024x600(厂验传感器输出, 与 DSI 屏原生一致)
+    .IMG_WIDTH           (1024),  // 行缓冲按 IMG_WIDTH/4=256 拍折行, 必须与实际流宽一致
+    .data_complete_delay (50  ),
+    .BAYER_MODE          ("BGGR")
+)
+u_demosaic
+(
+    .I_clk   			(axi4s_video_aclk)	,   // 时钟信号
+    .I_rst_n 			(I_rst_n)	,   // 复位信号，低有效
+    .axi4s_video_tdata 	(I_tdata)	,  // AXI4-Stream视频数据
+    .axi4s_video_tdest 	(I_tdest)	,
+    .axi4s_video_tlast 	(I_tlast)	,  // 行结束信号
+    .axi4s_video_tvalid	(I_tvalid)	,  // 数据有效信号
+    .axi4s_video_tuser 	(I_tuser)	,  // 帧开始信号
+    .axi4s_video_tready	(I_tready)	,  // 从模块准备好接受数据
+    .O_tlast  			(m_aixs_tlast)	,  // 输出行结束信号
+    .O_tuser  			(m_aixs_tuser)	,  // 输出帧开始信号
+    .O_tdata  			(m_aixs_tdata)	,  // 输出数据
+    .O_tvalid 			(m_aixs_tvalid)	,  // 输出数据有效信号
+    .O_tready   		(m_aixs_tready)	   // 输出数据准备好信号
 );
  
 data128_96 u_data128_96 (
