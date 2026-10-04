@@ -200,7 +200,6 @@ module design_top_wrapper (
     wire [31:0] S_snap_frames, S_snap_pix, S_snap_nonzero;
     wire [39:0] S_snap_sum;
 
-    // ISP 观测口统计(DIAG: 挂 demosaic 输出 128bit 拍, 分诊每帧拍数)
     wire        S_isp_snap_valid;
     wire [31:0] S_isp_snap_frames, S_isp_snap_pix, S_isp_snap_nonzero;
     wire [39:0] S_isp_snap_sum;
@@ -1001,7 +1000,6 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( S_cvp_ae_exp[10:0] ),  // DIAG: 实际曝光码(半行)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
