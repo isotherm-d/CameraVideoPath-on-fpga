@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""cam_ctrl —— MLKPAI-F02 相机网络控制工具(v20)
+"""cam_ctrl —— MLKPAI-F02 相机网络控制工具(v23)
 通过 UDP 命令包(端口 6001)控制相机曝光码与白平衡增益。
 
 用法:
-  python cam_ctrl.py exp 1400        # 曝光码(半行); 720p30 合法 62..1400(满帧 996 行=码 1996 由固件钳位)
-  python cam_ctrl.py mode 0          # 0=手动(按键) 1=自动(cvp_ae) 2=网络值
-  python cam_ctrl.py gain 291 256 246  # 白平衡三通道 Q8 增益(256=1.0x)
+  python cam_ctrl.py exp 1700        # 曝光码(半行); 合法 62..1800(贴近满帧传感器读出窗偏移->顶/底错位带, 上限已收紧)
+  python cam_ctrl.py gain 438 386 371  # 白平衡三通道 Q8 增益(256=1.0x; 默认=标定 x1.506 补光)
   python cam_ctrl.py swap 1          # R/B 通道互换
 """
 import socket, sys, time

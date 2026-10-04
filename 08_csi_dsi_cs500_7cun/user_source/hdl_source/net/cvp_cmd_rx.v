@@ -18,10 +18,11 @@
 
  命令集(载荷字节 46/47-49):
    0: 模式      值 0=手动(ae_set 按键) 1=自动(cvp_ae 闭环) 2=网络曝光值
-   1: 曝光码    值 16bit = 寄存器码(半行, 上限 1996 由应用侧钳位)
+   1: 曝光码    值 16bit = 寄存器码(半行); v23 起由 cvp_proc 消费(钳位 62..1996
+                后重写传感器), 并发 o_exp_wr 单拍
    2/3/4:      GAIN_R/G/B  值 9bit Q8(256=1.0x, 上限 511)
    5:           SWAP_RB     值 0/1
- 输出(100M 域稳定寄存器, 供 ae_mux / color_correct):
+ 输出(100M 域稳定寄存器, 供 cvp_proc(曝光) / color_correct(白平衡)):
    o_mode[1:0] 0=按键 1=自动 2=网络
    o_net_ae[15:0]  o_gain_r/g/b[8:0]  o_swap
 *****************************************************************/
@@ -45,6 +46,7 @@ module cvp_cmd_rx (
     output reg         o_swap,
     output reg         o_awb_en,     // v21: 0=冻结 AWB(手动白平衡), 1=自动
     output reg  [6:0]  o_kelvin,     // v21: 色温, 单位 100K(25..100 = 2500K..10000K)
+    output reg         o_exp_wr,     // v23: 曝光命令单拍(100M 域, 通知 cvp_proc 重写传感器)
     output reg  [7:0]  o_evt_cnt
 );
 
@@ -155,18 +157,20 @@ module cvp_cmd_rx (
             s_tg1 <= 0; s_tg2 <= 0; s_tg3 <= 0;
             s_dt1 <= 0; s_dt2 <= 0;
             o_mode    <= 2'd0;
-            o_net_ae  <= 16'd1400;
-            o_gain_r  <= 9'd291;
-            o_gain_g  <= 9'd256;
-            o_gain_b  <= 9'd246;
+            o_net_ae  <= 16'd1700;
+            o_gain_r  <= 9'd438;    // v23: 与 color_correct 标定一致(白平衡 x1.506 补光)
+            o_gain_g  <= 9'd386;
+            o_gain_b  <= 9'd371;
             o_swap    <= 1'b0;
             o_awb_en  <= 1'b1;
             o_kelvin  <= 7'd65;   // 默认 6500K
+            o_exp_wr  <= 1'b0;
             r_ev_d    <= 1'b0;
         end else begin
             s_tg1 <= r_tgl;  s_tg2 <= s_tg1;  s_tg3 <= s_tg2;   // toggle 双拍
             s_dt1 <= s_data1; s_dt2 <= s_dt1;                    // 数据直过(翻转前已稳定)
             r_ev_d <= w_sync_edge;
+            o_exp_wr <= 1'b0;
             if (w_sync_edge && !r_ev_d) begin                    // 新命令
                 case (w_cmd)
                     8'd0:    o_mode   <= w_val[1:0];
@@ -179,6 +183,8 @@ module cvp_cmd_rx (
                     8'd7:    o_kelvin <= w_val[6:0];
                     default: ;
                 endcase
+                if (w_cmd == 8'd1)
+                    o_exp_wr <= 1'b1;   // 曝光命令: 单拍通知(o_net_ae 同拍已更新)
             end
         end
     end

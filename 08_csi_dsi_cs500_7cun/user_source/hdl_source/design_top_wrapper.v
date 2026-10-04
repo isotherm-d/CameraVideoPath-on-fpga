@@ -70,6 +70,7 @@ module design_top_wrapper (
     // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
     wire [1:0]  S_cmd_mode;
     wire [15:0] S_cmd_ae;
+    wire        S_cmd_ae_wr;   // v23: 曝光命令单拍(通知 cvp_proc 重写传感器)
     wire [8:0]  S_cmd_gr, S_cmd_gg, S_cmd_gb;
     wire        S_cmd_swap;
     wire        S_cmd_awb_en;   // v21: 0=冻结 AWB(手动白平衡) 1=自动
@@ -462,6 +463,11 @@ cvp_proc #(
     .o_pix_line_last    (                  ),
 
     .i_cam_cfg_done     ( S_cam_cfg_done  ),
+
+    /* v23: 网络曝光命令(与 i_clk 同 100M 域, 直连免 CDC) */
+    .i_cmd_ae           ( S_cmd_ae        ),
+    .i_cmd_ae_wr        ( S_cmd_ae_wr     ),
+
     .o_ae_req           ( S_ae_req        ),
     .o_ae               ( S_ae            ),
     .o_ag               ( S_ag            )
@@ -485,18 +491,18 @@ wb_kelvin u_wb_kelvin (
     .o_gain_b  ( S_kelvin_b   )
 );
 
-// 白平衡源: AWB 冻结(手动 K/手动增益)时走命令通道, 自动时用标定值
+// 白平衡源: AWB 冻结(手动 K/手动增益)时走命令通道, 自动时用标定值(含 1.506x 补光, v23 恢复)
 wire       S_wb_frozen = (S_cmd_awb_en == 1'b0);
-wire [8:0] S_cc_gain_r = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_r : S_cmd_gr) : 9'd291;
-wire [8:0] S_cc_gain_g = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? 9'd256 : S_cmd_gg) : 9'd256;
-wire [8:0] S_cc_gain_b = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_b : S_cmd_gb) : 9'd246;
+wire [8:0] S_cc_gain_r = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_r : S_cmd_gr) : 9'd438;
+wire [8:0] S_cc_gain_g = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? 9'd256 : S_cmd_gg) : 9'd386;   // K 模式 G 固定 1.0x(无补光)
+wire [8:0] S_cc_gain_b = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_b : S_cmd_gb) : 9'd371;
 wire       S_cc_swap   = S_wb_frozen ? S_cmd_swap : 1'b0;
 
 color_correct #(
     .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
-    .GAIN_R  ( 9'd291 ),   // v17: 白平衡 1.136 x 数字补光 1.506(曝光 49.8->33.1ms) = 1.711x
-    .GAIN_G  ( 9'd256 ),
-    .GAIN_B  ( 9'd246 )
+    .GAIN_R  ( 9'd438 ),   // v23 恢复 v17 标定: 白平衡 1.136 x 数字补光 1.506 = 1.711x (v22 重构时误丢补光退回 291/256/246)
+    .GAIN_G  ( 9'd386 ),   // 1.506x
+    .GAIN_B  ( 9'd371 )    // 0.961 x 1.506 = 1.449x
 ) u_color_correct (
     .I_clk         ( S_100m_clk    ),
     .I_rst_n       ( S_rst_n       ),
@@ -911,7 +917,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_gain_b      ( S_cmd_gb           ),
         .o_swap        ( S_cmd_swap         ),
         .o_awb_en      ( S_cmd_awb_en       ),
-        .o_kelvin      ( S_cmd_kelvin       )
+        .o_kelvin      ( S_cmd_kelvin       ),
+        .o_exp_wr      ( S_cmd_ae_wr        )
     );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法

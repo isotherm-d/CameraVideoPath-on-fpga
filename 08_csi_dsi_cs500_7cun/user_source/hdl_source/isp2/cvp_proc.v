@@ -35,8 +35,9 @@ module cvp_proc #(
     parameter [10:0] EDGE_THRESH = 11'd60,  // 保留参数（兼容旧例化；当前模式里未使用）
 
     // ---- 曝光/白平衡参数(传感器寄存器值, 上电经 ae_cmd 通路写入 SC500CS) ----
-    parameter [15:0] AE_EXP_CODE = 16'd1400,  // 曝光寄存器码(半行)。720p30 合法 62..1400(1400=满帧 700 行)
-    parameter [15:0] AE_GAIN_IDX = 16'd88,    // 模拟增益档(表索引 16..89; 88 -> 0x0F28 ≈4.4x)
+    parameter [15:0] AE_EXP_CODE = 16'd1700,  // 曝光寄存器码(半行)。VTS=1003 理论上限 1996, 但实测贴近满帧时传感器读出窗
+                                              // 相对帧同步偏移数行, 顶/底部出现错位带(1940 仍复现) —— 收到 1700(850 行, 裕量 153)
+    parameter [15:0] AE_GAIN_IDX = 16'd108,   // 模拟增益档(档=表索引+16, 合法 16..143; 108 -> 0x0F3C = 7.5x, 补偿曝光下调, 仍属已验证 0x0F 组)
     parameter [8:0]  WB_GAIN_R   = 9'd438,    // 白平衡 R 增益 Q8(438≈1.71x, 白纸标定)
     parameter [8:0]  WB_GAIN_G   = 9'd386,    // 白平衡 G 增益 Q8(386≈1.51x 数字补光)
     parameter [8:0]  WB_GAIN_B   = 9'd371,    // 白平衡 B 增益 Q8(371≈1.45x)
@@ -46,6 +47,10 @@ module cvp_proc #(
     input  wire         i_rst_n,
     input  wire [2:0]   i_mode,
     input  wire         i_cam_cfg_done,
+
+    /* v23: 运行时曝光命令(cvp_cmd_rx 输出, 与 i_clk 同为 100M 域) */
+    input  wire [15:0]  i_cmd_ae,      // 网络曝光码(半行)
+    input  wire         i_cmd_ae_wr,   // 单拍: 曝光命令到达(与 i_cmd_ae 同拍有效)
 
     input  wire         i_grp_valid,
     input  wire [39:0]  i_grp_data,
@@ -65,24 +70,33 @@ module cvp_proc #(
     output wire [15:0]  o_ag
 );
 
-    /* ================= 0. AE/AWB 上电参数请求 =================
-     * cam_cfg_done 后保持 o_ae_req 高 1000 拍(10us), 顶层 uicfgcs500 采样后
-     * 启动 AE 表写入(值 = 本模块参数)。o_ae/o_ag 常值输出。 */
+    /* ================= 0. AE/AWB 参数通路(上电 + v23 网络运行时) =================
+     * cam_cfg_done 后保持 o_ae_req 高 1023 拍(10us), 顶层 uicfgcs500 采样后
+     * 启动 AE 表写入。v23: o_ae 由常量改为寄存器 —— 收到网络曝光命令时
+     * 锁存新值(钳位 62..1940)并重发 req, uicfgcs500 见 req 重写传感器
+     * 0x3e00/01/02(其状态机的 I_ae_req 分支即重触发入口)。
+     * 注: r_ae_val 组合进入 24M 域 uicfgcs500, 但只在命令拍更新(人为速率),
+     * I2C 写期间(~2ms)保持稳定, 免握手中继。 */
     reg [9:0]  r_ae_req_cnt = 10'd1023;
     reg        r_cfg_done_d;
+    reg [15:0] r_ae_val;
     always @(posedge i_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             r_ae_req_cnt <= 10'd1023;
             r_cfg_done_d <= 1'b0;
+            r_ae_val     <= AE_EXP_CODE;
         end else begin
             r_cfg_done_d <= i_cam_cfg_done;
-            // cam_cfg_done 后保持 req 高 1023 拍(10us), 顶层 uicfgcs500 采样
-            if (r_cfg_done_d && r_ae_req_cnt != 10'd0)
+            if (i_cmd_ae_wr && i_cam_cfg_done) begin
+                r_ae_val     <= (i_cmd_ae < 16'd62)   ? 16'd62   :
+                                (i_cmd_ae > 16'd1800) ? 16'd1800 : i_cmd_ae;   // 上限收紧: >=900 行读出窗偏移, 顶/底错位带
+                r_ae_req_cnt <= 10'd1023;    // 重发请求(若正在倒数则顺延, 无害)
+            end else if (r_cfg_done_d && r_ae_req_cnt != 10'd0)
                 r_ae_req_cnt <= r_ae_req_cnt - 10'd1;
         end
     end
     assign o_ae_req = (r_ae_req_cnt != 10'd0);
-    assign o_ae     = AE_EXP_CODE;
+    assign o_ae     = r_ae_val;
     assign o_ag     = AE_GAIN_IDX;
 
     /* ================= 1. 齿轮箱：4 像素/拍 → 1 像素/拍 ================= */

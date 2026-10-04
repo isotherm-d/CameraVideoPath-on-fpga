@@ -34,14 +34,14 @@ class App:
         panel.grid(row=0, column=1, sticky="ns", padx=4, pady=4)
 
         row = 0
-        ttk.Label(panel, text="曝光码 (62..2244 半行)").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
+        ttk.Label(panel, text="曝光码 (62..1800 半行)").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
-        self.exp_var = tk.IntVar(value=1400)
+        self.exp_var = tk.IntVar(value=1700)
         self._deb = {}
-        ttk.Scale(panel, from_=62, to=2244, variable=self.exp_var, orient="horizontal", length=230,
+        ttk.Scale(panel, from_=62, to=1800, variable=self.exp_var, orient="horizontal", length=230,
                   command=lambda v: self.debounced("exp", self.send_exp)).grid(row=row, column=0, columnspan=2, padx=6, sticky="ew")
         row += 1
-        self.exp_lbl = ttk.Label(panel, text="1400 半行 (700 行)", width=26)
+        self.exp_lbl = ttk.Label(panel, text="1700 半行 (850 行)", width=26)
         self.exp_lbl.grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
 
@@ -50,7 +50,7 @@ class App:
         ttk.Label(panel, text="白平衡增益 Q8 (256=1.0x)").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
         self.gain_vars = {}
-        for ch, dft in (("R", 291), ("G", 256), ("B", 246)):
+        for ch, dft in (("R", 438), ("G", 386), ("B", 371)):   # v23: 标定白平衡 x1.506 补光
             ttk.Label(panel, text=ch, width=2).grid(row=row, column=0, sticky="w", padx=6)
             sv = tk.IntVar(value=dft)
             self.gain_vars[ch] = sv
@@ -67,8 +67,8 @@ class App:
         row += 1
         ttk.Label(panel, text="白平衡模式").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
-        self.wb_var = tk.IntVar(value=1)   # 0=自动(cvp_awb) 1=色温 K
-        ttk.Radiobutton(panel, text="自动 (cvp_awb)", variable=self.wb_var, value=0,
+        self.wb_var = tk.IntVar(value=1)   # 0=自动(标定增益+补光) 1=色温 K
+        ttk.Radiobutton(panel, text="自动 (标定+1.5x补光)", variable=self.wb_var, value=0,
                         command=self.send_wb_mode).grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
         ttk.Radiobutton(panel, text="色温 K 值", variable=self.wb_var, value=1,
