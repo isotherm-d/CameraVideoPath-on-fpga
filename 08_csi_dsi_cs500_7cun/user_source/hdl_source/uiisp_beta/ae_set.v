@@ -79,7 +79,7 @@ always @(posedge I_clk or posedge I_rst) begin
 		r_button_0 <= 0; 
 		r_button_1 <= 0; 
 		r_ae_set <= 2244; 
-		r_ag_set <= 80; 
+		r_ag_set <= 88; 
 	end else begin
 	//	When button pressed, r_button_1 bit is 1. 
 		r_button_0 <= ~I_btn; 
@@ -110,7 +110,7 @@ always @(posedge I_clk or posedge I_rst) begin
 	if(I_rst) begin
 		r_ae_req <= 0;
 		r_ae     <= 2244;
-		r_ag     <= 80;
+		r_ag     <= 88;
 	end else if(r_ae_req) begin
 		r_ae_req <= 0; 
 	end else if(((r_ae != r_ae_set) || (r_ag != r_ag_set))&&(I_cam_cfg_done==1'b1)&&(I_ae_cfg_done==1'b1)) begin
