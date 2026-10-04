@@ -25,9 +25,11 @@ module group_fifo (
 
     reg [41:0] mem [0:1023];
     reg [10:0] wptr, rptr;
+    reg [2:0]  r_gap;     // 读节律: 齿轮箱收组 1 拍+弹出 4 拍=5 拍/组,
+                          // 每 5 拍最多读 1 组(背靠背读会被齿轮箱丢弃)
     wire       full  = ((wptr - rptr) == 11'd1024);
     wire       empty = (wptr == rptr);
-    wire       rd_en = !empty;
+    wire       rd_en = !empty && (r_gap == 3'd0);
 
     wire [10:0] wptr_n = wptr + {10'd0, (I_wr_valid && !full)};
     wire [10:0] rptr_n = rptr + {10'd0, rd_en};
@@ -39,11 +41,16 @@ module group_fifo (
         if (!I_rst_n) begin
             wptr <= 11'd0;
             rptr <= 11'd0;
+            r_gap <= 3'd0;
             rdata_r  <= 42'd0;
             rvalid_r <= 1'b0;
         end else begin
             wptr <= wptr_n;
             rptr <= rptr_n;
+            if (rd_en)
+                r_gap <= 3'd4;          // 读后隔 4 拍(共 5 拍周期)
+            else if (r_gap != 3'd0)
+                r_gap <= r_gap - 3'd1;
             if (I_wr_valid && !full)
                 mem[wptr[9:0]] <= {I_wr_tuser, I_wr_tlast, I_wr_data};
             rvalid_r <= rd_en;
