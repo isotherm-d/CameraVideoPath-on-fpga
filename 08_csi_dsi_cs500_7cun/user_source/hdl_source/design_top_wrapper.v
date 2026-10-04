@@ -69,10 +69,6 @@ module design_top_wrapper (
     wire [15:0] S_ae, S_ag;
     wire        S_ae_req_man;
     wire [15:0] S_ae_man, S_ag_man;
-    wire        S_cvp_ae_req;
-    wire [19:0] S_cvp_ae_exp;
-    wire [15:0] S_cvp_ae_gain;
-    wire [10:0] S_cvp_ae_dbg;
 
     // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
     wire [1:0]  S_cmd_mode;
@@ -501,13 +497,10 @@ cvp_proc #(
     .o_pix_frame_start  ( S_isp_pix_fs    ),
     .o_pix_line_last    (                  ),
 
-    .o_ae_eq_q8         (                  ),
-    .o_ae_update        (                  ),
-    .o_ae_req           ( S_cvp_ae_req  ),
-    .o_ae_exp           ( S_cvp_ae_exp  ),
-    .o_ae_gain          ( S_cvp_ae_gain ),
-    .o_ae_locked        (                  ),
-    .o_ae_dbg           ( S_cvp_ae_dbg  )
+    .i_cam_cfg_done     ( S_cam_cfg_done  ),
+    .o_ae_req           ( S_ae_req        ),
+    .o_ae               ( S_ae            ),
+    .o_ag               ( S_ag            )
 );
 
 wire        S_awb1_valid;

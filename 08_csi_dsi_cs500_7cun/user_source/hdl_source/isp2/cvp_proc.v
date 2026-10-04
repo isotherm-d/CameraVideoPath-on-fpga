@@ -32,11 +32,20 @@
 module cvp_proc #(
     parameter IMG_W = 1024,
     parameter IMG_H = 600,
-    parameter [10:0] EDGE_THRESH = 11'd60   // 保留参数（兼容旧例化；当前模式里未使用）
+    parameter [10:0] EDGE_THRESH = 11'd60,  // 保留参数（兼容旧例化；当前模式里未使用）
+
+    // ---- 曝光/白平衡参数(传感器寄存器值, 上电经 ae_cmd 通路写入 SC500CS) ----
+    parameter [15:0] AE_EXP_CODE = 16'd1400,  // 曝光寄存器码(半行)。720p30 合法 62..1400(1400=满帧 700 行)
+    parameter [15:0] AE_GAIN_IDX = 16'd88,    // 模拟增益档(表索引 16..89; 88 -> 0x0F28 ≈4.4x)
+    parameter [8:0]  WB_GAIN_R   = 9'd438,    // 白平衡 R 增益 Q8(438≈1.71x, 白纸标定)
+    parameter [8:0]  WB_GAIN_G   = 9'd386,    // 白平衡 G 增益 Q8(386≈1.51x 数字补光)
+    parameter [8:0]  WB_GAIN_B   = 9'd371,    // 白平衡 B 增益 Q8(371≈1.45x)
+    parameter        WB_SWAP_RB  = 1'b0       // R/B 通道互换(色序错时置 1)
 ) (
     input  wire         i_clk,
     input  wire         i_rst_n,
     input  wire [2:0]   i_mode,
+    input  wire         i_cam_cfg_done,
 
     input  wire         i_grp_valid,
     input  wire [39:0]  i_grp_data,
@@ -48,17 +57,33 @@ module cvp_proc #(
     output reg          o_pix_frame_start,
     output reg          o_pix_line_last,
 
-    /* AE（自动曝光）：统计与控制律在本模块内，等效曝光/寄存器写接口引出到顶层。
-     * o_eq_q8 仿真里喂给传感器曝光模型（cvp_top_sim 的 cvp_sensor_sim）成闭环；
-     * o_req/o_exp/o_gain 上板接 cvp_cam_cfg 写 SC500CS 曝光寄存器。 */
-    output wire [15:0]  o_ae_eq_q8,
-    output wire         o_ae_update,
+    /* AE/AWB 上电参数写入通路：把本模块的曝光/增益参数经 uicfgcs500
+     * 写入 SC500CS(传感器主表配置完成后写一次)。值 = 参数 AE_EXP_CODE/AE_GAIN_IDX。
+     * 白平衡在 color_correct(数字域)完成, 与传感器增益独立。 */
     output wire         o_ae_req,
-    output wire [19:0]  o_ae_exp,
-    output wire [15:0]  o_ae_gain,
-    output wire         o_ae_locked,
-    output wire [10:0]  o_ae_dbg              // v19e: {状态机[2:0], eq_q8 高 8 位}
+    output wire [15:0]  o_ae,
+    output wire [15:0]  o_ag
 );
+
+    /* ================= 0. AE/AWB 上电参数请求 =================
+     * cam_cfg_done 后保持 o_ae_req 高 1000 拍(10us), 顶层 uicfgcs500 采样后
+     * 启动 AE 表写入(值 = 本模块参数)。o_ae/o_ag 常值输出。 */
+    reg [9:0]  r_ae_req_cnt = 10'd1023;
+    reg        r_cfg_done_d;
+    always @(posedge i_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            r_ae_req_cnt <= 10'd1023;
+            r_cfg_done_d <= 1'b0;
+        end else begin
+            r_cfg_done_d <= i_cam_cfg_done;
+            // cam_cfg_done 后保持 req 高 1023 拍(10us), 顶层 uicfgcs500 采样
+            if (r_cfg_done_d && r_ae_req_cnt != 10'd0)
+                r_ae_req_cnt <= r_ae_req_cnt - 10'd1;
+        end
+    end
+    assign o_ae_req = (r_ae_req_cnt != 10'd0);
+    assign o_ae     = AE_EXP_CODE;
+    assign o_ag     = AE_GAIN_IDX;
 
     /* ================= 1. 齿轮箱：4 像素/拍 → 1 像素/拍 ================= */
     reg [9:0]  r_p0, r_p1, r_p2, r_p3;
@@ -116,24 +141,6 @@ module cvp_proc #(
         .o_frame_start (w_dpc_fs)
     );
 
-    wire [10:0] o_ae_dbg;
-    /* ================= 2b. 自动曝光：RAW 域统计 + 帧尾控制律（并联只读，不占像素通路） ================= */
-    cvp_ae #(
-        .IMG_W (IMG_W),
-        .IMG_H (IMG_H)
-    ) u_ae (
-        .i_clk         (i_clk),
-        .i_rst_n       (i_rst_n),
-        .i_valid       (w_pix_step),
-        .i_raw         (w_pix_sel),
-        .i_frame_start (w_pix_fs),
-        .o_eq_q8       (o_ae_eq_q8),
-        .o_update      (o_ae_update),
-        .o_req         (o_ae_req),
-        .o_exp         (o_ae_exp),
-        .o_gain        (o_ae_gain),
-        .o_locked      (o_ae_locked)
-    );
 
     /* ================= 3. 彩色重建：3x3 双线性（BGGR） ================= */
     wire        w_dem_valid, w_dem_fs;
