@@ -66,8 +66,6 @@ module design_top_wrapper (
     wire 			S_cam_cfg_done;
     wire 			S_ae_cfg_done;
     wire 		S_ae_req;
-    wire [15:0] S_ae, S_ag;
-    wire [15:0] S_ae_man, S_ag_man;
 
     // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
     wire [1:0]  S_cmd_mode;
