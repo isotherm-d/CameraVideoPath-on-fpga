@@ -202,7 +202,7 @@ module design_top_wrapper (
     // 网口诊断旗标(粘滞,置 1 不清):经心跳包显示在电脑端状态页
     // bit0=相机I2C配置完成 bit1=AWB观测口有数据 bit2=转换器在发像素 bit3=像素非全零
     reg [15:0] r_net_diag;
-    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
+    always @(posedge S_100m_clk or negedge S_rst_n) begin
         if (!S_rst_n)
             r_net_diag <= 16'd0;
         else begin
@@ -430,12 +430,14 @@ wire        S_gf_valid, S_gf_tuser, S_gf_tlast;
 wire [39:0] S_gf_data;
 
 group_fifo u_group_fifo (
-    .I_clk       ( S_csi_rx_clk ),
-    .I_rst_n     ( S_rst_n      ),
+    .I_wr_clk    ( S_csi_rx_clk ),   // 40.2M 写(突发)
+    .I_wr_rst_n  ( S_rst_n      ),
     .I_wr_valid  ( S_raw_tvalid ),
     .I_wr_data   ( S_raw_tdata  ),
     .I_wr_tuser  ( S_raw_tuser  ),
     .I_wr_tlast  ( S_raw_tlast  ),
+    .I_rd_clk    ( S_100m_clk   ),   // 100M 读(cvp ISP 域)
+    .I_rd_rst_n  ( S_rst_n      ),
     .O_rd_valid  ( S_gf_valid   ),
     .O_rd_data   ( S_gf_data    ),
     .O_rd_tuser  ( S_gf_tuser   ),
@@ -446,7 +448,7 @@ cvp_proc #(
     .IMG_W  ( 1024 ),
     .IMG_H  (  600 )
 ) u_cvp_proc (
-    .i_clk              ( S_csi_rx_clk ),
+    .i_clk              ( S_100m_clk ),
     .i_rst_n            ( S_rst_n      ),
     .i_mode             ( 3'd0         ),   // 0=彩色直通(像素级算法不用)
 
@@ -476,7 +478,7 @@ cvp_awb #(
     .IMG_W  ( 1024 ),
     .IMG_H  (  600 )
 ) u_cvp_awb (
-    .i_clk          ( S_csi_rx_clk    ),
+    .i_clk          ( S_100m_clk      ),
     .i_rst_n        ( S_rst_n         ),
     .i_valid        ( S_isp_pix_valid ),
     .i_rgb          ( S_isp_pix_rgb   ),
@@ -488,7 +490,7 @@ cvp_awb #(
 
 // 1像素/拍 -> 96bit 组(4像素), 驱动网口观测口语义信号 S_awb_*
 pack_4 u_pack4 (
-    .I_clk         ( S_csi_rx_clk ),
+    .I_clk         ( S_100m_clk   ),
     .I_rst_n       ( S_rst_n      ),
     .I_valid       ( S_awb1_valid ),
     .I_rgb         ( S_awb1_rgb   ),
@@ -500,7 +502,7 @@ pack_4 u_pack4 (
 
 // DSI/DDR 主通路: 96bit -> 128bit(原 isp_top 内部转换, 顶层直接例化)
 data_96bit_to_128bit u_data_96bit_to_128bit(
-    .I_clk              ( S_csi_rx_clk  ),
+    .I_clk              ( S_100m_clk    ),
     .I_rst_n            ( S_rst_n       ),
     .I_96b_frame_start  ( S_awb_tuser   ),
     .I_96b_valid        ( S_awb_tvalid  ),
@@ -535,7 +537,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     video_in u_video_in(
         .I_rst_n              (  S_rst_n             ),
 
-        .I_camera_clk         ( S_csi_rx_clk          ),
+        .I_camera_clk         ( S_100m_clk           ),
         .I_camera_frame_start ( S_crop_tuser  ),
         .I_camera_valid       ( S_crop_tvalid ),
         .I_camera_data        ( S_crop_tdata  ),
@@ -822,7 +824,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .LUMA_SHIFT ( 16           ),
         .CLK_SYS_HZ ( 100_000_000  )
     ) u_cam_stats_isp (
-        .I_clk_pix ( S_csi_rx_clk       ),
+        .I_clk_pix ( S_100m_clk         ),
         .I_rst_pix ( ~S_rst_n           ),
         .I_vsync   ( S_awb_tuser        ),
         .I_de      ( S_awb_tvalid       ),
@@ -934,7 +936,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .GEN_TESTPAT ( 0         ),   // 0=相机流(彩条分诊已于 v11b 验证通路正确)
         .PHY_ADDR    ( 5'd1      )
     ) u_eth_dbg (
-        .i_clk_pix      ( S_csi_rx_clk      ),
+        .i_clk_pix      ( S_100m_clk        ),   // v13d: cvp ISP 在 100M 域
         .i_rst_pix_n    ( S_rst_n           ),
         .i_valid        ( S_awb_tvalid      ),
         .i_rgb          ( S_awb_tdata       ),

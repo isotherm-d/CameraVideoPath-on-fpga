@@ -1,67 +1,70 @@
 `timescale 1ns / 1ns
 /*****************************************************************
- group_fifo —— 组缓冲(v13b): 吸收 raw10 行突发, 平滑供 cvp_proc 齿轮箱
- 根因: cvp_proc 齿轮箱 4 拍/组, 而 raw10 解包输出为行突发(突发段背靠背
- 每拍 1 组), 突发段齿轮箱大量丢组(实测吞吐 3/8)。
- 本模块: 42bit(40 数据+tuser+tlast) x 1024 同钟 FIFO(二进制指针, 空判决
- 无保守延迟), 写=上游突发, 读=FIFO 非空即连续读(齿轮箱全速弹, 能力
- 40.2M/4=10M 组/s >> 平均 3.07M; 行静默段清空积压, 稳态平衡)。
- 读时序: rd_en(T) -> rd_valid/rd_data(T+1), 与齿轮箱 i_grp_* 直接对接。
+ group_fifo —— 跨域组缓冲(v13d): 40.2MHz 写(突发) -> 100MHz 读(齿轮箱)
+ v13b/c 失败根因: raw10 组流准连续(行间近无间隙), 40.2MHz 域内齿轮箱
+ 5拍/组(8M组/s)跟不上突发段写入(40.2M组/s), FIFO 积压溢出丢组(实测 58%
+ 吞吐, tuser 也丢)。
+ v13d: cvp ISP 整体搬 100MHz(原设计时钟)。本 FIFO 跨域 Gray 指针,
+ 读侧 100M 下齿轮箱 5拍/组 = 20M 组/s 消化能力; 突发段(100M 时基
+ 每 ~2.5 拍 1 组)积压约段长一半, 2048 深覆盖数行连发; 行/帧间隙消化。
+ 读节律 5 拍(齿轮箱收1+弹4), 追空后保守空判决 3-4 拍恢复 < 5 拍, 无损。
 *****************************************************************/
 module group_fifo (
-    input          I_clk,
-    input          I_rst_n,
-
+    input          I_wr_clk,
+    input          I_wr_rst_n,
     input          I_wr_valid,
     input  [39:0]  I_wr_data,
     input          I_wr_tuser,
     input          I_wr_tlast,
 
-    output wire        O_rd_valid,
-    output wire [39:0] O_rd_data,
-    output wire        O_rd_tuser,
-    output wire        O_rd_tlast
+    input          I_rd_clk,
+    input          I_rd_rst_n,
+    output         O_rd_valid,
+    output [39:0]  O_rd_data,
+    output         O_rd_tuser,
+    output         O_rd_tlast
 );
 
-    reg [41:0] mem [0:1023];
-    reg [10:0] wptr, rptr;
-    reg [2:0]  r_gap;     // 读节律: 齿轮箱收组 1 拍+弹出 4 拍=5 拍/组,
-                          // 每 5 拍最多读 1 组(背靠背读会被齿轮箱丢弃)
-    wire       full  = ((wptr - rptr) == 11'd1024);
-    wire       empty = (wptr == rptr);
-    wire       rd_en = !empty && (r_gap == 3'd0);
+    wire        w_full;
+    wire [41:0] w_rd_word;
+    wire        w_rd_empty;
+    wire        r_rd_en;
 
-    wire [10:0] wptr_n = wptr + {10'd0, (I_wr_valid && !full)};
-    wire [10:0] rptr_n = rptr + {10'd0, rd_en};
+    cvp_async_fifo #(
+        .DATA_WIDTH (42),
+        .ADDR_WIDTH (11)          // 2048 深
+    ) u_xfifo (
+        .wr_clk   (I_wr_clk),
+        .wr_rst_n (I_wr_rst_n),
+        .wr_en    (I_wr_valid),   // 满则丢(读侧能力验算下不应发生)
+        .wr_data  ({I_wr_tuser, I_wr_tlast, I_wr_data}),
+        .wr_full  (w_full),
+        .wr_level (),
+        .wr_flush (1'b0),
+        .rd_clk   (I_rd_clk),
+        .rd_rst_n (I_rd_rst_n),
+        .rd_en    (r_rd_en),
+        .rd_data  (w_rd_word),
+        .rd_valid (O_rd_valid),
+        .rd_empty (w_rd_empty),
+        .rd_flush (1'b0)
+    );
 
-    reg [41:0] rdata_r;
-    reg        rvalid_r;
+    assign O_rd_data  = w_rd_word[39:0];
+    assign O_rd_tuser = w_rd_word[40];
+    assign O_rd_tlast = w_rd_word[41];
 
-    always @(posedge I_clk or negedge I_rst_n) begin
-        if (!I_rst_n) begin
-            wptr <= 11'd0;
-            rptr <= 11'd0;
+    /* ---- 读节律: 5 拍/组(齿轮箱收组 1 拍 + 弹出 4 拍) ---- */
+    reg [2:0] r_gap;
+    assign r_rd_en = !w_rd_empty && (r_gap == 3'd0);
+
+    always @(posedge I_rd_clk or negedge I_rd_rst_n) begin
+        if (!I_rd_rst_n)
             r_gap <= 3'd0;
-            rdata_r  <= 42'd0;
-            rvalid_r <= 1'b0;
-        end else begin
-            wptr <= wptr_n;
-            rptr <= rptr_n;
-            if (rd_en)
-                r_gap <= 3'd4;          // 读后隔 4 拍(共 5 拍周期)
-            else if (r_gap != 3'd0)
-                r_gap <= r_gap - 3'd1;
-            if (I_wr_valid && !full)
-                mem[wptr[9:0]] <= {I_wr_tuser, I_wr_tlast, I_wr_data};
-            rvalid_r <= rd_en;
-            if (rd_en)
-                rdata_r <= mem[rptr[9:0]];
-        end
+        else if (r_rd_en)
+            r_gap <= 3'd4;              // 读后隔 4 拍(共 5 拍周期)
+        else if (r_gap != 3'd0)
+            r_gap <= r_gap - 3'd1;
     end
-
-    assign O_rd_valid = rvalid_r;
-    assign O_rd_data  = rdata_r[39:0];
-    assign O_rd_tuser = rdata_r[40];
-    assign O_rd_tlast = rdata_r[41];
 
 endmodule
