@@ -494,9 +494,9 @@ wire [23:0] S_cc_rgb;
 
 color_correct #(
     .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
-    .GAIN_R  ( 9'd256 ),   // 标定: Q8(256=1.0x)
+    .GAIN_R  ( 9'd291 ),   // 标定 20261004 白纸: R/G=0.880 -> x1.136 (256*112.1/98.7)
     .GAIN_G  ( 9'd256 ),
-    .GAIN_B  ( 9'd256 )
+    .GAIN_B  ( 9'd246 )    // 标定 20261004 白纸: B/G=1.039 -> x0.962 (256*112.1/116.5)
 ) u_color_correct (
     .I_clk         ( S_100m_clk    ),
     .I_rst_n       ( S_rst_n       ),
