@@ -379,21 +379,24 @@ u_uial2axis (
 );
 	
 
-image_correction #(
-    .DATA_WIDTH(40)
-)(
-    .I_clk   		(S_csi_rx_clk),
-    .I_rst_n 		(S_rst_n),
-					
-    .I_raw_data 	(S_axis_tdata),
-    .I_raw_frame_end 	(S_axis_tlast),
-    .I_raw_valid	(S_axis_tvalid),
-    .I_raw_frame_start 	(S_axis_tuser),
-					
-    .O_raw_tdata 	(S_raw_tdata ),
-    .O_raw_tlast 	(S_raw_tlast ),
-    .O_raw_tvalid	(S_raw_tvalid),
-    .O_raw_tuser 	(S_raw_tuser )
+// v11f: line_retimer 替换 image_correction —— 上游行切分实测不稳定(行长
+// 255~256 抖动, 心跳监视器读数), 其 H_valid 窗口/间隙检测与上游 tlast 相互
+// 作用产生行错位; 本模块按帧内 valid 序号强制重切(256拍x600行), 免疫抖动。
+line_retimer #(
+    .BEATS_PER_LINE ( 256 ),
+    .LINES          ( 600 )
+) u_line_retimer (
+    .I_clk    ( S_csi_rx_clk  ),
+    .I_rst_n  ( S_rst_n       ),
+
+    .I_tuser  ( S_axis_tuser  ),
+    .I_tvalid ( S_axis_tvalid ),
+    .I_tdata  ( S_axis_tdata  ),
+
+    .O_tuser  ( S_raw_tuser  ),
+    .O_tvalid ( S_raw_tvalid ),
+    .O_tlast  ( S_raw_tlast  ),
+    .O_tdata  ( S_raw_tdata  )
 );
 
 
