@@ -10,7 +10,7 @@
 """
 import socket, sys, time
 
-TARGET = ("192.168.1.66", 6001)
+TARGET = ("192.168.1.255", 6001)  # 子网广播: 板子不响应 ARP, 广播无需 MAC 解析
 MAGIC = bytes([0xC5, 0xA5, 0x50, 0x01])
 
 def send(sock, cmd, value):
