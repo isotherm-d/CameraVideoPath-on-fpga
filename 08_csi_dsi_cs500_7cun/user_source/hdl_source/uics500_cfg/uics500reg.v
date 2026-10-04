@@ -81,8 +81,8 @@ begin
 		33:	REG_DATA = {16'h320b, 8'hd0};
 		34:	REG_DATA = {16'h320c, 8'h0b}; 
 		35:	REG_DATA = {16'h320d, 8'h24}; 
-		36:	REG_DATA = {16'h320e, 8'h02};  // 720p30: VTS 752 -> 30.0fps; 曝光上限 1494 半行=744 行
-		37:	REG_DATA = {16'h320f, 8'hf0};
+		36:	REG_DATA = {16'h320e, 8'h03};  // v18b: VTS 1003 -> 实测校准 30.0fps(752 实测 40fps, crop 模式行节奏与缩放模式不同)
+		37:	REG_DATA = {16'h320f, 8'heb};
 		38:	REG_DATA = {16'h3210, 8'h00}; 
 		39:	REG_DATA = {16'h3211, 8'h04}; 
 		40:	REG_DATA = {16'h3212, 8'h00}; 
