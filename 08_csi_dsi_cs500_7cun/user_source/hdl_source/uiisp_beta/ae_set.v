@@ -73,7 +73,7 @@ reg 	[3:0] 	r_button_0 = 0, r_button_1 = 0;
 // AE 值经 uics500regAE 映射: 曝光(半行) = I_AE<<4。上限 140 -> 2240 半行 = 1120 行,
 // 恰为 VTS=1127 的满帧曝光(数据手册上限 2*VTS-10=2244 半行)。
 // 原例程初值 3000(=24000 行曝光) 是非法值, 会导致帧周期被曝光拉长到秒级且画面饱和。
-reg 	[15:0] 	r_ae_set = 280     v14b: VTS2254 后 2x 曝光, r_ag_set = 80;   // v13e: 60->80 增益档(约2x), 画面偏暗;
+reg 	[15:0] 	r_ae_set = 280, r_ag_set = 80;   // v14b: 10fps 高曝光(I_AE=280 -> 曝光4480半行=2240行), 增益档80
 always @(posedge I_clk or posedge I_rst) begin
 	if(I_rst) begin
 		r_button_0 <= 0; 
