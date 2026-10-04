@@ -81,13 +81,6 @@ module design_top_wrapper (
     wire        S_cmd_swap;
     wire        S_cmd_awb_en;   // v21: 0=冻结 AWB(手动白平衡) 1=自动
     wire [6:0]  S_cmd_kelvin;   // v21: 色温, 单位 100K
-    wire [7:0]  S_cmd_cnt;      // v21c DIAG: 命令接收计数
-    wire [7:0]  S_cmd_frame_cnt;  // v21f DIAG: 帧接收计数(RX_EN 沿)
-    wire        S_line_ovf_pulse;
-    reg         S_line_ovf = 1'b0;
-    always @(posedge S_csi_rx_clk or negedge S_rst_n)
-        if (!S_rst_n) S_line_ovf <= 1'b0;
-        else if (S_line_ovf_pulse) S_line_ovf <= 1'b1;
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -446,7 +439,6 @@ line_retimer #(
     .O_tvalid ( S_raw_tvalid ),
     .O_tlast  ( S_raw_tlast  ),
     .O_tdata  ( S_raw_tdata  ),
-    .O_ovf    ( S_line_ovf_pulse )
 );
 
 
@@ -1056,7 +1048,6 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_swap        ( S_cmd_swap         ),
         .o_awb_en      ( S_cmd_awb_en       ),
         .o_kelvin      ( S_cmd_kelvin       ),
-        .o_evt_cnt     ( S_cmd_cnt          ),
         .o_frame_cnt   ( S_cmd_frame_cnt )
     );
 

@@ -25,28 +25,19 @@ module line_retimer #(
     output reg      O_tuser,     // 重切后的帧首(帧内第 1 个有效拍)
     output reg      O_tvalid,
     output reg      O_tlast,     // 重切后的行尾
-    output reg [39:0] O_tdata,
-    output reg      O_ovf        // v21c DIAG: 上帧未结束就来新帧首(行数超窗)
+    output reg [39:0] O_tdata
 );
 
     reg [10:0] r_col;       // 下一有效拍的列坐标
     reg [10:0] r_row;       // 下一有效拍的行坐标
     reg        r_in_frame;  // 帧窗口内(tuser 已见, 未满)
-    reg        ovf_seen;    // v21c DIAG: 本帧内出现过帧外溢出数据
 
     always @(posedge I_clk or negedge I_rst_n) begin
         if (!I_rst_n) begin
             r_col      <= 11'd0;
             r_row      <= 11'd0;
             r_in_frame <= 1'b0;
-            ovf_seen   <= 1'b0;
         end else if (I_tvalid) begin
-            if (I_tuser) begin
-                O_ovf  <= ovf_seen;               // 输出上一帧溢出状态
-                ovf_seen <= 1'b0;                 // 清
-            end else if (r_in_frame == 1'b0) begin
-                ovf_seen <= 1'b1;                 // v21c: 帧满丢弃期间仍有数据 = 行数超窗
-            end
             if (I_tuser) begin
                 // 帧首拍本身 = (0,0); 拍末设置下一拍坐标 (0,1)
                 r_in_frame <= 1'b1;
