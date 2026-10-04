@@ -67,12 +67,16 @@ module cvp_rgb_stream_pack (
     reg [1:0]  r_sel;       // 当前展开的 lane (0=[95:72] 最先)
     reg        r_pop;       // FIFO 读请求(寄存一拍)
 
-    // 预取槽空着且 FIFO 读出上没有正在落下的数据时, 请求读一拍
+    // 预取槽空着且 FIFO 读出上没有正在落下的数据时, 请求读一拍。
+    // (!r_pop): 禁止连续两拍发读请求 —— rd_en(T) 的数据 T+1 才回填预取槽,
+    // 若 T 拍末条件仍成立会再发一次 rd_en, 两个数据先后到达时回填分支
+    // 无条件覆盖 r_next, 第一个数据被静默丢弃 -> 吞吐恰好减半(v1 起的隐埋 bug,
+    // 板上实测 50.2% 与此完全吻合)。
     always @(posedge I_clk or negedge I_rst_n) begin
         if (!I_rst_n)
             r_pop <= 1'b0;
         else
-            r_pop <= (!r_next_v) && (!w_fifo_valid) && (!w_fifo_empty);
+            r_pop <= (!r_pop) && (!r_next_v) && (!w_fifo_valid) && (!w_fifo_empty);
     end
 
     always @(posedge I_clk or negedge I_rst_n) begin
