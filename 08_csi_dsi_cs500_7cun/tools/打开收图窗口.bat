@@ -1,8 +1,9 @@
 @echo off
 rem ============================================
-rem  Camera UDP Receiver Launcher (1280x720@20fps)
+rem  Camera UDP Receiver Launcher (1280x720@30fps)
 rem  Board: 192.168.1.66 -> PC 192.168.1.100 UDP 6000
 rem  Keys:  s = save frame   q / ESC = quit
+rem  GUI sliders apply automatically after 250ms (debounce)
 rem ============================================
 title Camera GUI - 1280x720@30fps
 cd /d "%~dp0"
