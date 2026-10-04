@@ -796,6 +796,31 @@ isp_top u_isp_top (
         .lock      ( S_gmii_lock  )
     );
 
+    // ---- DIAG: 行长监视(uial2axis 输出层), 经心跳包 scan word 上报 ----
+    // 每帧统计行长(拍)的 min/max, 编码为 (值-248) 的 4bit(248..263, F=饱和),
+    // scan_word = {8'b0, min_d, max_d}。行长应恒 256(=0x88 编码: 256-248=8)。
+    reg [8:0] r_line_beats, r_line_min, r_line_max;
+    wire [8:0] w_min_dev = r_line_min - 9'd248;
+    wire [8:0] w_max_dev = r_line_max - 9'd248;
+    wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
+    wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
+
+    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
+        if (!S_rst_n || S_raw_tuser) begin
+            r_line_beats <= 9'd0;
+            r_line_min   <= 9'd511;
+            r_line_max   <= 9'd0;
+        end else if (S_raw_tvalid) begin
+            if (S_raw_tlast) begin
+                r_line_beats <= 9'd0;
+                if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
+                if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
+            end else begin
+                r_line_beats <= r_line_beats + 9'd1;
+            end
+        end
+    end
+
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
     // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口
     // 模块, 字节展开在 GMII 125M 域完成; tuser 帧标记带内随数据流跨域。
@@ -822,7 +847,7 @@ isp_top u_isp_top (
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( 16'd0             ),
+        .i_scan_word    ( {8'b0, w_min_d, w_max_d} ),  // DIAG: 行长 min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
