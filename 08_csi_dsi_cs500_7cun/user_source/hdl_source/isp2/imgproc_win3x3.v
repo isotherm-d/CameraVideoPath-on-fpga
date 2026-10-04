@@ -136,8 +136,14 @@ module imgproc_win3x3 #(
                 r_y_d   <= r_y;
                 r_fs_d  <= i_frame_start;
 
-                /* 列/行计数（行满一帧回绕） */
-                if (r_x == IMG_W-1) begin
+                /* 列/行计数（行满一帧回绕）
+                 * v13e: 帧首像素标记拍强制对齐 r_x/r_y=0 —— 原自计数相位取决于
+                 * 上电后首个 valid 的随机时刻, 列相位随机偏移导致 demosaic 的
+                 * BGGR 平面错位(B 偏色)。语义: i_frame_start 与帧首 valid 同拍。 */
+                if (i_frame_start) begin
+                    r_x <= 11'd1;      // 本拍像素=列0, 下一拍列1
+                    r_y <= 11'd0;
+                end else if (r_x == IMG_W-1) begin
                     r_x <= 11'd0;
                     r_y <= (r_y == IMG_H-1) ? 11'd0 : (r_y + 11'd1);
                 end else begin

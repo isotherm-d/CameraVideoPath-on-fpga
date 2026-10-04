@@ -72,7 +72,12 @@ module cvp_demosaic #(
             r_col <= 11'd0;
             r_row <= 11'd0;
         end else if (w_win_valid) begin
-            if (r_col == IMG_W-1) begin
+            /* v13e: 帧首窗口(w_win_fs 与 w_win_valid 同拍)对齐中心像素行列 ——
+             * 原自计数相位随机, BGGR 相位假设与实际像素错位导致色平面偏色 */
+            if (w_win_fs) begin
+                r_col <= 11'd0;    // 本拍输出的窗口中心即帧首像素
+                r_row <= 11'd0;
+            end else if (r_col == IMG_W-1) begin
                 r_col <= 11'd0;
                 r_row <= (r_row == IMG_H-1) ? 11'd0 : (r_row + 11'd1);
             end else begin
