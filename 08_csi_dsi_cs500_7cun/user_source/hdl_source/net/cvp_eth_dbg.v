@@ -77,7 +77,7 @@ module cvp_eth_dbg #(
     localparam integer PXF_AW         = 11;   // 24bit x 2048 像素跨域 FIFO(≥2 行)
 
     // 帧内字节计数终点(每有效拍写 1 字节, 一帧 = IMG_W*IMG_H*3 字节)
-    localparam [20:0] PX_LAST = IMG_W * IMG_H * 3 - 1;
+    localparam [22:0] PX_LAST = IMG_W * IMG_H * 3 - 1;   // v15: 23bit(1080p 6220799 > 2^21)
 
     /* ---------------- 测试图案发生器（GEN_TESTPAT=1 时替代上游像素流） ----------------
      * 自由时序：每行 IMG_W/4 个 96bit 拍(4像素/拍) + 25 消隐拍；8 条等宽竖彩条。
@@ -164,7 +164,7 @@ module cvp_eth_dbg #(
      * 帧对齐: 输入 bit96=帧头标记。新拍首字节拍(sel0/bsel0)若标记=1 ->
      * r_px 清 0(本拍即帧 byte0), r_bsel/r_sel 已在切换点天然为 0,
      * 跳帧判定在此拍做。字节计数 PX_LAST 仍作兜底(丢数据时防卡死)。 */
-    reg  [20:0] r_px;        // 帧内字节计数(每展开拍 +1, 与原版语义一致: 不看 capture)
+    reg  [22:0] r_px;        // 帧内字节计数(每展开拍 +1, 与原版语义一致: 不看 capture)
     reg  [1:0]  r_bsel;      // 当前字节 0=R 1=G 2=B
     reg  [1:0]  r_sel;       // 当前像素 0..3 (像素序 [95:72] 最先)
     reg  [95:0] r_beat;      // 正在展开的 96bit 拍
@@ -236,7 +236,7 @@ module cvp_eth_dbg #(
 
     always @(posedge i_clk_gmii or negedge i_rst_gmii_n) begin
         if (!i_rst_gmii_n) begin
-            r_px          <= 21'd0;
+            r_px          <= 23'd0;
             r_bsel        <= 2'd0;
             r_sel         <= 2'd0;
             r_beat        <= 96'd0;
