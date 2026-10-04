@@ -78,7 +78,7 @@ always @(posedge I_clk or posedge I_rst) begin
 	if(I_rst) begin
 		r_button_0 <= 0; 
 		r_button_1 <= 0; 
-		r_ae_set <= 3000; 
+		r_ae_set <= 280; 
 		r_ag_set <= 80; 
 	end else begin
 	//	When button pressed, r_button_1 bit is 1. 
