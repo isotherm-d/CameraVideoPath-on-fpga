@@ -179,6 +179,14 @@
                     <Attr Name="CompileOrder" Val="65"/>
                 </FileInfo>
             </File>
+            <File Path="../user_source/hdl_source/isp2/wb_kelvin.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="90"/>
+                </FileInfo>
+            </File>
             <File Path="../user_source/hdl_source/isp2/ae_mux.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>

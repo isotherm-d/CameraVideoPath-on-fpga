@@ -73,6 +73,27 @@ class App:
                         command=self.send_swap).grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
 
+        ttk.Separator(panel).grid(row=row, column=0, columnspan=2, sticky="ew", pady=4)
+        row += 1
+        ttk.Label(panel, text="白平衡模式").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
+        row += 1
+        self.wb_var = tk.IntVar(value=1)   # 0=自动(cvp_awb) 1=色温 K
+        ttk.Radiobutton(panel, text="自动 (cvp_awb)", variable=self.wb_var, value=0,
+                        command=self.send_wb_mode).grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
+        row += 1
+        ttk.Radiobutton(panel, text="色温 K 值", variable=self.wb_var, value=1,
+                        command=self.send_kelvin).grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
+        row += 1
+        ttk.Label(panel, text="色温 (2500K..10000K)").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
+        row += 1
+        self.k_var = tk.IntVar(value=65)   # 单位 100K
+        ttk.Scale(panel, from_=25, to=100, variable=self.k_var, orient="horizontal", length=200,
+                  command=lambda v: self.debounced("kelvin", self.send_kelvin)).grid(
+            row=row, column=0, columnspan=2, padx=6, sticky="ew")
+        self.k_lbl = ttk.Label(panel, text="6500K")
+        self.k_lbl.grid(row=row + 1, column=0, columnspan=2, sticky="w", padx=6)
+        row += 3
+
         # ---- 状态栏 ----
         self.status = tk.Label(root, text="监听 6000...", anchor="w", fg="darkgreen", bg="#e8f5e9")
         self.status.grid(row=1, column=0, columnspan=2, sticky="ew")
@@ -179,6 +200,21 @@ class App:
 
     def send_swap(self):
         self._send(5, 1 if self.swap_var.get() else 0)
+
+    def send_wb_mode(self):
+        v = int(self.wb_var.get())
+        self._send(6, v)                      # 0=自动 AWB, 1=手动 K
+        if v == 0:
+            self._send(7, 65)                 # 恢复 6500K(LUT 归一, 不用时无害)
+        self.status.configure(text=f"白平衡模式 = {'自动' if v==0 else '色温 K'}", fg="darkblue")
+
+    def send_kelvin(self):
+        if int(self.wb_var.get()) != 1:
+            self.wb_var.set(1)
+            self.send_wb_mode()
+        k = int(self.k_var.get())
+        self._send(7, k)
+        self.k_lbl.configure(text=f"{k*100}K")
 
 
 def main():
