@@ -425,6 +425,23 @@ wire        S_isp_pix_valid;
 wire [23:0] S_isp_pix_rgb;
 wire        S_isp_pix_fs;
 
+// v13b: 组缓冲吸收 raw10 行突发(齿轮箱 4 拍/组跟不上背靠背突发, 实测丢 5/8)
+wire        S_gf_valid, S_gf_tuser, S_gf_tlast;
+wire [39:0] S_gf_data;
+
+group_fifo u_group_fifo (
+    .I_clk       ( S_csi_rx_clk ),
+    .I_rst_n     ( S_rst_n      ),
+    .I_wr_valid  ( S_raw_tvalid ),
+    .I_wr_data   ( S_raw_tdata  ),
+    .I_wr_tuser  ( S_raw_tuser  ),
+    .I_wr_tlast  ( S_raw_tlast  ),
+    .O_rd_valid  ( S_gf_valid   ),
+    .O_rd_data   ( S_gf_data    ),
+    .O_rd_tuser  ( S_gf_tuser   ),
+    .O_rd_tlast  ( S_gf_tlast   )
+);
+
 cvp_proc #(
     .IMG_W  ( 1024 ),
     .IMG_H  (  600 )
@@ -433,10 +450,10 @@ cvp_proc #(
     .i_rst_n            ( S_rst_n      ),
     .i_mode             ( 3'd0         ),   // 0=彩色直通(像素级算法不用)
 
-    .i_grp_valid        ( S_raw_tvalid ),
-    .i_grp_data         ( S_raw_tdata  ),
-    .i_grp_frame_start  ( S_raw_tuser  ),
-    .i_grp_line_last    ( S_raw_tlast  ),
+    .i_grp_valid        ( S_gf_valid   ),
+    .i_grp_data         ( S_gf_data    ),
+    .i_grp_frame_start  ( S_gf_tuser   ),
+    .i_grp_line_last    ( S_gf_tlast   ),
 
     .o_pix_valid        ( S_isp_pix_valid ),
     .o_pix_rgb          ( S_isp_pix_rgb   ),
