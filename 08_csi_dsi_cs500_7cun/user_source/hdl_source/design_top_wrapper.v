@@ -527,6 +527,7 @@ cvp_awb #(
     .i_valid        ( S_isp_pix_valid ),
     .i_rgb          ( S_isp_pix_rgb   ),
     .i_frame_start  ( S_isp_pix_fs    ),
+    .i_awb_en       ( S_cmd_awb_en    ),   // v21: 网络命令控制 AWB 冻结
     .o_valid        ( S_awb1_valid    ),
     .o_rgb          ( S_awb1_rgb      ),
     .o_frame_start  ( S_awb1_fs       )

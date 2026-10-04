@@ -57,7 +57,6 @@ module cvp_proc #(
     output wire [19:0]  o_ae_exp,
     output wire [15:0]  o_ae_gain,
     output wire         o_ae_locked,
-    input  wire         i_awb_en,             // v21: 0=AWB 冻结(手动白平衡), 1=自动(网络命令控制)
     output wire [10:0]  o_ae_dbg              // v19e: {状态机[2:0], eq_q8 高 8 位}
 );
 
@@ -112,7 +111,6 @@ module cvp_proc #(
         .i_valid       (w_pix_step),
         .i_raw         (w_pix_sel),
         .i_frame_start (w_pix_fs),
-        .i_awb_en      (i_awb_en),
         .o_valid       (w_dpc_valid),
         .o_raw         (w_dpc_raw),
         .o_frame_start (w_dpc_fs)
