@@ -242,7 +242,9 @@ module cvp_eth_dbg #(
             else if (q_take)
                 q_cnt <= q_cnt - 5'd1;             // 仅出队
 
-            if (w_pxf_valid && !q_take)
+            /* 入队写: 无条件(一进一出拍也必须写!)。队尾 = 旧rp+旧cnt,
+             * 与同拍出队(rp 推进)不冲突 —— 丢写会使队列内容错乱(图像随机错位) */
+            if (w_pxf_valid)
                 q_mem[(q_rp[3:0] + q_cnt[3:0]) & 4'hF] <= w_pxf_data;
             if (q_take)
                 q_rp <= q_rp + 4'd1;
