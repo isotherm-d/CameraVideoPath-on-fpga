@@ -362,7 +362,8 @@ raw10_unpacket_2lane u_raw10_unpacket (
 //将数据转为stream流
 uial2axis #(
 .IMG_WIDTH(1280),
-.IMG_HEIGHT(720),
+.IMG_HEIGHT(727),   // v18c: 传感器采窗 727 行(输出 1280x720 为 crop 模式行数) —— tuser 必须按真实行数对齐,
+                    // 设 720 会使帧头早 7 行 -> 底部行绕到顶部(line_retimer 取错窗口)
 .INPUT_DATA_WIDTH(40)
 ) 
 u_uial2axis (
