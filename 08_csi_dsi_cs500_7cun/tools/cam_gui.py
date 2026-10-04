@@ -203,16 +203,16 @@ class App:
 
     def send_wb_mode(self):
         v = int(self.wb_var.get())
-        self._send(6, v)                      # 0=自动 AWB, 1=手动 K
-        if v == 0:
-            self._send(7, 65)                 # 恢复 6500K(LUT 归一, 不用时无害)
+        # 语义换算: 板上 cmd6=1 为自动 AWB 使能, 0=冻结(手动 K)。GUI wb_var 0=自动 1=手动 K
+        self._send(6, 0 if v else 1)
+        if v == 1:
+            self._send(7, int(self.k_var.get()))   # K 模式: 立即带上色温值
         self.status.configure(text=f"白平衡模式 = {'自动' if v==0 else '色温 K'}", fg="darkblue")
 
     def send_kelvin(self):
-        # 总是同时发模式切换 + K 值: 板上 cmd6 复位为自动 AWB,
-        # 若只发 K 值会被自动增益覆盖(拖动无反应的根因)
+        # 总是同时发模式切换(冻结自动 AWB) + K 值
         self.wb_var.set(1)
-        self._send(6, 1)
+        self._send(6, 0)                      # 板值 0 = 冻结自动 AWB(手动 K)
         k = int(self.k_var.get())
         self._send(7, k)
         self.k_lbl.configure(text=f"{k*100}K")
