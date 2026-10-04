@@ -435,7 +435,7 @@ line_retimer #(
     .O_tuser  ( S_raw_tuser  ),
     .O_tvalid ( S_raw_tvalid ),
     .O_tlast  ( S_raw_tlast  ),
-    .O_tdata  ( S_raw_tdata  ),
+    .O_tdata  ( S_raw_tdata  )
 );
 
 
