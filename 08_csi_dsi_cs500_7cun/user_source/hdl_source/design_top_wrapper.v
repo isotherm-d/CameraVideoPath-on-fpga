@@ -834,6 +834,14 @@ isp_top u_isp_top (
             end
         end
     end
+    reg [7:0] r_last_fb;      // 上帧拍数 mod 256(tuser 拍锁存)
+    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
+        if (!S_rst_n)
+            r_last_fb <= 8'h00;
+        else if (S_axis_tuser)
+            r_last_fb <= r_frame_beats[7:0];   // 新帧首锁存上一帧的计数
+    end
+
     // 帧拍数偏差标志(期望153600): bit4=曾<153600, bit5=曾>153600
     wire w_fb_lt = (r_frame_beats > 32'd1000) && (r_frame_beats < 32'd153600);
     wire w_fb_gt = (r_frame_beats > 32'd153600) && (r_frame_beats < 32'd200000);
@@ -863,7 +871,7 @@ isp_top u_isp_top (
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( {8'b0, w_min_d, w_max_d} ),  // DIAG: 行长 min/max 偏差(248基)
+        .i_scan_word    ( {8'b0, r_last_fb[7:0]} ),   // DIAG: 上帧 S_axis 拍数 mod 256(0=153600正常, k=偏差)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
