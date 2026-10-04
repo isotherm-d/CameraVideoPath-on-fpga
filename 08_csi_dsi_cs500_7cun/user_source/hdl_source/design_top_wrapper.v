@@ -69,6 +69,7 @@ module design_top_wrapper (
     wire        S_cvp_ae_req;
     wire [19:0] S_cvp_ae_exp;
     wire [15:0] S_cvp_ae_gain;
+    wire [10:0] S_cvp_ae_dbg;
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -496,7 +497,8 @@ cvp_proc #(
     .o_ae_req           ( S_cvp_ae_req  ),
     .o_ae_exp           ( S_cvp_ae_exp  ),
     .o_ae_gain          ( S_cvp_ae_gain ),
-    .o_ae_locked        (                  )
+    .o_ae_locked        (                  ),
+    .o_ae_dbg           ( S_cvp_ae_dbg  )
 );
 
 wire        S_awb1_valid;
@@ -1016,7 +1018,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( {5'b0, r_tu_cnt[5:0], 1'b0, uial2axis_img_h} ),  // DIAG: [10:0]=uial2axis IMG_HEIGHT 参数值(720旧/727新), [5:0]=tuser计数低位  // DIAG: raw10 层段长(行) min/max 偏差(248基)
+        .i_scan_word    ( S_cvp_ae_dbg ),  // DIAG: [10:8]=AE状态机, [7:0]=eq_q8 高 8 位  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),

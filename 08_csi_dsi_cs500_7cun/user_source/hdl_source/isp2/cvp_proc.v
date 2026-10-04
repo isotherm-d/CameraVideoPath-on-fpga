@@ -56,7 +56,8 @@ module cvp_proc #(
     output wire         o_ae_req,
     output wire [19:0]  o_ae_exp,
     output wire [15:0]  o_ae_gain,
-    output wire         o_ae_locked
+    output wire         o_ae_locked,
+    output wire [10:0]  o_ae_dbg              // v19e: {状态机[2:0], eq_q8 高 8 位}
 );
 
     /* ================= 1. 齿轮箱：4 像素/拍 → 1 像素/拍 ================= */
@@ -115,6 +116,7 @@ module cvp_proc #(
         .o_frame_start (w_dpc_fs)
     );
 
+    wire [10:0] o_ae_dbg;
     /* ================= 2b. 自动曝光：RAW 域统计 + 帧尾控制律（并联只读，不占像素通路） ================= */
     cvp_ae #(
         .IMG_W (IMG_W),
@@ -130,7 +132,8 @@ module cvp_proc #(
         .o_req         (o_ae_req),
         .o_exp         (o_ae_exp),
         .o_gain        (o_ae_gain),
-        .o_locked      (o_ae_locked)
+        .o_locked      (o_ae_locked),
+        .o_dbg         (o_ae_dbg)
     );
 
     /* ================= 3. 彩色重建：3x3 双线性（BGGR） ================= */
