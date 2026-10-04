@@ -1054,9 +1054,9 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_gain_b      ( S_cmd_gb           ),
         .o_swap        ( S_cmd_swap         ),
         .o_awb_en      ( S_cmd_awb_en       ),
-        .o_kelvin      ( S_cmd_kelvin       )
-    ),
-        .o_evt_cnt     ( S_cmd_cnt          );
+        .o_kelvin      ( S_cmd_kelvin       ),
+        .o_evt_cnt     ( S_cmd_cnt          )
+    );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
     // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口
