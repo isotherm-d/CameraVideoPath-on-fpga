@@ -900,6 +900,23 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
     wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
 
+    // v18d DIAG: S_axis 层 tuser 间隔探针(量化真实帧结构: 期望间隔 = 727 行 x 320 拍 = 232640 拍)
+    reg [12:0] r_tu_gap;
+    reg [23:0] r_tu_cnt;
+    reg [12:0] r_tu_gap_lat;
+    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
+        if (!S_rst_n) begin
+            r_tu_gap <= 0; r_tu_cnt <= 0; r_tu_gap_lat <= 0;
+        end else begin
+            if (S_axis_tuser && S_axis_tvalid) begin
+                r_tu_gap_lat <= r_tu_gap;
+                r_tu_gap <= 0;
+                r_tu_cnt <= r_tu_cnt + 1;
+            end else if (S_axis_tvalid)
+                r_tu_gap <= r_tu_gap + 1;
+        end
+    end
+
     // v11i: 监视 raw10 解包层(S_raw10_valid)的连续 valid 段长(段=行, 不依赖 tlast)。
     // uial2axis 层行长/帧拍数已证恒定, 但图像内容逐行滑 1 拍 => 杂散拍在更上游。
     // scan 编码: [11:8]=min偏差(248基), [3:0]=max偏差。
@@ -968,7 +985,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( {8'b0, w_min_d, w_max_d} ),  // DIAG: raw10 层段长(行) min/max 偏差(248基)
+        .i_scan_word    ( {3'b000, r_tu_gap_lat} ),  // DIAG: tuser 间隔样本(拍)  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
