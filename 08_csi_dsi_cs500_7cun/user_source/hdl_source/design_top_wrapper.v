@@ -488,13 +488,33 @@ cvp_awb #(
     .o_frame_start  ( S_awb1_fs       )
 );
 
+// v14: 颜色标定级(Q8 增益 + R/B 交换, 标定流程见 color_correct.v 头注释)
+wire        S_cc_valid, S_cc_fs;
+wire [23:0] S_cc_rgb;
+
+color_correct #(
+    .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
+    .GAIN_R  ( 9'd256 ),   // 标定: Q8(256=1.0x)
+    .GAIN_G  ( 9'd256 ),
+    .GAIN_B  ( 9'd256 )
+) u_color_correct (
+    .I_clk         ( S_100m_clk    ),
+    .I_rst_n       ( S_rst_n       ),
+    .I_valid       ( S_awb1_valid  ),
+    .I_rgb         ( S_awb1_rgb    ),
+    .I_frame_start ( S_awb1_fs     ),
+    .O_valid       ( S_cc_valid    ),
+    .O_rgb         ( S_cc_rgb      ),
+    .O_frame_start ( S_cc_fs       )
+);
+
 // 1像素/拍 -> 96bit 组(4像素), 驱动网口观测口语义信号 S_awb_*
 pack_4 u_pack4 (
     .I_clk         ( S_100m_clk   ),
     .I_rst_n       ( S_rst_n      ),
-    .I_valid       ( S_awb1_valid ),
-    .I_rgb         ( S_awb1_rgb   ),
-    .I_frame_start ( S_awb1_fs    ),
+    .I_valid       ( S_cc_valid   ),
+    .I_rgb         ( S_cc_rgb     ),
+    .I_frame_start ( S_cc_fs      ),
     .O_tvalid      ( S_awb_tvalid ),
     .O_tdata       ( S_awb_tdata  ),
     .O_tuser       ( S_awb_tuser  )
