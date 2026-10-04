@@ -360,7 +360,7 @@ raw10_unpacket_2lane u_raw10_unpacket (
 //将数据转为stream流
 uial2axis #(
 .IMG_WIDTH(1280),
-.IMG_HEIGHT(727),   // v18c: 传感器采窗 727 行 —— tuser 必须按真实行数对齐
+.IMG_HEIGHT(720),   // v22b: 传感器 MIPI 实发 720 行数据(CAM p/f/320=720 精确) —— 727 为采窗行数但含 7 行不输出, tuser 按 727 计数导致每帧漂 7 行(1.7s 漂半帧=上下互换)
                     // 设 720 会使帧头早 7 行 -> 底部行绕到顶部(line_retimer 取错窗口)
 .INPUT_DATA_WIDTH(40)
 ) 
