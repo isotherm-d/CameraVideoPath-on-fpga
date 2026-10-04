@@ -33,21 +33,34 @@ module ae_mux (
     // cvp_ae 的 o_req 是 100M 电平(保持约一帧 33ms), 打两拍进 24M 域时
     // 由 uicfgcs500 电平采样即可; 这里在 100M 侧把电平收窄为单帧一次事件
     // 已由 cvp_ae 内部保证(帧尾一次), 直接寄存转发。
-    reg r_auto_req_d;
+    /* req 脉冲化: cvp_ae 的 o_req 是"保持到下一帧首"的长电平, 而 uicfgcs500
+     * 的写表状态机要求 I_ae_req 为短脉冲(电平持续高会持续清 reg_index,
+     * AE 表永远写不进 -> 曝光不变)。边沿检测 + 展宽 1ms(24M 采样域可靠)。 */
+    reg        r_auto_d1, r_auto_d2;
+    reg [16:0] r_pulse;
     always @(posedge I_clk or negedge I_rst_n) begin
         if (!I_rst_n) begin
             O_ae_req <= 1'b0;
             O_ae     <= 16'd1400;   // 默认值与 ae_set 一致语义(720p30, 700 行)
             O_ag     <= 16'd80;     // 增益档 80(表索引 64 = 0x0F20 = 4.0x)
-            r_auto_req_d <= 1'b0;
+            r_auto_d1 <= 1'b0;
+            r_auto_d2 <= 1'b0;
+            r_pulse   <= 17'd0;
         end else begin
-            r_auto_req_d <= I_auto_req;
+            r_auto_d1 <= I_auto_req;
+            r_auto_d2 <= r_auto_d1;
+
             if (I_mode_auto) begin
-                O_ae     <= w_auto_ae;
-                O_ag     <= I_auto_gain;
-                // req 边沿检测: 自动值更新时产生一次请求(电平跨域, 保持一帧)
-                O_ae_req <= I_auto_req;
+                O_ae <= w_auto_ae;
+                O_ag <= I_auto_gain;
+                // 上升沿检测: cvp_ae 每帧算完拉高一次
+                if (r_auto_d1 && !r_auto_d2)
+                    r_pulse <= 17'd100000;            // 1ms @100M
+                else if (r_pulse != 17'd0)
+                    r_pulse <= r_pulse - 17'd1;
+                O_ae_req <= (r_pulse != 17'd0);
             end else begin
+                r_pulse <= 17'd0;
                 O_ae     <= I_man_ae;
                 O_ag     <= I_man_ag;
                 O_ae_req <= I_man_req;
