@@ -113,9 +113,13 @@ module cvp_ae #(
         .i_start(w_d1_start), .i_num(w_num1), .i_den({18'd0, N_PIX[19:0]}),
         .o_q(w_mean_q8), .o_done(w_d1_done)
     );
+    // v21d: 分母下限钳位 —— 暗场景 mean_q8 -> 0 时除法商爆炸溢出 16bit,
+    // 曝光码回卷成垃圾 -> 帧率/亮度乱跳(实测暗环境 1fps+全黑)。
+    // 钳下限 2000 => eq_new 最大 eq x 61, 后级 EQ_MAX=256 半行正常钳位。
+    wire [17:0] w_mean_q8_safe = (w_mean_q8 < 18'd2000) ? 18'd2000 : w_mean_q8;
     cvp_ae_div #(.NUM_W(34), .QW(0), .OW(16)) u_div_eq (
         .i_clk(i_clk), .i_rst_n(i_rst_n),
-        .i_start(w_d2_start), .i_num(w_num2), .i_den({16'd0, w_mean_q8}),
+        .i_start(w_d2_start), .i_num(w_num2), .i_den({2'd0, w_mean_q8_safe}),
         .o_q(w_eq_new), .o_done(w_d2_done)
     );
 
