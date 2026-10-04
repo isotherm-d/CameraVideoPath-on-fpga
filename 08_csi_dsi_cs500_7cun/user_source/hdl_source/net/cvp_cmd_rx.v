@@ -48,11 +48,11 @@ module cvp_cmd_rx (
     /* ================= 1. IDDR: RGMII DDR 采样 ================= */
     wire q0_d0, q1_d0, q0_d1, q1_d1, q0_d2, q1_d2, q0_d3, q1_d3, q0_c, q1_c;
 
-    PH1P_LOGIC_IDDR u_idd0 (.clk(I_rxclk), .d(I_rxd[0]), .q0(q0_d0), .q1(q1_d0), .rst(!I_rst_n_rx));
-    PH1P_LOGIC_IDDR u_idd1 (.clk(I_rxclk), .d(I_rxd[1]), .q0(q0_d1), .q1(q1_d1), .rst(!I_rst_n_rx));
-    PH1P_LOGIC_IDDR u_idd2 (.clk(I_rxclk), .d(I_rxd[2]), .q0(q0_d2), .q1(q1_d2), .rst(!I_rst_n_rx));
-    PH1P_LOGIC_IDDR u_idd3 (.clk(I_rxclk), .d(I_rxd[3]), .q0(q0_d3), .q1(q1_d3), .rst(!I_rst_n_rx));
-    PH1P_LOGIC_IDDR u_iddc (.clk(I_rxclk), .d(I_rxctl), .q0(q0_c),  .q1(q1_c),  .rst(!I_rst_n_rx));
+    PH1P_LOGIC_HD_IDDR #(.MODE("OPPOSITE_EDGE")) u_idd0 (.clk(I_rxclk), .d(I_rxd[0]), .q0(q0_d0), .q1(q1_d0), .rst(!I_rst_n_rx));
+    PH1P_LOGIC_HD_IDDR #(.MODE("OPPOSITE_EDGE")) u_idd1 (.clk(I_rxclk), .d(I_rxd[1]), .q0(q0_d1), .q1(q1_d1), .rst(!I_rst_n_rx));
+    PH1P_LOGIC_HD_IDDR #(.MODE("OPPOSITE_EDGE")) u_idd2 (.clk(I_rxclk), .d(I_rxd[2]), .q0(q0_d2), .q1(q1_d2), .rst(!I_rst_n_rx));
+    PH1P_LOGIC_HD_IDDR #(.MODE("OPPOSITE_EDGE")) u_idd3 (.clk(I_rxclk), .d(I_rxd[3]), .q0(q0_d3), .q1(q1_d3), .rst(!I_rst_n_rx));
+    PH1P_LOGIC_HD_IDDR #(.MODE("OPPOSITE_EDGE")) u_iddc (.clk(I_rxclk), .d(I_rxctl), .q0(q0_c),  .q1(q1_c),  .rst(!I_rst_n_rx));
 
     // 字节组装: RGMII 每拍 1 字节 —— RXD[x] posedge 位=字节 bit[x](低 nibble),
     // negedge 位=字节 bit[x+4](高 nibble)。
