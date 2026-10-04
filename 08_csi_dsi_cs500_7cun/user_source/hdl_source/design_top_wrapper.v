@@ -467,26 +467,8 @@ cvp_proc #(
     .o_ag               ( S_ag            )
 );
 
-wire        S_awb1_valid;
-wire        S_awb1_fs;
-wire [23:0] S_awb1_rgb;
-
-cvp_awb #(
-    .IMG_W  ( 1280 ),
-    .IMG_H  (  720 )
-) u_cvp_awb (
-    .i_clk          ( S_100m_clk      ),
-    .i_rst_n        ( S_rst_n         ),
-    .i_valid        ( S_isp_pix_valid ),
-    .i_rgb          ( S_isp_pix_rgb   ),
-    .i_frame_start  ( S_isp_pix_fs    ),
-    .i_awb_en       ( S_cmd_awb_en    ),   // v21: 网络命令控制 AWB 冻结
-    .o_valid        ( S_awb1_valid    ),
-    .o_rgb          ( S_awb1_rgb      ),
-    .o_frame_start  ( S_awb1_fs       )
-);
-
-// v18(720p): 颜色标定级(Q8 增益 + R/B 交换, 标定流程见 color_correct.v 头注释)
+// v22: cvp_awb(自动白平衡)摘除 —— 白平衡 = color_correct 参数化增益
+// (网络命令运行时覆盖 + 编译期标定默认), 自动白平衡不再使用。
 wire        S_cc_valid, S_cc_fs;
 wire [23:0] S_cc_rgb;
 
@@ -518,9 +500,9 @@ color_correct #(
 ) u_color_correct (
     .I_clk         ( S_100m_clk    ),
     .I_rst_n       ( S_rst_n       ),
-    .I_valid       ( S_awb1_valid  ),
-    .I_rgb         ( S_awb1_rgb    ),
-    .I_frame_start ( S_awb1_fs     ),
+    .I_valid       ( S_isp_pix_valid ),
+    .I_rgb         ( S_isp_pix_rgb   ),
+    .I_frame_start ( S_isp_pix_fs    ),
     .I_gain_r_rt   ( S_cc_gain_r   ),
     .I_gain_g_rt   ( S_cc_gain_g   ),
     .I_gain_b_rt   ( S_cc_gain_b   ),
