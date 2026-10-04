@@ -432,7 +432,10 @@ isp_top u_isp_top (
 .I_tready        (),
 	.O_awb_tdata     (S_awb_tdata ),
 	.O_awb_tuser     (S_awb_tuser ),
-	.O_awb_tvalid    (S_awb_tvalid)
+	.O_awb_tvalid    (S_awb_tvalid),
+	.O_dm_tdata      (S_dm_tdata  ),
+	.O_dm_tuser      (S_dm_tuser  ),
+	.O_dm_tvalid     (S_dm_tvalid )
   );
 
 
