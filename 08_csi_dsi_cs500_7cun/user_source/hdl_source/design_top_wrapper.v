@@ -804,7 +804,8 @@ isp_top u_isp_top (
         .IMG_H       ( 600       ),
         .FRAME_SKIP  ( 1         ),
         .DATA_BYTES  ( 1440      ),
-        .GEN_TESTPAT ( 0         ),
+        .GEN_TESTPAT ( 1         ),   // DIAG: 彩条分诊(eth_dbg 内部产生, 不经 ISP/FIFO写侧),
+                                       //       彩条边界笔直=网口通路正确; 斜=通路bug。验完改回 0
         .PHY_ADDR    ( 5'd1      )
     ) u_eth_dbg (
         .i_clk_pix      ( S_csi_rx_clk      ),
