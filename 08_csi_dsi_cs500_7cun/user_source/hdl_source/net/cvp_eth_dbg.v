@@ -145,10 +145,25 @@ module cvp_eth_dbg #(
         .rd_flush (1'b0)
     );
 
-    /* ---------------- GMII 域：3 拍/像素字节展开 + 帧计数 + 信用 + 跳帧 ----------------
-     * 流水: bsel=0 写R(装载拍用 rd 数据) → bsel=1 写G(发 rd_en 预取) →
-     *       bsel=2 写B(锁存下一像素) → 无气泡 3 拍/像素。
-     * 帧边界: r_px 数满 IMG_W*IMG_H*3 字节; 帧尾为下一帧判定 r_capture(水位)。 */
+    /* ---------------- GMII 域：本地预取队列 + 3 拍/像素字节展开 ----------------
+     * v7 教训: 直接对 24bit 异步 FIFO 做"每 3 拍读 1 次"的间歇读, 会被其 Gray
+     * 指针保守空判决(滞后 2 拍)节流到 ~50%, FIFO 渐满随机丢像素(错位恶化)。
+     * 修复: 读侧加 16 深寄存器组预取队列 —— 对异步 FIFO 改为"队列未满且非空
+     * 就连续读"的突发模式(追空边界每 16+ 拍才出现一次, 保守判决损耗 <6%),
+     * 展开器从队列组合取数(寄存器组当拍可读, 无延迟)。 */
+
+    // ---- 16 x 24bit 预取队列(寄存器组, 组合读) ----
+    reg  [23:0] q_mem [0:15];
+    reg  [4:0]  q_cnt;                        // 0..16
+    reg  [3:0]  q_rp;
+    wire        q_full = (q_cnt == 5'd16);
+    wire        q_has  = (q_cnt != 5'd0);
+    wire [23:0] q_head = q_mem[q_rp];
+
+    // 连续读: 队列有空间且 FIFO 非空(读到的数据下一拍入队)
+    assign w_pxf_rd = (!q_full) && (!w_pxf_empty);
+
+    // ---- 字节展开器(输入改为队列) ----
     reg  [20:0] r_px;        // 帧内字节计数(每展开拍 +1, 与原版语义一致: 不看 capture)
     reg  [1:0]  r_bsel;      // 当前字节 0=R 1=G 2=B
     reg  [23:0] r_pix;       // 正在展开的像素
@@ -163,14 +178,12 @@ module cvp_eth_dbg #(
     wire        w_rd_en, w_rd_valid, w_rd_empty;   // 8bit FIFO 读侧(由 MAC 驱动)
     wire [7:0]  w_rd_data;
 
-    // 取新像素: 装载态常取; 展开中在 bsel=1 拍预取(bsel=2 拍锁存)
-    assign w_pxf_rd = (!w_pxf_empty) && ( (!r_run) || (r_bsel == 2'd1) );
-
-    // 本拍有字节活动: 展开中, 或装载拍(数据已到)
-    wire w_load    = (!r_run) && w_pxf_valid;          // 装载拍: 该拍即写 byte0
+    // 开始新像素的拍 = 装载拍 或 bsel==2 切换拍(队列有货)
+    wire w_load    = (!r_run) && q_has;
     wire w_adv     = r_run || w_load;
-    // 当前像素: 装载拍用 FIFO 读出数据, 其余拍用锁存值
-    wire [23:0] w_cur = w_load ? w_pxf_data : r_pix;
+    wire q_take    = w_load || (r_run && (r_bsel == 2'd2) && q_has);
+
+    wire [23:0] w_cur = w_load ? q_head : r_pix;
     wire [7:0]  w_byte = (r_bsel == 2'd0) ? w_cur[23:16] :
                          (r_bsel == 2'd1) ? w_cur[15:8]  :
                                             w_cur[7:0];
@@ -218,39 +231,56 @@ module cvp_eth_dbg #(
             r_credit_bin  <= 7'd0;
             r_skip        <= 4'd0;
             r_capture     <= 1'b0;
-        end else if (w_adv) begin
-            /* 字节相位推进: 每展开拍轮转(含帧尾拍; 帧字节预算是 3 的倍数,
-             * 帧尾恰好停在 B(bsel=2), 推进到 0=下一像素 R, 跨帧天然对齐,
-             * 不清 r_bsel/r_run —— 否则帧边界丢 1 个已预取像素致撕裂) */
-            r_bsel <= (r_bsel == 2'd2) ? 2'd0 : r_bsel + 2'd1;
+            q_cnt         <= 5'd0;
+            q_rp          <= 4'd0;
+        end else begin
+            /* ---- 预取队列: 异步 FIFO 数据(下一拍到)入队尾, 展开器从队头取 ---- */
+            if (w_pxf_valid && q_take)
+                q_cnt <= q_cnt;                    // 同拍一进一出, 计数不变
+            else if (w_pxf_valid)
+                q_cnt <= q_cnt + 5'd1;             // 仅入队
+            else if (q_take)
+                q_cnt <= q_cnt - 5'd1;             // 仅出队
 
-            /* 像素锁存/展开状态 */
-            if (w_load) begin
-                r_pix <= w_pxf_data;               // 装载新像素
-                r_run <= 1'b1;
-            end else if (r_bsel == 2'd2) begin
-                if (w_pxf_valid)
-                    r_pix <= w_pxf_data;           // 无气泡切换下一像素
-                else
-                    r_run <= 1'b0;                 // 供数中断, 回装载态
-            end
+            if (w_pxf_valid && !q_take)
+                q_mem[(q_rp[3:0] + q_cnt[3:0]) & 4'hF] <= w_pxf_data;
+            if (q_take)
+                q_rp <= q_rp + 4'd1;
 
-            /* 帧内字节计数(不看 capture, 与原版语义一致) */
-            if (w_frame_last) begin
-                r_px      <= 21'd0;
-                r_skip    <= (r_skip == FRAME_SKIP - 1) ? 4'd0 : r_skip + 4'd1;
-                r_capture <= (r_skip == 4'd0) &&
-                             (w_bf_level < (1 << FIFO_AW >> 1));
-            end else begin
-                r_px <= r_px + 21'd1;
-            end
+            if (w_adv) begin
+                /* 字节相位推进: 每展开拍轮转(含帧尾拍; 帧字节预算是 3 的倍数,
+                 * 帧尾恰好停在 B(bsel=2), 推进到 0=下一像素 R, 跨帧天然对齐,
+                 * 不清 r_bsel/r_run —— 否则帧边界丢 1 个已预取像素致撕裂) */
+                r_bsel <= (r_bsel == 2'd2) ? 2'd0 : r_bsel + 2'd1;
 
-            /* 整块信用: 每写满 DATA_BYTES 字节记一次 */
-            if (w_chunk_done) begin
-                r_burst      <= 11'd0;
-                r_credit_bin <= r_credit_bin + 7'd1;
-            end else if (w_write) begin
-                r_burst <= r_burst + 11'd1;
+                /* 像素锁存/展开状态 */
+                if (w_load) begin
+                    r_pix <= q_head;               // 装载新像素
+                    r_run <= 1'b1;
+                end else if (r_bsel == 2'd2) begin
+                    if (q_has)
+                        r_pix <= q_head;           // 无气泡切换下一像素
+                    else
+                        r_run <= 1'b0;             // 供数中断, 回装载态
+                end
+
+                /* 帧内字节计数(不看 capture, 与原版语义一致) */
+                if (w_frame_last) begin
+                    r_px      <= 21'd0;
+                    r_skip    <= (r_skip == FRAME_SKIP - 1) ? 4'd0 : r_skip + 4'd1;
+                    r_capture <= (r_skip == 4'd0) &&
+                                 (w_bf_level < (1 << FIFO_AW >> 1));
+                end else begin
+                    r_px <= r_px + 21'd1;
+                end
+
+                /* 整块信用: 每写满 DATA_BYTES 字节记一次 */
+                if (w_chunk_done) begin
+                    r_burst      <= 11'd0;
+                    r_credit_bin <= r_credit_bin + 7'd1;
+                end else if (w_write) begin
+                    r_burst <= r_burst + 11'd1;
+                end
             end
         end
     end
