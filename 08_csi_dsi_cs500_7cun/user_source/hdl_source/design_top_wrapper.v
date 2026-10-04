@@ -229,8 +229,6 @@ module design_top_wrapper (
             if (S_net_pix_valid) r_net_diag[2] <= 1'b1;
             if (S_net_pix_valid && (S_net_pix_rgb != 24'd0))
                 r_net_diag[3] <= 1'b1;
-            if (w_fb_lt)         r_net_diag[4] <= 1'b1;   // v11g: 帧拍数曾 <153600
-            if (w_fb_gt)         r_net_diag[5] <= 1'b1;   // v11g: 帧拍数曾 >153600
         end
     end
 
@@ -403,7 +401,7 @@ raw10_unpacket_2lane u_raw10_unpacket (
 //将数据转为stream流
 uial2axis #(
 .IMG_WIDTH(1280),
-.IMG_HEIGHT(uial2axis_img_h),   // v18c: 传感器采窗 727 行(输出 1280x720 为 crop 模式行数) —— tuser 必须按真实行数对齐,
+.IMG_HEIGHT(727),   // v18c: 传感器采窗 727 行 —— tuser 必须按真实行数对齐
                     // 设 720 会使帧头早 7 行 -> 底部行绕到顶部(line_retimer 取错窗口)
 .INPUT_DATA_WIDTH(40)
 ) 
@@ -958,78 +956,6 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .lock      ( S_gmii_lock  )
     );
 
-    // ---- DIAG: 行长监视(uial2axis 输出层), 经心跳包 scan word 上报 ----
-    // 每帧统计行长(拍)的 min/max, 编码为 (值-248) 的 4bit(248..263, F=饱和),
-    // scan_word = {8'b0, min_d, max_d}。行长应恒 256(=0x88 编码: 256-248=8)。
-    reg [8:0] r_line_beats, r_line_min, r_line_max;
-    wire [8:0] w_min_dev = r_line_min - 9'd248;
-    wire [8:0] w_max_dev = r_line_max - 9'd248;
-    wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
-    wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
-
-    // v18e: uial2axis IMG_HEIGHT 参数指纹(11bit 心跳直读, 烧没烧对一目了然)
-    localparam [10:0] uial2axis_img_h = 11'd727;
-
-    // v18d DIAG: S_axis 层 tuser 间隔探针(量化真实帧结构: 期望间隔 = 727 行 x 320 拍 = 232640 拍)
-    reg [12:0] r_tu_gap;
-    reg [23:0] r_tu_cnt;
-    reg [12:0] r_tu_gap_lat;
-    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
-        if (!S_rst_n) begin
-            r_tu_gap <= 0; r_tu_cnt <= 0; r_tu_gap_lat <= 0;
-        end else begin
-            if (S_axis_tuser && S_axis_tvalid) begin
-                r_tu_gap_lat <= r_tu_gap;
-                r_tu_gap <= 0;
-                r_tu_cnt <= r_tu_cnt + 1;
-            end else if (S_axis_tvalid)
-                r_tu_gap <= r_tu_gap + 1;
-        end
-    end
-
-    // v11i: 监视 raw10 解包层(S_raw10_valid)的连续 valid 段长(段=行, 不依赖 tlast)。
-    // uial2axis 层行长/帧拍数已证恒定, 但图像内容逐行滑 1 拍 => 杂散拍在更上游。
-    // scan 编码: [11:8]=min偏差(248基), [3:0]=max偏差。
-    reg [31:0] r_frame_beats;   // 帧内总拍数(tuser 间隔), 借 flags 观测
-    reg        r_rl_v_d;        // 上一拍 valid(段边界检测)
-    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
-        if (!S_rst_n) begin
-            r_line_beats <= 9'd0;
-            r_line_min   <= 9'd511;
-            r_line_max   <= 9'd0;
-            r_frame_beats<= 32'd0;
-            r_rl_v_d     <= 1'b0;
-        end else begin
-            r_rl_v_d <= S_raw10_valid;
-            if (S_raw10_frame_start) r_frame_beats <= 32'd1;
-            else if (S_raw10_valid) r_frame_beats <= r_frame_beats + 32'd1;
-
-            if (S_raw10_valid) begin
-                if (!r_rl_v_d) begin
-                    // 段首: 结算上一段(如果够长, 排除杂散短段)
-                    if (r_line_beats >= 9'd100) begin
-                        if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
-                        if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
-                    end
-                    r_line_beats <= 9'd1;
-                end else begin
-                    r_line_beats <= r_line_beats + 9'd1;
-                end
-            end
-        end
-    end
-    reg [7:0] r_last_fb;      // 上帧拍数 mod 256(tuser 拍锁存)
-    always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
-        if (!S_rst_n)
-            r_last_fb <= 8'h00;
-        else if (S_axis_tuser)
-            r_last_fb <= r_frame_beats[7:0];   // 新帧首锁存上一帧的计数
-    end
-
-    // 帧拍数偏差标志(期望153600): bit4=曾<153600, bit5=曾>153600
-    wire w_fb_lt = (r_frame_beats > 32'd1000) && (r_frame_beats < 32'd153600);
-    wire w_fb_gt = (r_frame_beats > 32'd153600) && (r_frame_beats < 32'd200000);
-
     // v20: 网络命令接收器(RGMII RX -> 曝光/白平衡命令寄存器)
     cvp_cmd_rx u_cmd_rx (
         .I_rxclk       ( I_eth_rgmii_rx_clk ),
@@ -1047,7 +973,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_gain_b      ( S_cmd_gb           ),
         .o_swap        ( S_cmd_swap         ),
         .o_awb_en      ( S_cmd_awb_en       ),
-        .o_kelvin      ( S_cmd_kelvin       ),
+        .o_kelvin      ( S_cmd_kelvin       )
     );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
