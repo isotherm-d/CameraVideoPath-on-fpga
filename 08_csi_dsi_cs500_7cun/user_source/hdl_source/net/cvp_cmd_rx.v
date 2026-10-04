@@ -162,7 +162,6 @@ module cvp_cmd_rx (
             o_swap    <= 1'b0;
             o_awb_en  <= 1'b1;
             o_kelvin  <= 7'd65;   // 默认 6500K
-            o_evt_cnt <= 8'd0;
             r_ev_d    <= 1'b0;
         end else begin
             s_tg1 <= r_tgl;  s_tg2 <= s_tg1;  s_tg3 <= s_tg2;   // toggle 双拍
