@@ -510,8 +510,7 @@ cvp_proc #(
     .o_ae_exp           ( S_cvp_ae_exp  ),
     .o_ae_gain          ( S_cvp_ae_gain ),
     .o_ae_locked        (                  ),
-    .o_ae_dbg           ( S_cvp_ae_dbg  ),
-    .i_awb_en           ( S_cmd_awb_en  )
+    .o_ae_dbg           ( S_cvp_ae_dbg  )
 );
 
 wire        S_awb1_valid;
