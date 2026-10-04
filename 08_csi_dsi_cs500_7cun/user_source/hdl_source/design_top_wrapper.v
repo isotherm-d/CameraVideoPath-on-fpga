@@ -62,7 +62,13 @@ module design_top_wrapper (
     wire [15:0] 	S_ag;
     wire 			S_cam_cfg_done;
     wire 			S_ae_cfg_done;
-    wire 			S_ae_req; 
+    wire 		S_ae_req;
+    wire [15:0] S_ae, S_ag;
+    wire        S_ae_req_man;
+    wire [15:0] S_ae_man, S_ag_man;
+    wire        S_cvp_ae_req;
+    wire [19:0] S_cvp_ae_exp;
+    wire [15:0] S_cvp_ae_gain;
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -262,9 +268,30 @@ module design_top_wrapper (
       .I_btn({I_button,2'b11}),
       .I_cam_cfg_done(S_cam_cfg_done),
       .I_ae_cfg_done(S_ae_cfg_done),
-      .O_ae_req(S_ae_req),
-      .O_ae(S_ae),
-      .O_ag(S_ag)
+      .O_ae_req(S_ae_req_man),
+      .O_ae(S_ae_man),
+      .O_ag(S_ag_man)
+  );
+
+  // v19: 自动/手动曝光选择 —— 自动=cvp_ae 闭环(逐帧统计亮度调曝光码),
+  // 手动=ae_set 按键值。I_AE 格式: uics500regAE 铺位后曝光码 = I_AE x 16 半行。
+  // cvp_ae 输出 o_exp 为曝光码(半行), 转换 I_AE = o_exp >> 4 在 ae_mux 内。
+  ae_mux u_ae_mux (
+      .I_clk       ( S_100m_clk   ),
+      .I_rst_n     ( S_rst_n      ),
+      .I_mode_auto ( 1'b1         ),   // 1=自动曝光(暗环境自动延长曝光)
+
+      .I_man_req   ( S_ae_req_man ),
+      .I_man_ae    ( S_ae_man     ),
+      .I_man_ag    ( S_ag_man     ),
+
+      .I_auto_req  ( S_cvp_ae_req  ),
+      .I_auto_exp  ( S_cvp_ae_exp  ),
+      .I_auto_gain ( S_cvp_ae_gain ),
+
+      .O_ae_req    ( S_ae_req     ),
+      .O_ae        ( S_ae         ),
+      .O_ag        ( S_ag         )
   );
   
     uicfgcs500 #(
@@ -463,11 +490,11 @@ cvp_proc #(
     .o_pix_frame_start  ( S_isp_pix_fs    ),
     .o_pix_line_last    (                  ),
 
-    .o_ae_eq_q8         (                  ),   // AE 沿用板上 ae_set 机制
+    .o_ae_eq_q8         (                  ),
     .o_ae_update        (                  ),
-    .o_ae_req           (                  ),
-    .o_ae_exp           (                  ),
-    .o_ae_gain          (                  ),
+    .o_ae_req           ( S_cvp_ae_req  ),
+    .o_ae_exp           ( S_cvp_ae_exp  ),
+    .o_ae_gain          ( S_cvp_ae_gain ),
     .o_ae_locked        (                  )
 );
 

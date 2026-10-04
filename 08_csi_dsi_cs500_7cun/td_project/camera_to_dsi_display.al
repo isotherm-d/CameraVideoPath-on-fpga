@@ -155,6 +155,14 @@
                     <Attr Name="CompileOrder" Val="63"/>
                 </FileInfo>
             </File>
+            <File Path="../user_source/hdl_source/isp2/ae_mux.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="88"/>
+                </FileInfo>
+            </File>
             <File Path="../user_source/hdl_source/isp2/group_fifo.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
