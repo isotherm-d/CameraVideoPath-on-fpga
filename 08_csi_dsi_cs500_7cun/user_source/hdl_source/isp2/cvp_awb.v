@@ -131,6 +131,7 @@ module cvp_awb #(
     input  wire        i_valid,
     input  wire [23:0] i_rgb,
     input  wire        i_frame_start,
+    input  wire        i_awb_en,       // v21: 0=AWB 冻结(增益 65536=1.0x 直通, 手动白平衡), 1=自动
 
     /* 像素输出（固定 2 拍延迟） */
     output reg         o_valid,
@@ -502,8 +503,14 @@ module cvp_awb #(
             end
             /* 第二级：时域平滑（死区/惯性/大跳直通）+ 模式生效 */
             if (r_upd) begin
+                if (i_awb_en)
                 o_gain_r <= smooth_gain(o_gain_r, r_t_r);
+                else
+                o_gain_r <= 21'd65536;                  // 冻结: 1.0x 直通
+                if (i_awb_en)
                 o_gain_b <= smooth_gain(o_gain_b, r_t_b);
+                else
+                o_gain_b <= 21'd65536;
                 o_mode   <= r_swp_dec ? (r_arb_dec ? M_GW : r_next_d1) : r_next_d1;
             end
             if (r_gdiv_start && !r_src_wp && !r_src_gw)

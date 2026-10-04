@@ -79,6 +79,8 @@ module design_top_wrapper (
     wire [15:0] S_cmd_ae;
     wire [8:0]  S_cmd_gr, S_cmd_gg, S_cmd_gb;
     wire        S_cmd_swap;
+    wire        S_cmd_awb_en;   // v21: 0=冻结 AWB(手动白平衡) 1=自动
+    wire [6:0]  S_cmd_kelvin;   // v21: 色温, 单位 100K
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -508,7 +510,8 @@ cvp_proc #(
     .o_ae_exp           ( S_cvp_ae_exp  ),
     .o_ae_gain          ( S_cvp_ae_gain ),
     .o_ae_locked        (                  ),
-    .o_ae_dbg           ( S_cvp_ae_dbg  )
+    .o_ae_dbg           ( S_cvp_ae_dbg  ),
+    .i_awb_en           ( S_cmd_awb_en  )
 );
 
 wire        S_awb1_valid;
@@ -533,6 +536,26 @@ cvp_awb #(
 wire        S_cc_valid, S_cc_fs;
 wire [23:0] S_cc_rgb;
 
+// v21: 色温 K -> R/B 增益换算(普朗克黑体 LUT, 6500K 归一 1.0x)
+wire [8:0] S_kelvin_r, S_kelvin_b;
+
+wb_kelvin u_wb_kelvin (
+    .I_clk     ( S_100m_clk  ),
+    .I_rst_n   ( S_rst_n     ),
+    .I_en      ( S_cmd_awb_en == 1'b0 ),   // 手动白平衡(K)模式下持续换算
+    .I_kelvin_hk( S_cmd_kelvin ),
+    .o_valid   (               ),
+    .o_gain_r  ( S_kelvin_r   ),
+    .o_gain_b  ( S_kelvin_b   )
+);
+
+// 白平衡源: AWB 冻结(手动 K/手动增益)时走命令通道, 自动时用标定值
+wire       S_wb_frozen = (S_cmd_awb_en == 1'b0);
+wire [8:0] S_cc_gain_r = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_r : S_cmd_gr) : 9'd291;
+wire [8:0] S_cc_gain_g = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? 9'd256 : S_cmd_gg) : 9'd256;
+wire [8:0] S_cc_gain_b = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_b : S_cmd_gb) : 9'd246;
+wire       S_cc_swap   = S_wb_frozen ? S_cmd_swap : 1'b0;
+
 color_correct #(
     .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
     .GAIN_R  ( 9'd291 ),   // v17: 白平衡 1.136 x 数字补光 1.506(曝光 49.8->33.1ms) = 1.711x
@@ -544,10 +567,10 @@ color_correct #(
     .I_valid       ( S_awb1_valid  ),
     .I_rgb         ( S_awb1_rgb    ),
     .I_frame_start ( S_awb1_fs     ),
-    .I_gain_r_rt   ( S_cmd_gr      ),
-    .I_gain_g_rt   ( S_cmd_gg      ),
-    .I_gain_b_rt   ( S_cmd_gb      ),
-    .I_swap_rt     ( S_cmd_swap    ),
+    .I_gain_r_rt   ( S_cc_gain_r   ),
+    .I_gain_g_rt   ( S_cc_gain_g   ),
+    .I_gain_b_rt   ( S_cc_gain_b   ),
+    .I_swap_rt     ( S_cc_swap     ),
     .O_valid       ( S_cc_valid    ),
     .O_rgb         ( S_cc_rgb      ),
     .O_frame_start ( S_cc_fs       )
@@ -1022,7 +1045,9 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_gain_r      ( S_cmd_gr           ),
         .o_gain_g      ( S_cmd_gg           ),
         .o_gain_b      ( S_cmd_gb           ),
-        .o_swap        ( S_cmd_swap         )
+        .o_swap        ( S_cmd_swap         ),
+        .o_awb_en      ( S_cmd_awb_en       ),
+        .o_kelvin      ( S_cmd_kelvin       )
     );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
