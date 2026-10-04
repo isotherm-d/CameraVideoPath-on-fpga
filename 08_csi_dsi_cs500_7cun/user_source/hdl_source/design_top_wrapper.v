@@ -494,9 +494,9 @@ wire [23:0] S_cc_rgb;
 
 color_correct #(
     .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
-    .GAIN_R  ( 9'd438 ),   // v17: 白平衡 1.136 x 数字补光 1.506(曝光 49.8->33.1ms) = 1.711x
-    .GAIN_G  ( 9'd386 ),   //       数字补光 1.506x
-    .GAIN_B  ( 9'd371 )    //       白平衡 0.962 x 1.506 = 1.449x
+    .GAIN_R  ( 9'd291 ),   // v17: 白平衡 1.136 x 数字补光 1.506(曝光 49.8->33.1ms) = 1.711x
+    .GAIN_G  ( 9'd256 ),
+    .GAIN_B  ( 9'd246 )
 ) u_color_correct (
     .I_clk         ( S_100m_clk    ),
     .I_rst_n       ( S_rst_n       ),
