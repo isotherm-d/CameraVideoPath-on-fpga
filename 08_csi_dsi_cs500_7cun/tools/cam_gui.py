@@ -209,9 +209,10 @@ class App:
         self.status.configure(text=f"白平衡模式 = {'自动' if v==0 else '色温 K'}", fg="darkblue")
 
     def send_kelvin(self):
-        if int(self.wb_var.get()) != 1:
-            self.wb_var.set(1)
-            self.send_wb_mode()
+        # 总是同时发模式切换 + K 值: 板上 cmd6 复位为自动 AWB,
+        # 若只发 K 值会被自动增益覆盖(拖动无反应的根因)
+        self.wb_var.set(1)
+        self._send(6, 1)
         k = int(self.k_var.get())
         self._send(7, k)
         self.k_lbl.configure(text=f"{k*100}K")
