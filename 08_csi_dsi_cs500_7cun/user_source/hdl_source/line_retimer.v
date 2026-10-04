@@ -25,7 +25,8 @@ module line_retimer #(
     output reg      O_tuser,     // 重切后的帧首(帧内第 1 个有效拍)
     output reg      O_tvalid,
     output reg      O_tlast,     // 重切后的行尾
-    output reg [39:0] O_tdata
+    output reg [39:0] O_tdata,
+    output reg      O_ovf        // v21c DIAG: 上帧未结束就来新帧首(行数超窗)
 );
 
     reg [10:0] r_col;       // 下一有效拍的列坐标
@@ -38,6 +39,8 @@ module line_retimer #(
             r_row      <= 11'd0;
             r_in_frame <= 1'b0;
         end else if (I_tvalid) begin
+            if (I_tuser && r_in_frame && (r_row != 11'd0 || r_col != 11'd1))
+                O_ovf <= 1'b1;                    // v21c DIAG: 帧未结束收到新帧首
             if (I_tuser) begin
                 // 帧首拍本身 = (0,0); 拍末设置下一拍坐标 (0,1)
                 r_in_frame <= 1'b1;
@@ -73,6 +76,7 @@ module line_retimer #(
             l_d1 <= 0; l_d2 <= 0;
             d_d1 <= 0; d_d2 <= 0;
             O_tvalid <= 0; O_tuser <= 0; O_tlast <= 0; O_tdata <= 0;
+            O_ovf <= 0;
         end else begin
             v_d1 <= w_pass;      v_d2 <= v_d1;
             u_d1 <= w_pass && I_tuser;  u_d2 <= u_d1;

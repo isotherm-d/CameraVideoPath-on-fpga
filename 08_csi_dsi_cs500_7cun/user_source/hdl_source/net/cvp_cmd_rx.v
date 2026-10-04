@@ -44,7 +44,8 @@ module cvp_cmd_rx (
     output reg  [8:0]  o_gain_b,
     output reg         o_swap,
     output reg         o_awb_en,     // v21: 0=冻结 AWB(手动白平衡), 1=自动
-    output reg  [6:0]  o_kelvin      // v21: 色温, 单位 100K(25..100 = 2500K..10000K)
+    output reg  [6:0]  o_kelvin,     // v21: 色温, 单位 100K(25..100 = 2500K..10000K)
+    output reg  [7:0]  o_evt_cnt     // v21c DIAG: 已解析命令计数(RXCK 域, 低 8 位)
 );
 
     /* ================= 1. IDDR: RGMII DDR 采样 ================= */
@@ -88,6 +89,7 @@ module cvp_cmd_rx (
             r_val <= 0; r_cmd <= 0; r_evt <= 0;
         end else begin
             r_evt <= 1'b0;
+            if (r_evt) o_evt_cnt <= o_evt_cnt + 8'd1;
             if (w_sof || w_eof) begin
                 r_idx <= 0; r_fail <= 0; r_arm <= 0;
             end else if (w_bval) begin
@@ -160,6 +162,7 @@ module cvp_cmd_rx (
             o_swap    <= 1'b0;
             o_awb_en  <= 1'b1;
             o_kelvin  <= 7'd65;   // 默认 6500K
+            o_evt_cnt <= 8'd0;
             r_ev_d    <= 1'b0;
         end else begin
             s_tg1 <= r_tgl;  s_tg2 <= s_tg1;  s_tg3 <= s_tg2;   // toggle 双拍
