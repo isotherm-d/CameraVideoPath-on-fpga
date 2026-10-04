@@ -93,7 +93,7 @@ always @(posedge I_clk or posedge I_rst) begin
 		if(r_button_1[2]) begin
 				r_ag_set <= (r_ag_set > 16) ? r_ag_set - r_ag_tick : r_ag_set; 
 		end else if(r_button_1[3]) begin
-				r_ag_set <= (r_ag_set < 74)   // 增益表仅到 index 73(0x0F29), 74+ 落空写 0 ? r_ag_set + r_ag_tick : r_ag_set; 
+				r_ag_set <= (r_ag_set < 74) ? r_ag_set + r_ag_tick : r_ag_set;   // 增益表顶 index 73(0x0F29)
 		end 
 		end
 	end
