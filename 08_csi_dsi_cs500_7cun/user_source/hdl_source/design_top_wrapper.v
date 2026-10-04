@@ -810,24 +810,31 @@ isp_top u_isp_top (
     wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
     wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
 
-    // v11g: 改挂 uial2axis 输出(S_axis_*) —— line_retimer 后的 S_raw_* 行恒 256
-    // 已无信息量; 需监视更上游(解包层之后第一站)的行切分。
-    // scan 编码: [11:8]=min偏差(248基), [3:0]=max偏差; 监视 tlast 间隔拍数。
+    // v11i: 监视 raw10 解包层(S_raw10_valid)的连续 valid 段长(段=行, 不依赖 tlast)。
+    // uial2axis 层行长/帧拍数已证恒定, 但图像内容逐行滑 1 拍 => 杂散拍在更上游。
+    // scan 编码: [11:8]=min偏差(248基), [3:0]=max偏差。
     reg [31:0] r_frame_beats;   // 帧内总拍数(tuser 间隔), 借 flags 观测
+    reg        r_rl_v_d;        // 上一拍 valid(段边界检测)
     always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
         if (!S_rst_n) begin
             r_line_beats <= 9'd0;
             r_line_min   <= 9'd511;
             r_line_max   <= 9'd0;
             r_frame_beats<= 32'd0;
+            r_rl_v_d     <= 1'b0;
         end else begin
-            if (S_axis_tuser) r_frame_beats <= 32'd1;
-            else if (S_axis_tvalid) r_frame_beats <= r_frame_beats + 32'd1;
-            if (S_axis_tvalid) begin
-                if (S_axis_tlast) begin
-                    r_line_beats <= 9'd0;
-                    if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
-                    if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
+            r_rl_v_d <= S_raw10_valid;
+            if (S_raw10_frame_start) r_frame_beats <= 32'd1;
+            else if (S_raw10_valid) r_frame_beats <= r_frame_beats + 32'd1;
+
+            if (S_raw10_valid) begin
+                if (!r_rl_v_d) begin
+                    // 段首: 结算上一段(如果够长, 排除杂散短段)
+                    if (r_line_beats >= 9'd100) begin
+                        if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
+                        if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
+                    end
+                    r_line_beats <= 9'd1;
                 end else begin
                     r_line_beats <= r_line_beats + 9'd1;
                 end
@@ -871,7 +878,7 @@ isp_top u_isp_top (
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( {8'b0, r_last_fb[7:0]} ),   // DIAG: 上帧 S_axis 拍数 mod 256(0=153600正常, k=偏差)
+        .i_scan_word    ( {8'b0, w_min_d, w_max_d} ),  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
