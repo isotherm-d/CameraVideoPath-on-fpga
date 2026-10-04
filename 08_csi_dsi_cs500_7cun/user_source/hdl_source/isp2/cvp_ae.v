@@ -33,10 +33,10 @@ module cvp_ae #(
     parameter IMG_H    = 720,
     parameter [15:0]   EQ_NOM     = 16'd256,     // 标称等效曝光（Q8）
     parameter [15:0]   EQ_MIN     = 16'd16,      // 下限（~0.0625x）
-    parameter [15:0]   EQ_MAX     = 16'd402,     // 上限（帧率约束 15.7ms / T_NOM 10ms）
+    parameter [15:0]   EQ_MAX     = 16'd256,     // v19c: 上限=1.0x(720p30 曝光封顶 998 行, VTS1003)
     parameter [17:0]   TARGET_Q8  = 18'd122880,  // 目标亮度均值（10bit 480 × 256）
     parameter [9:0]    SAT_TH     = 10'd1000,    // 饱和判据（RAW10）
-    parameter [15:0]   EXP_CODE_AT_NOM = 16'd7942, // eq=EQ_NOM 时的曝光寄存器码
+    parameter [15:0]   EXP_CODE_AT_NOM = 16'd1996, // v19c: eq=EQ_NOM(1.0x) 时曝光码 1996 半行=998 行(720p30 半帧; 原 7942 为 720p60 工程标定, 超本配置上限 6 倍致传感器回卷全黑)
     parameter [15:0]   GAIN_CODE  = 16'h0f20     // 增益寄存器值（v1 固定，0x3e08/09）
 ) (
     input  wire        i_clk,
