@@ -23,29 +23,41 @@ module cvp_rgb_stream_pack (
 
     /* ---------------- 96bit 拍级 FIFO, 吸收 ISP 行读出突发 ---------------- */
     wire        w_fifo_rd;
-    wire        w_fifo_valid;     // FIFO 读出数据有效(读请求的下一拍)
-    wire [95:0] w_fifo_data;
     wire        w_fifo_empty;
 
-    cvp_async_fifo #(
-        .DATA_WIDTH (96),
-        .ADDR_WIDTH (10)          // 1024 拍, 大于单行 256 拍的突发量(1024 宽)
-    ) u_beat_fifo (
-        .wr_clk   (I_clk),
-        .wr_rst_n (I_rst_n),
-        .wr_en    (I_tvalid),
-        .wr_data  (I_tdata),
-        .wr_full  (),
-        .wr_level (),
-        .wr_flush (1'b0),
-        .rd_clk   (I_clk),
-        .rd_rst_n (I_rst_n),
-        .rd_en    (w_fifo_rd),
-        .rd_data  (w_fifo_data),
-        .rd_valid (w_fifo_valid),
-        .rd_empty (w_fifo_empty),
-        .rd_flush (1'b0)
-    );
+    /* ---- 内嵌同钟 FIFO(96bit x 1024) ----
+     * 为什么不用 cvp_async_fifo: 其 Gray 指针空判决带 2 拍同步保守量,
+     * 本模块"读一拍、展开五拍、追空再等"的使用模式会被拖成 ~10 拍/输入拍
+     * -> 实测吞恰好减半(50%), 与上板抓包 50.2% 完全复现(联合逐拍模拟 50.4%)。
+     * 同钟二进制指针空判决无延迟, 追空后 1 拍即可恢复读取。
+     * 读时序与原 FIFO 相同: rd_en(T) -> rd_valid/rd_data(T+1)。 */
+    reg [95:0] beat_mem [0:1023];
+    reg [10:0] b_wptr, b_rptr;
+    reg [95:0] w_fifo_data;
+    reg        w_fifo_valid;
+
+    wire        w_beat_full  = ((b_wptr - b_rptr) == 11'd1024);
+    wire [10:0] w_b_wptr_n   = b_wptr + {10'd0, (I_tvalid && !w_beat_full)};
+    wire [10:0] w_b_rptr_n   = b_rptr + {10'd0, (w_fifo_rd && !w_fifo_empty)};
+
+    assign w_fifo_empty = (b_wptr == b_rptr);   // 组合判决: 写入后下拍解除
+
+    always @(posedge I_clk or negedge I_rst_n) begin
+        if (!I_rst_n) begin
+            b_wptr      <= 11'd0;
+            b_rptr      <= 11'd0;
+            w_fifo_data <= 96'd0;
+            w_fifo_valid<= 1'b0;
+        end else begin
+            b_wptr <= w_b_wptr_n;
+            b_rptr <= w_b_rptr_n;
+            if (I_tvalid && !w_beat_full)
+                beat_mem[b_wptr[9:0]] <= I_tdata;
+            w_fifo_valid <= w_fifo_rd && !w_fifo_empty;
+            if (w_fifo_rd && !w_fifo_empty)
+                w_fifo_data <= beat_mem[b_rptr[9:0]];
+        end
+    end
 
     /* ---------------- 时序寄存器(全部只在下方唯一的 always 中赋值) ---------------- */
     reg [95:0] r_next;      // 预取槽: FIFO 已读出、待装入发送级的一拍

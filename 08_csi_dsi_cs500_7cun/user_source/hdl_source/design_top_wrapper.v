@@ -182,6 +182,11 @@ module design_top_wrapper (
     wire [31:0] S_snap_frames, S_snap_pix, S_snap_nonzero;
     wire [39:0] S_snap_sum;
 
+    // ISP 观测口统计(AWB 后 96bit 拍), 用于分诊 ISP 内部吞吐
+    wire        S_isp_snap_valid;
+    wire [31:0] S_isp_snap_frames, S_isp_snap_pix, S_isp_snap_nonzero;
+    wire [39:0] S_isp_snap_sum;
+
     // ---- CAM CHECK/NET: 以太网调试通路内部信号 ----
     wire [95:0] S_awb_tdata;            // ISP AWB 后 96bit 像素观测口
     wire        S_awb_tuser;
@@ -711,7 +716,8 @@ isp_top u_isp_top (
     );
 
 
-    // ---- CAM CHECK: 摄像头链路体检,每秒从串口打印一行统计(115200-8-N-1) ----
+    // ---- CAM CHECK: 摄像头链路体检,每秒从串口打印两行统计(115200-8-N-1) ----
+    // 第一行 CAM = RAW10 解包层; 第二行 ISP = AWB 观测口(96bit 拍, 4像素/拍)
     cam_stats #(
         .PIX_W      ( 40           ),
         .LUMA_SHIFT ( 2            ),
@@ -732,6 +738,26 @@ isp_top u_isp_top (
         .O_snap_sum    ( S_snap_sum     )
     );
 
+    cam_stats #(
+        .PIX_W      ( 96           ),   // AWB 观测口 96bit 拍
+        .LUMA_SHIFT ( 16           ),   // 取像素0 的 R 分量做亮度代理
+        .CLK_SYS_HZ ( 100_000_000  )
+    ) u_cam_stats_isp (
+        .I_clk_pix ( S_csi_rx_clk       ),
+        .I_rst_pix ( ~S_rst_n           ),
+        .I_vsync   ( S_awb_tuser        ),
+        .I_de      ( S_awb_tvalid       ),
+        .I_pix     ( S_awb_tdata        ),
+
+        .I_clk_sys     ( S_100m_clk     ),
+        .I_rst_sys     ( ~S_rst_n       ),
+        .O_snap_valid  ( S_isp_snap_valid   ),
+        .O_snap_frames ( S_isp_snap_frames  ),
+        .O_snap_pix    ( S_isp_snap_pix     ),
+        .O_snap_nonzero( S_isp_snap_nonzero ),
+        .O_snap_sum    ( S_isp_snap_sum     )
+    );
+
     cam_report_uart #(
         .CLK_HZ ( 100_000_000 ),
         .BAUD   ( 115200      )
@@ -743,6 +769,11 @@ isp_top u_isp_top (
         .I_snap_pix    ( S_snap_pix     ),
         .I_snap_nonzero( S_snap_nonzero ),
         .I_snap_sum    ( S_snap_sum     ),
+        .I_isp_valid   ( S_isp_snap_valid   ),
+        .I_isp_frames  ( S_isp_snap_frames  ),
+        .I_isp_pix     ( S_isp_snap_pix     ),
+        .I_isp_nonzero ( S_isp_snap_nonzero ),
+        .I_isp_sum     ( S_isp_snap_sum     ),
         .O_uart_tx     ( O_uart_tx      )
     );
 

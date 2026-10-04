@@ -20,6 +20,13 @@ module cam_report_uart #(
     input  wire [31:0] I_snap_pix,
     input  wire [31:0] I_snap_nonzero,
     input  wire [39:0] I_snap_sum,
+
+    // 第二统计通道(ISP 观测口), 与第一通道同拍快照, 打印为第二行 "ISP ..."
+    input  wire        I_isp_valid,
+    input  wire [31:0] I_isp_frames,
+    input  wire [31:0] I_isp_pix,
+    input  wire [31:0] I_isp_nonzero,
+    input  wire [39:0] I_isp_sum,
     output wire        O_uart_tx
 );
 
@@ -34,6 +41,15 @@ module cam_report_uart #(
     reg [3:0]  r_state;
     reg [31:0] r_frames, r_pix, r_nz;
     reg [39:0] r_sum;
+    reg [31:0] r_isp_frames, r_isp_pix, r_isp_nz;   // 第二通道(ISP)快照
+    reg [39:0] r_isp_sum;
+    reg        r_chn;                               // 当前打印行: 0=CAM 1=ISP
+
+    // 按打印行选择字段值
+    wire [31:0] w_frames = r_chn ? r_isp_frames : r_frames;
+    wire [31:0] w_pix    = r_chn ? r_isp_pix    : r_pix;
+    wire [31:0] w_nz     = r_chn ? r_isp_nz     : r_nz;
+    wire [39:0] w_sum    = r_chn ? r_isp_sum    : r_sum;
 
     // ---- double-dabble: 待转值(40bit) + 12 个 BCD 位(独立寄存器) ----
     reg [39:0] r_val;
@@ -68,7 +84,9 @@ module cam_report_uart #(
 
     function [7:0] str_rom(input [3:0] s, input [3:0] i);
         case (s)
-            4'd0:  str_rom = (i == 0) ? "C" : (i == 1) ? "A" : (i == 2) ? "M" :
+            4'd0:  str_rom = (i == 0) ? (r_chn ? "I" : "C") :
+                             (i == 1) ? (r_chn ? "S" : "A") :
+                             (i == 2) ? (r_chn ? "P" : "M") :
                              (i == 3) ? " " : (i == 4) ? "t" : "=" ;
             4'd2:  str_rom = (i == 0) ? " " : (i == 1) ? "f" : "=" ;
             4'd4:  str_rom = (i == 0) ? " " : (i == 1) ? "p" : "=" ;
@@ -112,6 +130,11 @@ module cam_report_uart #(
             r_pix     <= 32'd0;
             r_nz      <= 32'd0;
             r_sum     <= 40'd0;
+            r_isp_frames <= 32'd0;
+            r_isp_pix    <= 32'd0;
+            r_isp_nz     <= 32'd0;
+            r_isp_sum    <= 40'd0;
+            r_chn     <= 1'b0;
             r_val     <= 40'd0;
             r_ddi     <= 6'd0;
             r_b0 <= 4'd0;  r_b1 <= 4'd0;  r_b2 <= 4'd0;  r_b3 <= 4'd0;
@@ -134,6 +157,11 @@ module cam_report_uart #(
                         r_pix    <= I_snap_pix;
                         r_nz     <= I_snap_nonzero;
                         r_sum    <= I_snap_sum;
+                        r_isp_frames <= I_isp_frames;
+                        r_isp_pix    <= I_isp_pix;
+                        r_isp_nz     <= I_isp_nonzero;
+                        r_isp_sum    <= I_isp_sum;
+                        r_chn    <= 1'b0;
                         r_seg    <= 4'd0;
                         r_state  <= S_SEG;
                     end
@@ -142,27 +170,36 @@ module cam_report_uart #(
                 S_SEG: begin
                     case (r_seg)
                         4'd1, 4'd3, 4'd5, 4'd7, 4'd9: begin
-                            case (r_seg)          // 装载待转换的值
+                            case (r_seg)          // 装载待转换的值(按打印行选字段)
                                 4'd1:    r_val <= 40'd2026100340;           // 构建指纹: 串口 t= 可辨认板上固件版本
-                                4'd3:    r_val <= {8'd0, r_frames};
-                                4'd5:    r_val <= {8'd0, r_pix};
-                                4'd7:    r_val <= {8'd0, r_nz};
-                                default: r_val <= r_sum;
+                                4'd3:    r_val <= {8'd0, w_frames};
+                                4'd5:    r_val <= {8'd0, w_pix};
+                                4'd7:    r_val <= {8'd0, w_nz};
+                                default: r_val <= w_sum;
                             endcase
                             r_ddi <= 6'd0;
                             r_b0 <= 4'd0;  r_b1 <= 4'd0;  r_b2 <= 4'd0;  r_b3 <= 4'd0;
                             r_b4 <= 4'd0;  r_b5 <= 4'd0;  r_b6 <= 4'd0;  r_b7 <= 4'd0;
                             r_b8 <= 4'd0;  r_b9 <= 4'd0;  r_b10 <= 4'd0; r_b11 <= 4'd0;
                             r_state <= S_CONV;
+                            r_seg   <= r_seg + 1'b1;
                         end
-                        4'd11: r_state <= S_IDLE;      // 全部段发完
+                        4'd11: begin                // 一行发完: 第二行重走段表, 或结束
+                            if (!r_chn) begin
+                                r_chn <= 1'b1;
+                                r_seg <= 4'd0;
+                            end else begin
+                                r_chn   <= 1'b0;
+                                r_state <= S_IDLE;
+                            end
+                        end
                         default: begin
                             r_str_i <= 4'd0;
                             r_str_len <= str_len(r_seg);
                             r_state <= S_STR;
+                            r_seg   <= r_seg + 1'b1;
                         end
                     endcase
-                    r_seg <= r_seg + 1'b1;
                 end
                 // double-dabble: 40 拍, 每拍 BCD>=5 加 3 后整体左移进一位
                 S_CONV: begin
