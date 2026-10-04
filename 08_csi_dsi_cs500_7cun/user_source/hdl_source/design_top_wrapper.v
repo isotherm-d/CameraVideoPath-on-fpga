@@ -186,8 +186,6 @@ module design_top_wrapper (
     wire        S_isp_snap_valid;
     wire [31:0] S_isp_snap_frames, S_isp_snap_pix, S_isp_snap_nonzero;
     wire [39:0] S_isp_snap_sum;
-    wire [127:0] S_dm_tdata;
-    wire        S_dm_tuser, S_dm_tvalid;
 
     // ---- CAM CHECK/NET: 以太网调试通路内部信号 ----
     wire [95:0] S_awb_tdata;            // ISP AWB 后 96bit 像素观测口
@@ -420,28 +418,80 @@ line_retimer #(
 //  );
 
 
-//ISP算法顶层模块
-isp_top u_isp_top (
-.axi4s_video_aclk(S_csi_rx_clk),
-.I_rst_n         (S_rst_n),
-.I_tlast         (S_raw_tlast	),
-.I_tuser         (S_raw_tuser	),
-.I_tdata         (S_raw_tdata	),
-.I_tvalid        (S_raw_tvalid	),
-.I_tdest         (),
-.O_tready        (S_ISP_O_tready),
-.O_tdata         (S_ISP_O_tdata ),
-.O_tlast         (S_ISP_O_tlast ),
-.O_tuser         (S_ISP_O_tuser ),
-.O_tvalid        (S_ISP_O_tvalid),
-.I_tready        (),
-	.O_awb_tdata     (S_awb_tdata ),
-	.O_awb_tuser     (S_awb_tuser ),
-	.O_awb_tvalid    (S_awb_tvalid),
-	.O_dm_tdata      (S_dm_tdata  ),
-	.O_dm_tuser      (S_dm_tuser  ),
-	.O_dm_tvalid     (S_dm_tvalid )
-  );
+// v13: 自研 ISP(cvp_proc 齿轮箱+DPC+demosaic → cvp_awb → pack_4)替换米联客 isp_top
+// (米联客 demosaic 的 zhenghe 行重整机制存在逐行相位滑移, 图像每行错 4 像素;
+//  cvp 系列为确定性流水, 带自检, 接口: 40bit RAW10 组进 -> 96bit RGB 组出)
+wire        S_isp_pix_valid;
+wire [23:0] S_isp_pix_rgb;
+wire        S_isp_pix_fs;
+
+cvp_proc #(
+    .IMG_W  ( 1024 ),
+    .IMG_H  (  600 )
+) u_cvp_proc (
+    .i_clk              ( S_csi_rx_clk ),
+    .i_rst_n            ( S_rst_n      ),
+    .i_mode             ( 3'd0         ),   // 0=彩色直通(像素级算法不用)
+
+    .i_grp_valid        ( S_raw_tvalid ),
+    .i_grp_data         ( S_raw_tdata  ),
+    .i_grp_frame_start  ( S_raw_tuser  ),
+    .i_grp_line_last    ( S_raw_tlast  ),
+
+    .o_pix_valid        ( S_isp_pix_valid ),
+    .o_pix_rgb          ( S_isp_pix_rgb   ),
+    .o_pix_frame_start  ( S_isp_pix_fs    ),
+    .o_pix_line_last    (                  ),
+
+    .o_ae_eq_q8         (                  ),   // AE 沿用板上 ae_set 机制
+    .o_ae_update        (                  ),
+    .o_ae_req           (                  ),
+    .o_ae_exp           (                  ),
+    .o_ae_gain          (                  ),
+    .o_ae_locked        (                  )
+);
+
+wire        S_awb1_valid;
+wire        S_awb1_fs;
+wire [23:0] S_awb1_rgb;
+
+cvp_awb #(
+    .IMG_W  ( 1024 ),
+    .IMG_H  (  600 )
+) u_cvp_awb (
+    .i_clk          ( S_csi_rx_clk    ),
+    .i_rst_n        ( S_rst_n         ),
+    .i_valid        ( S_isp_pix_valid ),
+    .i_rgb          ( S_isp_pix_rgb   ),
+    .i_frame_start  ( S_isp_pix_fs    ),
+    .o_valid        ( S_awb1_valid    ),
+    .o_rgb          ( S_awb1_rgb      ),
+    .o_frame_start  ( S_awb1_fs       )
+);
+
+// 1像素/拍 -> 96bit 组(4像素), 驱动网口观测口语义信号 S_awb_*
+pack_4 u_pack4 (
+    .I_clk         ( S_csi_rx_clk ),
+    .I_rst_n       ( S_rst_n      ),
+    .I_valid       ( S_awb1_valid ),
+    .I_rgb         ( S_awb1_rgb   ),
+    .I_frame_start ( S_awb1_fs    ),
+    .O_tvalid      ( S_awb_tvalid ),
+    .O_tdata       ( S_awb_tdata  ),
+    .O_tuser       ( S_awb_tuser  )
+);
+
+// DSI/DDR 主通路: 96bit -> 128bit(原 isp_top 内部转换, 顶层直接例化)
+data_96bit_to_128bit u_data_96bit_to_128bit(
+    .I_clk              ( S_csi_rx_clk  ),
+    .I_rst_n            ( S_rst_n       ),
+    .I_96b_frame_start  ( S_awb_tuser   ),
+    .I_96b_valid        ( S_awb_tvalid  ),
+    .I_96b_data         ( S_awb_tdata   ),
+    .O_128b_frame_start ( S_ISP_O_tuser ),
+    .O_128b_valid       ( S_ISP_O_tvalid),
+    .O_128b_data        ( S_ISP_O_tdata )
+);
 
 
     // 传感器输出 1024x600 = DSI 屏原生分辨率, 裁剪模块为参数化直通(IN==OUT);
@@ -751,15 +801,15 @@ isp_top u_isp_top (
     );
 
     cam_stats #(
-        .PIX_W      ( 128          ),   // DIAG: demosaic 输出 128bit 拍(分诊每帧拍数)
+        .PIX_W      ( 96           ),   // v13: cvp ISP 输出(pack_4 后 96bit 组)
         .LUMA_SHIFT ( 16           ),
         .CLK_SYS_HZ ( 100_000_000  )
     ) u_cam_stats_isp (
         .I_clk_pix ( S_csi_rx_clk       ),
         .I_rst_pix ( ~S_rst_n           ),
-        .I_vsync   ( S_dm_tuser         ),
-        .I_de      ( S_dm_tvalid        ),
-        .I_pix     ( S_dm_tdata         ),
+        .I_vsync   ( S_awb_tuser        ),
+        .I_de      ( S_awb_tvalid       ),
+        .I_pix     ( S_awb_tdata        ),
 
         .I_clk_sys     ( S_100m_clk     ),
         .I_rst_sys     ( ~S_rst_n       ),
