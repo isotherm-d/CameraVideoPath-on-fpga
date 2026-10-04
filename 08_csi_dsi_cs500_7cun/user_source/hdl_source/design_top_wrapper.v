@@ -193,8 +193,10 @@ module design_top_wrapper (
     wire        S_awb_tvalid;
     wire        S_gmii_125m;            // GMII/RGMII 125M 时钟(独立 PLL)
     wire        S_gmii_lock;
-    wire        S_net_pix_valid;        // 单像素流 -> cvp_eth_dbg
+    wire        S_net_pix_valid;        // (诊断) AWB 观测口有效, bit2/3 旗标用
     wire [23:0] S_net_pix_rgb;
+    assign S_net_pix_valid = S_awb_tvalid;
+    assign S_net_pix_rgb   = S_awb_tdata[23:0];
     wire        S_mdio_o, S_mdio_oe;    // MDIO 三态
 
     // 网口诊断旗标(粘滞,置 1 不清):经心跳包显示在电脑端状态页
@@ -789,16 +791,9 @@ isp_top u_isp_top (
         .lock      ( S_gmii_lock  )
     );
 
-    // ISP 96bit 像素拍 -> 单像素流(内含 96bit FIFO 吸收突发)
-    cvp_rgb_stream_pack u_rgb_pack (
-        .I_clk       ( S_csi_rx_clk    ),
-        .I_rst_n     ( S_rst_n         ),
-        .I_tuser     ( S_awb_tuser     ),
-        .I_tvalid    ( S_awb_tvalid    ),
-        .I_tdata     ( S_awb_tdata     ),
-        .O_pix_valid ( S_net_pix_valid ),
-        .O_pix_rgb   ( S_net_pix_rgb   )
-    );
+    // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
+    // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口
+    // 模块, 字节展开在 GMII 125M 域完成; tuser 帧标记带内随数据流跨域。
 
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
     // 1024x600 每帧都发 ≈20fps, 1280包/帧, 约310Mbps; 电脑端: eth_video_rx.py --width 1024 --height 600)
@@ -812,8 +807,9 @@ isp_top u_isp_top (
     ) u_eth_dbg (
         .i_clk_pix      ( S_csi_rx_clk      ),
         .i_rst_pix_n    ( S_rst_n           ),
-        .i_valid        ( S_net_pix_valid   ),
-        .i_rgb          ( S_net_pix_rgb     ),
+        .i_valid        ( S_awb_tvalid      ),
+        .i_rgb          ( S_awb_tdata       ),
+        .i_tuser        ( S_awb_tuser       ),
         .i_clk_100m     ( S_100m_clk        ),
         .i_rst_100m_n   ( S_rst_n           ),
         .i_clk_gmii     ( S_gmii_125m       ),
