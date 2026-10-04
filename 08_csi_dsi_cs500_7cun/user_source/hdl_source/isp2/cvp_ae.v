@@ -54,7 +54,7 @@ module cvp_ae #(
     output reg         o_req,                    // 保持到下一帧首
     output reg  [19:0] o_exp,                    // 曝光寄存器码（0x3e00/01/02 拼装）
     output reg  [15:0] o_gain,                   // 增益寄存器值（0x3e08/09）
-    output reg         o_locked,
+    output reg         o_locked
 );
     localparam [31:0] N_PIX = IMG_W * IMG_H;
     localparam        AW    = 30;              // 累加器位宽（921600×1023 < 2^30）
