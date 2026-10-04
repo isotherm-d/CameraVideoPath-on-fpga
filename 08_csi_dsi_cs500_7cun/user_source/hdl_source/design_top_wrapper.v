@@ -213,6 +213,8 @@ module design_top_wrapper (
             if (S_net_pix_valid) r_net_diag[2] <= 1'b1;
             if (S_net_pix_valid && (S_net_pix_rgb != 24'd0))
                 r_net_diag[3] <= 1'b1;
+            if (w_fb_lt)         r_net_diag[4] <= 1'b1;   // v11g: 帧拍数曾 <153600
+            if (w_fb_gt)         r_net_diag[5] <= 1'b1;   // v11g: 帧拍数曾 >153600
         end
     end
 
@@ -808,21 +810,33 @@ isp_top u_isp_top (
     wire [3:0] w_min_d = (r_line_min >= 9'd248 && r_line_min <= 9'd263) ? w_min_dev[3:0] : 4'hF;
     wire [3:0] w_max_d = (r_line_max >= 9'd248 && r_line_max <= 9'd263) ? w_max_dev[3:0] : 4'hF;
 
+    // v11g: 改挂 uial2axis 输出(S_axis_*) —— line_retimer 后的 S_raw_* 行恒 256
+    // 已无信息量; 需监视更上游(解包层之后第一站)的行切分。
+    // scan 编码: [11:8]=min偏差(248基), [3:0]=max偏差; 监视 tlast 间隔拍数。
+    reg [31:0] r_frame_beats;   // 帧内总拍数(tuser 间隔), 借 flags 观测
     always @(posedge S_csi_rx_clk or negedge S_rst_n) begin
-        if (!S_rst_n || S_raw_tuser) begin
+        if (!S_rst_n) begin
             r_line_beats <= 9'd0;
             r_line_min   <= 9'd511;
             r_line_max   <= 9'd0;
-        end else if (S_raw_tvalid) begin
-            if (S_raw_tlast) begin
-                r_line_beats <= 9'd0;
-                if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
-                if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
-            end else begin
-                r_line_beats <= r_line_beats + 9'd1;
+            r_frame_beats<= 32'd0;
+        end else begin
+            if (S_axis_tuser) r_frame_beats <= 32'd1;
+            else if (S_axis_tvalid) r_frame_beats <= r_frame_beats + 32'd1;
+            if (S_axis_tvalid) begin
+                if (S_axis_tlast) begin
+                    r_line_beats <= 9'd0;
+                    if (r_line_beats < r_line_min) r_line_min <= r_line_beats;
+                    if (r_line_beats > r_line_max) r_line_max <= r_line_beats;
+                end else begin
+                    r_line_beats <= r_line_beats + 9'd1;
+                end
             end
         end
     end
+    // 帧拍数偏差标志(期望153600): bit4=曾<153600, bit5=曾>153600
+    wire w_fb_lt = (r_frame_beats > 32'd1000) && (r_frame_beats < 32'd153600);
+    wire w_fb_gt = (r_frame_beats > 32'd153600) && (r_frame_beats < 32'd200000);
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
     // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口
