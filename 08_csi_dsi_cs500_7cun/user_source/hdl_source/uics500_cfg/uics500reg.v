@@ -81,8 +81,8 @@ begin
 		33:	REG_DATA = {16'h320b, 8'h58}; 
 		34:	REG_DATA = {16'h320c, 8'h0b}; 
 		35:	REG_DATA = {16'h320d, 8'h24}; 
-		36:	REG_DATA = {16'h320e, 8'h08};  // v14b: VTS 2254 (原 1127), 10fps 换 2x 曝光上限(暗环境)
-		37:	REG_DATA = {16'h320f, 8'hd6}; 
+		36:	REG_DATA = {16'h320e, 8'h02};  // v17: VTS 752 -> 1024x600@30.0fps (采窗607行合法, 原2262=10fps高曝光)
+		37:	REG_DATA = {16'h320f, 8'hf0};
 		38:	REG_DATA = {16'h3210, 8'h00}; 
 		39:	REG_DATA = {16'h3211, 8'h04}; 
 		40:	REG_DATA = {16'h3212, 8'h00}; 
