@@ -279,7 +279,8 @@ module design_top_wrapper (
   ae_mux u_ae_mux (
       .I_clk       ( S_100m_clk   ),
       .I_rst_n     ( S_rst_n      ),
-      .I_mode_auto ( 1'b1         ),   // 1=自动曝光(暗环境自动延长曝光)
+      .I_mode_auto ( 1'b0         ),   // DIAG: 0=手动(固定 I_AE=1400) —— 二分实验:
+                                       //       亮=>写通路OK,闭环bug; 黑=>写通路断
 
       .I_man_req   ( S_ae_req_man ),
       .I_man_ae    ( S_ae_man     ),
