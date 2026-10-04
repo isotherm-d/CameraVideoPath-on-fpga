@@ -182,10 +182,12 @@ module design_top_wrapper (
     wire [31:0] S_snap_frames, S_snap_pix, S_snap_nonzero;
     wire [39:0] S_snap_sum;
 
-    // ISP 观测口统计(AWB 后 96bit 拍), 用于分诊 ISP 内部吞吐
+    // ISP 观测口统计(DIAG: 挂 demosaic 输出 128bit 拍, 分诊每帧拍数)
     wire        S_isp_snap_valid;
     wire [31:0] S_isp_snap_frames, S_isp_snap_pix, S_isp_snap_nonzero;
     wire [39:0] S_isp_snap_sum;
+    wire [127:0] S_dm_tdata;
+    wire        S_dm_tuser, S_dm_tvalid;
 
     // ---- CAM CHECK/NET: 以太网调试通路内部信号 ----
     wire [95:0] S_awb_tdata;            // ISP AWB 后 96bit 像素观测口
@@ -741,15 +743,15 @@ isp_top u_isp_top (
     );
 
     cam_stats #(
-        .PIX_W      ( 96           ),   // AWB 观测口 96bit 拍
-        .LUMA_SHIFT ( 16           ),   // 取像素0 的 R 分量做亮度代理
+        .PIX_W      ( 128          ),   // DIAG: demosaic 输出 128bit 拍(分诊每帧拍数)
+        .LUMA_SHIFT ( 16           ),
         .CLK_SYS_HZ ( 100_000_000  )
     ) u_cam_stats_isp (
         .I_clk_pix ( S_csi_rx_clk       ),
         .I_rst_pix ( ~S_rst_n           ),
-        .I_vsync   ( S_awb_tuser        ),
-        .I_de      ( S_awb_tvalid       ),
-        .I_pix     ( S_awb_tdata        ),
+        .I_vsync   ( S_dm_tuser         ),
+        .I_de      ( S_dm_tvalid        ),
+        .I_pix     ( S_dm_tdata         ),
 
         .I_clk_sys     ( S_100m_clk     ),
         .I_rst_sys     ( ~S_rst_n       ),

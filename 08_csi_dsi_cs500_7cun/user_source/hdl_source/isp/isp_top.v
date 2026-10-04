@@ -17,7 +17,12 @@ module isp_top (
     //      仅供网口调试通路观测, 不影响原有 128bit 输出通路 ----
     output [95:0]   O_awb_tdata		,
     output 			O_awb_tuser		,
-    output 			O_awb_tvalid
+    output 			O_awb_tvalid	,
+
+    // ---- DIAG: demosaic 输出(128bit 拍)观测口, 用于分诊每帧拍数 ----
+    output [127:0]  O_dm_tdata		,
+    output 			O_dm_tuser		,
+    output 			O_dm_tvalid
 );
  
 wire         m_aixs_tvalid;  //synthesis keep 
@@ -49,6 +54,11 @@ wire         m_aixs_tvalid;  //synthesis keep
   assign O_awb_tdata  = awb_O_tdata ;
   assign O_awb_tuser  = awb_O_tuser ;
   assign O_awb_tvalid = awb_O_tvalid;
+
+  // ---- DIAG: demosaic 输出观测口 ----
+  assign O_dm_tdata  = m_aixs_tdata ;
+  assign O_dm_tuser  = m_aixs_tuser ;
+  assign O_dm_tvalid = m_aixs_tvalid;
   
   //assign m_aixs_tready = O_tready;
   //assign O_tdata  = m_aixs_tdata;
