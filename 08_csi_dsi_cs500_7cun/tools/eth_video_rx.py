@@ -82,6 +82,7 @@ def main():
     frame = np.zeros((H, W, 3), dtype=np.uint8)   # RGB
     cur_seq = None
     got_mask = np.zeros(chunks_per_frame, dtype=bool)
+    late_run = 0                                  # 连续迟到包计数(用于断流重同步)
     prev = None                                    # (seq, frame_rgb, complete)
 
     win = "MLKPAI-F02 eth video"
@@ -173,8 +174,18 @@ def main():
                             frame[:] = 0
                             got_mask[:] = False
                             cur_seq = fseq
+                            late_run = 0
                         else:                                  # 迟到包
                             late += 1
+                            # 连续大量迟到 = 板端帧序号回卷/复位, 重新对齐到最新序号
+                            late_run += 1
+                            if late_run >= 4 * chunks_per_frame:
+                                print(f"  [resync] 连续 {late_run} 个迟到包, "
+                                      f"帧序号 {cur_seq} -> {fseq} (板端已复位?)")
+                                cur_seq = fseq
+                                frame[:] = 0
+                                got_mask[:] = False
+                                late_run = 0
                             payload = None
                         if payload is not None:
                             chunk = offset // DB
