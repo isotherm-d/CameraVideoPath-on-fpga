@@ -74,7 +74,6 @@ module wb_kelvin (
             r_i0 <= 0; r_i1 <= 1; r_frac <= 0; r_v1 <= 0;
             r_r0 <= 0; r_r1 <= 0; r_b0 <= 0; r_b1 <= 0;
         end else begin
-            o_valid <= 1'b0;
             if (I_en) begin
                 r_i0  <= w_seg;
                 r_i1  <= (w_seg == 5'd13) ? 5'd13 : w_seg + 5'd1;
