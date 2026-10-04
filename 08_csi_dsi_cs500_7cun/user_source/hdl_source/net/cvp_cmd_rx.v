@@ -45,7 +45,8 @@ module cvp_cmd_rx (
     output reg         o_swap,
     output reg         o_awb_en,     // v21: 0=冻结 AWB(手动白平衡), 1=自动
     output reg  [6:0]  o_kelvin,     // v21: 色温, 单位 100K(25..100 = 2500K..10000K)
-    output reg  [7:0]  o_evt_cnt     // v21c DIAG: 已解析命令计数(RXCK 域, 低 8 位)
+    output reg  [7:0]  o_evt_cnt,    // v21c DIAG: 已解析命令计数(RXCK 域, 低 8 位)
+    output reg  [7:0]  o_frame_cnt   // v21f DIAG: 收到帧计数(RX_EN 上升沿)
 );
 
     /* ================= 1. IDDR: RGMII DDR 采样 ================= */
@@ -75,6 +76,7 @@ module cvp_cmd_rx (
     reg [7:0]  r_cmd;
     reg        r_evt;         // 命令事件(单拍, RXCK 域)
 
+    reg        r_frame_cnt = 8'd0;
     wire w_sof    = w_en && !en_d1;             // 帧开始(RX_DV 上升沿)
     wire w_eof    = !w_en && en_d1;             // 帧结束
 
@@ -126,6 +128,11 @@ module cvp_cmd_rx (
     end
 
     /* ================= 3. 命令跨域(toggle+data) ================= */
+    always @(posedge I_rxclk or negedge I_rst_n_rx) begin
+        if (!I_rst_n_rx)                    o_frame_cnt <= 8'd0;
+        else if (w_sof)                     o_frame_cnt <= o_frame_cnt + 8'd1;
+    end
+
     reg        r_tgl;
     reg        s_t1, s_t2;
     reg [31:0] s_data1, s_data2;
