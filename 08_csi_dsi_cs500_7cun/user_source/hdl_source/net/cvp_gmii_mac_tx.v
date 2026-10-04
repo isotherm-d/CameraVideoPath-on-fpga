@@ -262,13 +262,14 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                 if (r_ifg != IFG_CYC[4:0]) begin
                     r_ifg <= r_ifg + 5'd1;
                 end else if (w_cred_avail >= 7'd1) begin
-                    /* 开新包：锁存应用头，取一块信用，推进包/帧序 */
+                    /* 开新包：锁存应用头，取一块信用，推进包/帧序
+                     * (v11d: 正常发包不再清心跳计时 —— 心跳改为每 0.5s 无条件
+                     *  发一包, 否则视频连续时永远静默, 诊断 scan word 无法上报) */
                     r_sending  <= 1'b1;
                     r_idx      <= 12'd0;
                     r_crc      <= 32'hFFFF_FFFF;
                     o_tx_pkt   <= 1'b1;
                     r_hb_mode  <= 1'b0;
-                    r_hb_cnt   <= 26'd0;
                     r_cred_pop <= r_cred_pop + 7'd1;
                     r_app_hdr  <= {r_frame_seq, 8'h01, r_off[31:24], r_off[23:16],
                                    r_off[15:8], r_off[7:0]};
