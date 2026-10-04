@@ -74,13 +74,22 @@ module cvp_eth_dbg #(
 
     localparam integer PKTS_PER_FRAME = IMG_W * IMG_H * 3 / DATA_BYTES; // 1920
     localparam integer FIFO_AW        = 13;   // 8192 x 8bit ≈ 5.6 包
-    localparam [20:0] PX_LAST = IMG_W * IMG_H - 1;
+
+    // 帧内字节计数终点: 上游(cvp_rgb_stream_pack)把每个像素以 3 个有效拍
+    // 重复输出(本模块 r_bsel 依次取 R/G/B 各 1 字节), 每拍写 1 字节,
+    // 一帧 = IMG_W*IMG_H*3 字节。原值 IMG_W*IMG_H-1(按像素数)会让帧在
+    // 1/3 字节处提前切换 -> 3 个真实帧拼 1 个 PC 帧(帧率÷3、跨帧错位
+    // 斜条纹), 这是 v3 及以前网口帧率低的根因之一。
+    localparam [20:0] PX_LAST = IMG_W * IMG_H * 3 - 1;
 
     /* ---------------- 测试图案发生器（GEN_TESTPAT=1 时替代上游像素流） ----------------
-     * 720p 自由时序：1280 有效 + 100 消隐拍；8 条 160 像素竖彩条。
+     * 自由时序：IMG_W 有效 + 100 消隐拍；8 条等宽竖彩条。
+     * 每像素同样以 3 拍重复输出(与 cvp_rgb_stream_pack 节奏一致,
+     * 配合 r_bsel 依次取 R/G/B), 否则彩条自检也会错位。
      * 用途：相机链路没跑通时验证 网口→PC 全链路；GEN_TESTPAT=0 用真实像素流。 */
     reg [10:0] r_tpx;
     reg [9:0]  r_tpy;
+    reg [1:0]  r_tsub;      // 像素内 3 拍重复
     wire       w_gen_valid = (r_tpx < IMG_W);
     wire [3:0] w_bar = (r_tpx < 11'd160)  ? 4'd0 :
                        (r_tpx < 11'd320)  ? 4'd1 :
@@ -105,14 +114,20 @@ module cvp_eth_dbg #(
 
     always @(posedge i_clk_pix or negedge i_rst_pix_n) begin
         if (!i_rst_pix_n) begin
-            r_tpx <= 11'd0;
-            r_tpy <= 10'd0;
+            r_tpx  <= 11'd0;
+            r_tpy  <= 10'd0;
+            r_tsub <= 2'd0;
         end else if (GEN_TESTPAT) begin
-            if (r_tpx == IMG_W + 99) begin
-                r_tpx <= 11'd0;
-                r_tpy <= (r_tpy == IMG_H - 1) ? 10'd0 : r_tpy + 10'd1;
+            if (r_tsub != 2'd2) begin
+                r_tsub <= r_tsub + 2'd1;          // 同一像素保持 3 拍
             end else begin
-                r_tpx <= r_tpx + 11'd1;
+                r_tsub <= 2'd0;
+                if (r_tpx == IMG_W + 99) begin
+                    r_tpx <= 11'd0;
+                    r_tpy <= (r_tpy == IMG_H - 1) ? 10'd0 : r_tpy + 10'd1;
+                end else begin
+                    r_tpx <= r_tpx + 11'd1;
+                end
             end
         end
     end
@@ -127,7 +142,7 @@ module cvp_eth_dbg #(
     wire [7:0]       w_rd_data;
 
     /* ---------------- 像素域：纯字节写入 + 信用 + 跳帧 ---------------- */
-    reg [20:0] r_px;       // 帧内像素计数 0..PX_LAST
+    reg [20:0] r_px;       // 帧内字节计数 0..PX_LAST(每有效拍写 1 字节)
     reg [1:0]  r_bsel;     // 像素字节序 0=R 1=G 2=B（帧边界对齐像素0）
     reg [10:0] r_burst;    // 块内字节计数 0..DATA_BYTES-1（须容纳 1439）
     reg [6:0]  r_credit_bin, r_credit_gray;
