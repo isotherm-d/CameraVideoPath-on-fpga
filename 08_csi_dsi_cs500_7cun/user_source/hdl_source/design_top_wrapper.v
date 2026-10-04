@@ -19,6 +19,9 @@ module design_top_wrapper (
     output wire [3:0] O_eth_rgmii_txd,
     output wire       O_eth_rgmii_tx_ctl,
     output wire       O_eth_rgmii_txc,
+    input  wire [3:0] I_eth_rgmii_rxd,   // v20: 接收方向(命令通路)
+    input  wire       I_eth_rgmii_rx_ctl,
+    input  wire       I_eth_rgmii_rx_clk,
     output wire       O_eth_mdc,
     inout  wire       IO_eth_mdio,
     output wire       O_eth_rst_n,
@@ -70,6 +73,12 @@ module design_top_wrapper (
     wire [19:0] S_cvp_ae_exp;
     wire [15:0] S_cvp_ae_gain;
     wire [10:0] S_cvp_ae_dbg;
+
+    // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
+    wire [1:0]  S_cmd_mode;
+    wire [15:0] S_cmd_ae;
+    wire [8:0]  S_cmd_gr, S_cmd_gg, S_cmd_gb;
+    wire        S_cmd_swap;
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -280,8 +289,9 @@ module design_top_wrapper (
   ae_mux u_ae_mux (
       .I_clk       ( S_100m_clk   ),
       .I_rst_n     ( S_rst_n      ),
-      .I_mode_auto ( 1'b0         ),   // DIAG: 0=手动(固定 I_AE=1400) —— 二分实验:
-                                       //       亮=>写通路OK,闭环bug; 黑=>写通路断
+      .I_mode      ( S_cmd_mode   ),   // v20: 网络命令控制(0手动/1自动/2网络值)
+      .I_net_ae    ( S_cmd_ae     ),
+      .I_net_ag    ( 16'h0f20     ),   // 网络增益固定 4.0x(白平衡走 color_correct 通道)
 
       .I_man_req   ( S_ae_req_man ),
       .I_man_ae    ( S_ae_man     ),
@@ -534,6 +544,10 @@ color_correct #(
     .I_valid       ( S_awb1_valid  ),
     .I_rgb         ( S_awb1_rgb    ),
     .I_frame_start ( S_awb1_fs     ),
+    .I_gain_r_rt   ( S_cmd_gr      ),
+    .I_gain_g_rt   ( S_cmd_gg      ),
+    .I_gain_b_rt   ( S_cmd_gb      ),
+    .I_swap_rt     ( S_cmd_swap    ),
     .O_valid       ( S_cc_valid    ),
     .O_rgb         ( S_cc_rgb      ),
     .O_frame_start ( S_cc_fs       )
@@ -992,6 +1006,24 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     // 帧拍数偏差标志(期望153600): bit4=曾<153600, bit5=曾>153600
     wire w_fb_lt = (r_frame_beats > 32'd1000) && (r_frame_beats < 32'd153600);
     wire w_fb_gt = (r_frame_beats > 32'd153600) && (r_frame_beats < 32'd200000);
+
+    // v20: 网络命令接收器(RGMII RX -> 曝光/白平衡命令寄存器)
+    cvp_cmd_rx u_cmd_rx (
+        .I_rxclk       ( I_eth_rgmii_rx_clk ),
+        .I_rst_n_rx    ( S_gmii_lock        ),   // RXCK 域复位(PLL 锁定后)
+        .I_rxd         ( I_eth_rgmii_rxd    ),
+        .I_rxctl       ( I_eth_rgmii_rx_ctl ),
+        .I_rst_n_gmii  ( S_rst_n            ),
+        .I_clk_gmii    ( S_gmii_125m        ),
+        .I_clk100      ( S_100m_clk         ),
+        .I_rst_n_100   ( S_rst_n            ),
+        .o_mode        ( S_cmd_mode         ),
+        .o_net_ae      ( S_cmd_ae           ),
+        .o_gain_r      ( S_cmd_gr           ),
+        .o_gain_g      ( S_cmd_gg           ),
+        .o_gain_b      ( S_cmd_gb           ),
+        .o_swap        ( S_cmd_swap         )
+    );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
     // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口

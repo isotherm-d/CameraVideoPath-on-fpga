@@ -12,7 +12,9 @@ module ae_mux #(
 ) (
     input          I_clk,          // 100M(与 ae_set/cvp_ae 同域)
     input          I_rst_n,
-    input          I_mode_auto,    // 1=自动曝光
+    input  [1:0]   I_mode,         // 0=手动按键 1=自动(cvp_ae) 2=网络值
+    input  [15:0]  I_net_ae,       // 网络曝光码(半行)
+    input  [15:0]  I_net_ag,       // 网络增益(3e08/09 拼装)
 
     /* 手动通道(ae_set 输出) */
     input          I_man_req,
@@ -53,7 +55,12 @@ module ae_mux #(
             r_auto_d1 <= I_auto_req;
             r_auto_d2 <= r_auto_d1;
 
-            if (I_mode_auto) begin
+            if (I_mode == 2'd2) begin
+                // 网络值通道(上位机/开发板命令)
+                O_ae     <= I_net_ae;
+                O_ag     <= I_net_ag;
+                O_ae_req <= I_man_req;      // 网络命令到达时由命令模块发脉冲
+            end else if (I_mode == 2'd1) begin
                 O_ae <= w_auto_ae;
                 O_ag <= I_auto_gain;
                 // 上升沿检测: cvp_ae 每帧算完拉高一次

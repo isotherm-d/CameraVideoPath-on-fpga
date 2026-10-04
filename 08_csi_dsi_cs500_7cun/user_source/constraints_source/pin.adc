@@ -24,6 +24,12 @@ set_pin_assignment	{ O_eth_rgmii_tx_ctl }	{ LOCATION = L2; IOSTANDARD = LVCMOS33
 set_pin_assignment	{ O_eth_rgmii_txc }		{ LOCATION = R3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; OUTDEL = 3; }
 set_pin_assignment	{ O_eth_mdc }			{ LOCATION = M5; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
 set_pin_assignment	{ IO_eth_mdio }			{ LOCATION = V1; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_eth_rgmii_rxd[0] }	{ LOCATION = H1; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ I_eth_rgmii_rxd[1] }	{ LOCATION = K1; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ I_eth_rgmii_rxd[2] }	{ LOCATION = K2; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ I_eth_rgmii_rxd[3] }	{ LOCATION = L3; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ I_eth_rgmii_rx_ctl }	{ LOCATION = J1; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ I_eth_rgmii_rx_clk }	{ LOCATION = N6; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ O_eth_rst_n }			{ LOCATION = H2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
 
 
