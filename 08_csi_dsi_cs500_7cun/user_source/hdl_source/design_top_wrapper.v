@@ -81,6 +81,12 @@ module design_top_wrapper (
     wire        S_cmd_swap;
     wire        S_cmd_awb_en;   // v21: 0=冻结 AWB(手动白平衡) 1=自动
     wire [6:0]  S_cmd_kelvin;   // v21: 色温, 单位 100K
+    wire [7:0]  S_cmd_cnt;      // v21c DIAG: 命令接收计数
+    wire        S_line_ovf_pulse;
+    reg         S_line_ovf = 1'b0;
+    always @(posedge S_csi_rx_clk or negedge S_rst_n)
+        if (!S_rst_n) S_line_ovf <= 1'b0;
+        else if (S_line_ovf_pulse) S_line_ovf <= 1'b1;
 	
 	wire        	S_csi_rx_clk;  
     wire        	S_hs_rx_valid;  
@@ -438,7 +444,8 @@ line_retimer #(
     .O_tuser  ( S_raw_tuser  ),
     .O_tvalid ( S_raw_tvalid ),
     .O_tlast  ( S_raw_tlast  ),
-    .O_tdata  ( S_raw_tdata  )
+    .O_tdata  ( S_raw_tdata  ),
+    .O_ovf    ( S_line_ovf_pulse )
 );
 
 
@@ -1048,7 +1055,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .o_swap        ( S_cmd_swap         ),
         .o_awb_en      ( S_cmd_awb_en       ),
         .o_kelvin      ( S_cmd_kelvin       )
-    );
+    ),
+        .o_evt_cnt     ( S_cmd_cnt          );
 
     // v10: cvp_rgb_stream_pack 已移除(其 FIFO 读协议在 40.2MHz 像素域无法
     // 实时展开, 见 v5/v7/v8 历史) —— AWB 观测口 96bit 拍(4像素/拍)直连网口
@@ -1075,7 +1083,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .i_rst_gmii_n   ( S_gmii_lock       ),
         .i_txd_swap     ( 1'b0              ),
         .i_dbg_flags    ( r_net_diag        ),
-        .i_scan_word    ( S_cvp_ae_exp[10:0] ),  // DIAG: 实际曝光码(半行, 期望 1996=998 行封顶)  // DIAG: raw10 层段长(行) min/max 偏差(248基)
+        .i_scan_word    ( {S_cmd_cnt, 7'b0, S_line_ovf} ),  // DIAG: [15:8]=命令计数 [0]=行溢出粘滞  // DIAG: 实际曝光码(半行, 期望 1996=998 行封顶)  // DIAG: raw10 层段长(行) min/max 偏差(248基)
         .o_scan_rotate  (                   ),
         .o_rgmii_txd    ( O_eth_rgmii_txd   ),
         .o_rgmii_tx_ctl ( O_eth_rgmii_tx_ctl),
