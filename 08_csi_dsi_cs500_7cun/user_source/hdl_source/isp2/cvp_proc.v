@@ -132,8 +132,7 @@ module cvp_proc #(
         .o_req         (o_ae_req),
         .o_exp         (o_ae_exp),
         .o_gain        (o_ae_gain),
-        .o_locked      (o_ae_locked),
-        .o_dbg         (o_ae_dbg)
+        .o_locked      (o_ae_locked)
     );
 
     /* ================= 3. 彩色重建：3x3 双线性（BGGR） ================= */
