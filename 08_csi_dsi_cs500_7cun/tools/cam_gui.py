@@ -47,16 +47,6 @@ class App:
 
         ttk.Separator(panel).grid(row=row, column=0, columnspan=2, sticky="ew", pady=4)
         row += 1
-        ttk.Label(panel, text="曝光模式").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
-        row += 1
-        self.mode_var = tk.IntVar(value=0)
-        for v, t in ((0, "手动(按键值)"), (1, "自动(cvp_ae 闭环)"), (2, "网络值")):
-            ttk.Radiobutton(panel, text=t, value=v, variable=self.mode_var,
-                            command=self.send_mode).grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
-            row += 1
-
-        ttk.Separator(panel).grid(row=row, column=0, columnspan=2, sticky="ew", pady=4)
-        row += 1
         ttk.Label(panel, text="白平衡增益 Q8 (256=1.0x)").grid(row=row, column=0, columnspan=2, sticky="w", padx=6)
         row += 1
         self.gain_vars = {}
@@ -189,9 +179,6 @@ class App:
         v = int(self.exp_var.get())
         self._send(1, v)
         self.exp_lbl.configure(text=f"{v} 半行 ({v//2} 行)")
-
-    def send_mode(self):
-        self._send(0, int(self.mode_var.get()))
 
     def send_gain(self):
         for cmd, ch in ((2, "R"), (3, "G"), (4, "B")):
