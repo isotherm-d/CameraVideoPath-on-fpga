@@ -1,0 +1,15 @@
+{
+  "description": "Bitstreams present before the v24 fixes; archived unchanged.",
+  "source_baseline": "v23 / 84db393",
+  "hardware_verified": false,
+  "files": [
+    {
+      "file": "camera_to_dsi_display.bit",
+      "sha256": "c4d8684ce2960b00fefc86830a115c762c78d0ff9a1ba49ab77937fe6477020c"
+    },
+    {
+      "file": "camera_to_dsi_display_compress.bit",
+      "sha256": "d76da4ef927329695bcedece43165b46e1ff50a9cf20a85a53aeef5c6874c424"
+    }
+  ]
+}

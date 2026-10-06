@@ -62,7 +62,7 @@ always@(posedge I_clk or negedge I_rst_n)
        rst_cnt <= rst_cnt; 
 
 reg  iic_req;//请求操作I2C控制器信号
-wire ic_busy; //I2C控制器忙信号 
+wire iic_busy; //I2C控制器忙信号
 reg  [31:0] wr_data;     //写数据寄存器
 reg  [1 :0] TS_S = 2'd0; //状态机寄存器
 reg  [8 :0] reg_index;   //寄存索引
@@ -85,12 +85,13 @@ always@(posedge I_clk ) begin
     else begin
         case(TS_S)
         0:if(reg_index == REG_SIZE && O_cfg_done == 1'b0) begin//如果配置完成
+            reg_index <= 9'd0; // Start the AE table at its first register.
             O_cfg_done <= 1'b1;       //设置 cfg_done标准
         end 
         else if(reg_index == REG_SIZE && O_ae_cfg_done == 1'b0) begin//如果配置完成
             O_ae_cfg_done <= 1'b1;       //设置 cfg_done标准
         end 
-        else if(I_ae_req)begin
+        else if(I_ae_req && O_cfg_done)begin
             O_ae_cfg_done <= 0;
             reg_index   <= 0;
         end

@@ -73,21 +73,25 @@ module cvp_proc #(
     /* ================= 0. AE/AWB 参数通路(上电 + v23 网络运行时) =================
      * cam_cfg_done 后保持 o_ae_req 高 1023 拍(10us), 顶层 uicfgcs500 采样后
      * 启动 AE 表写入。v23: o_ae 由常量改为寄存器 —— 收到网络曝光命令时
-     * 锁存新值(钳位 62..1940)并重发 req, uicfgcs500 见 req 重写传感器
+     * 锁存新值(钳位 62..1800)并重发 req, uicfgcs500 见 req 重写传感器
      * 0x3e00/01/02(其状态机的 I_ae_req 分支即重触发入口)。
      * 注: r_ae_val 组合进入 24M 域 uicfgcs500, 但只在命令拍更新(人为速率),
      * I2C 写期间(~2ms)保持稳定, 免握手中继。 */
     reg [9:0]  r_ae_req_cnt = 10'd1023;
+    reg        r_cfg_done_s1;
     reg        r_cfg_done_d;
     reg [15:0] r_ae_val;
     always @(posedge i_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             r_ae_req_cnt <= 10'd1023;
+            r_cfg_done_s1 <= 1'b0;
             r_cfg_done_d <= 1'b0;
             r_ae_val     <= AE_EXP_CODE;
         end else begin
-            r_cfg_done_d <= i_cam_cfg_done;
-            if (i_cmd_ae_wr && i_cam_cfg_done) begin
+            // Synchronize the 24 MHz configuration result into the 100 MHz domain.
+            r_cfg_done_s1 <= i_cam_cfg_done;
+            r_cfg_done_d <= r_cfg_done_s1;
+            if (i_cmd_ae_wr && r_cfg_done_d) begin
                 r_ae_val     <= (i_cmd_ae < 16'd62)   ? 16'd62   :
                                 (i_cmd_ae > 16'd1800) ? 16'd1800 : i_cmd_ae;   // 上限收紧: >=900 行读出窗偏移, 顶/底错位带
                 r_ae_req_cnt <= 10'd1023;    // 重发请求(若正在倒数则顺延, 无害)
@@ -95,7 +99,9 @@ module cvp_proc #(
                 r_ae_req_cnt <= r_ae_req_cnt - 10'd1;
         end
     end
-    assign o_ae_req = (r_ae_req_cnt != 10'd0);
+    // The startup count is pending work, not permission to interrupt base setup.
+    // Asserting AE before cfg_done holds uicfgcs500 at register index zero.
+    assign o_ae_req = r_cfg_done_d && (r_ae_req_cnt != 10'd0);
     assign o_ae     = r_ae_val;
     assign o_ag     = AE_GAIN_IDX;
 

@@ -7,18 +7,19 @@
          -> 命令事件(toggle+data 跨域) -> 100M 域命令寄存器组
 
  过滤规则(任一不符即丢帧, 状态回等下一帧):
-   帧内字节 6  = 0xD5            (SFD; 前导不逐字节查, 只查 SFD)
+   字节偏移包含 7 字节前导码和 SFD，以下为线上的实际偏移：
+   字节 7      = 0xD5            (SFD; 前导不逐字节查, 只查 SFD)
    字节 20-21  = 0x08 0x00       (EtherType = IPv4)
-   字节 23     = 0x11            (协议 = UDP)
-   字节 36-37  = 0x17 0x71       (UDP 目的端口 = 6001)
-   字节 42-45  = C5 A5 50 01     (魔数)
-   字节 46     = 命令码
-   字节 47-49  = 值 24bit 大端
+   字节 31     = 0x11            (协议 = UDP)
+   字节 44-45  = 0x17 0x71       (UDP 目的端口 = 6001)
+   字节 50-53  = C5 A5 50 01     (魔数)
+   字节 54     = 命令码
+   字节 55-57  = 值 24bit 大端
  不查 MAC/IP 地址(命令走广播, 宽容上位机与开发板混用)。
 
- 命令集(载荷字节 46/47-49):
+ 命令集(载荷为魔数4字节 + 命令1字节 + 数值3字节):
    0: 模式      值 0=手动(ae_set 按键) 1=自动(cvp_ae 闭环) 2=网络曝光值
-   1: 曝光码    值 16bit = 寄存器码(半行); v23 起由 cvp_proc 消费(钳位 62..1996
+   1: 曝光码    值 16bit = 寄存器码(半行); v23 起由 cvp_proc 消费(钳位 62..1800
                 后重写传感器), 并发 o_exp_wr 单拍
    2/3/4:      GAIN_R/G/B  值 9bit Q8(256=1.0x, 上限 511)
    5:           SWAP_RB     值 0/1
@@ -90,6 +91,7 @@ module cvp_cmd_rx (
         if (!I_rst_n_rx) begin
             r_idx <= 0; r_fail <= 0; r_arm <= 0;
             r_val <= 0; r_cmd <= 0; r_evt <= 0;
+            o_evt_cnt <= 8'd0;
         end else begin
             r_evt <= 1'b0;
             if (r_evt) o_evt_cnt <= o_evt_cnt + 8'd1;
@@ -101,7 +103,7 @@ module cvp_cmd_rx (
                     /* r_idx 空间: sof(RX_CTL 上升沿)拍吃掉前导[0]并清零,
                      * 此后 r_idx = 帧内偏移-1。所有校验按此空间:
                      *   D5=6, EthType=19/20, IP协议=30, 端口=43/44,
-                     *   魔数=49..52, 命令=53, 值=54/55, evt=56 */
+                     *   魔数=49..52, 命令=53, 值=54..56, evt=56 */
                     8'd6:  if (w_byte != 8'hD5) r_fail <= 1'b1;   // SFD
                     8'd19: if (w_byte != 8'h08) r_fail <= 1'b1;   // EthType hi
                     8'd20: if (w_byte != 8'h00) r_fail <= 1'b1;   // EthType lo
@@ -114,13 +116,13 @@ module cvp_cmd_rx (
                     8'd52: if (w_byte != M3)    r_fail <= 1'b1;   // 魔数 3
                     8'd53: begin
                                r_cmd <= w_byte;
-                               r_val[23:16] <= w_byte;
                                r_arm <= !r_fail;               // 前置校验全过才武装
                            end
-                    8'd54: if (r_arm) r_val[15:8] <= w_byte;
-                    8'd55: if (r_arm) begin
+                    8'd54: if (r_arm) r_val[23:16] <= w_byte;
+                    8'd55: if (r_arm) r_val[15:8] <= w_byte;
+                    8'd56: if (r_arm) begin
                                r_val[7:0]  <= w_byte;
-                               r_evt       <= r_arm;      // 值齐(第 3 字节)与 evt 同拍
+                               r_evt       <= 1'b1;      // 三个数值字节全部到齐才提交
                            end
                     default: ;
                 endcase
