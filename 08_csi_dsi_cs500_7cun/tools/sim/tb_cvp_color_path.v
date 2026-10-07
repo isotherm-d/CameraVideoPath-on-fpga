@@ -30,7 +30,7 @@ endfunction
 always @(negedge clk) if(valid)begin
  if(fs)begin frame_seen=frame_seen+1;slot=0;end
  if(frame_seen>=0)begin
-  if((slot%W)>=4 && (slot/W)>=4)begin
+  if(slot<W*H)begin
    checked=checked+1;
    expected_r=(frame_seen==0)?225:100;
    expected_g=(frame_seen==0)?125:150;
@@ -61,8 +61,8 @@ initial begin
   end
   repeat(12)@(negedge clk);
  end
- repeat(16)@(negedge clk);
- if(errors==0 && checked==672 && frame_seen==1)$display("TEST_RESULT PASS full_cvp_bayer_colour_path");
+ repeat(W+40)@(negedge clk);
+ if(errors==0 && checked==W*H*2 && frame_seen==1)$display("TEST_RESULT PASS full_cvp_bayer_colour_path_all_borders");
  else $display("TEST_RESULT FAIL full_cvp_bayer_colour_path errors=%0d checked=%0d frames=%0d",errors,checked,frame_seen+1);
  $finish;
 end
