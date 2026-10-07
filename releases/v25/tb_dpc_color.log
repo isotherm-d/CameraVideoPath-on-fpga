@@ -1,4 +1,4 @@
-# vsim -do {run -all; quit -f} -l {C:\Users\DWX1105\Desktop\02_F02_FC02_PH1P35\tmp\v25_color_20261007\regression\tb_dpc_color.log} -c -novopt work.tb_dpc_color
+# vsim -do {run -all; quit -f} -l {C:\Users\DWX1105\Desktop\02_F02_FC02_PH1P35\tmp\v25_color_20261007\regression_aligned\tb_dpc_color.log} -c -novopt work.tb_dpc_color
 # //  ModelSim SE-64 10.1c Jul 28 2012
 # //
 # //  Copyright 1991-2012 Mentor Graphics Corporation
@@ -8,12 +8,28 @@
 # //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
-# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.tb_dpc_color
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression_aligned/work.tb_dpc_color
 # Loading work.tb_dpc_color
-# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.cvp_dpc
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression_aligned/work.cvp_dpc
 # Loading work.cvp_dpc
-# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.imgproc_win3x3
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression_aligned/work.cvp_dpc_legacy
+# Loading work.cvp_dpc_legacy
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression_aligned/work.imgproc_win3x3
 # Loading work.imgproc_win3x3
+# ** Warning: (vsim-3017) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Too few port connections. Expected 18, found 16.
+#
+#         Region: /tb_dpc_color/active/legacy_comparison/detector/u_win
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Missing connection for port 'o_center_x_odd'.
+#
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Missing connection for port 'o_center_y_odd'.
+#
+# ** Warning: (vsim-3017) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Too few port connections. Expected 18, found 16.
+#
+#         Region: /tb_dpc_color/old_centre/u_win
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Missing connection for port 'o_center_x_odd'.
+#
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v(87): [TFMPC] - Missing connection for port 'o_center_y_odd'.
+#
 # run -all
 # DPC_CHANGED genuine_color_sample=100 result=700
 # DPC_CHANGED genuine_color_sample=100 result=900

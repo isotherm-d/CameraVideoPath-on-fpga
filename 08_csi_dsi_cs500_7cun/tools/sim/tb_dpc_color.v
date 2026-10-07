@@ -4,22 +4,22 @@ reg clk=0,rst=0,valid=0,fs=0;
 always #5 clk=~clk;
 reg [9:0] raw=0;
 wire v0,v1,f0,f1;
-wire [9:0] corrected,original;
+wire [9:0] corrected,original,window_original;
 integer x,y,changed=0,samples=0,errors=0,cx,cy,expected;
 cvp_dpc #(.IMG_W(32),.IMG_H(16),.BYPASS(0)) active(.i_clk(clk),.i_rst_n(rst),.i_valid(valid),.i_raw(raw),.i_frame_start(fs),.o_valid(v0),.o_raw(corrected),.o_frame_start(f0));
 cvp_dpc #(.IMG_W(32),.IMG_H(16),.BYPASS(1)) reference(.i_clk(clk),.i_rst_n(rst),.i_valid(valid),.i_raw(raw),.i_frame_start(fs),.o_valid(v1),.o_raw(original),.o_frame_start(f1));
+cvp_dpc_legacy #(.IMG_W(32),.IMG_H(16),.BYPASS(1)) old_centre(.i_clk(clk),.i_rst_n(rst),.i_valid(valid),.i_raw(raw),.i_frame_start(fs),.o_valid(),.o_raw(window_original),.o_frame_start());
 always @(negedge clk)if(v0 && v1)begin
  samples=samples+1;
  cx=((samples-1)%32);cy=((samples-1)/32);
- if(cx>0)cx=cx-1;if(cy>0)cy=cy-1;
  expected=((cx%2)==0&&(cy%2)==0)?100:((cx%2)==1&&(cy%2)==1)?900:500;
  if(original!==expected)begin
-  if(errors<3)$display("FAIL: raw center sample=%0d expected=%0d result=%0d",samples,expected,original);
+  if(errors<3)$display("FAIL: delayed RAW sample=%0d expected=%0d result=%0d",samples,expected,original);
   errors=errors+1;
  end
- if(samples>96 && corrected!==original)begin
+ if(samples>96 && corrected!==window_original)begin
   changed=changed+1;
-  if(changed<5)$display("DPC_CHANGED genuine_color_sample=%0d result=%0d",original,corrected);
+  if(changed<5)$display("DPC_CHANGED genuine_color_sample=%0d result=%0d",window_original,corrected);
  end
 end
 initial begin

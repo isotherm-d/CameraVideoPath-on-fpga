@@ -46,8 +46,8 @@ module pack_4 (
                         2'd1: begin r_px1 <= I_rgb; r_cnt <= 2'd2; end
                         2'd2: begin r_px2 <= I_rgb; r_cnt <= 2'd3; end
                         default: begin
-                            // 本拍是组内第 4 个像素: 输出 {px3, px2, px1, px0}
-                            O_tdata  <= {I_rgb, r_px2, r_px1, r_px0};
+                            // Both Ethernet and DSI consume the high pixel first.
+                            O_tdata  <= {r_px0, r_px1, r_px2, I_rgb};
                             O_tvalid <= 1'b1;
                             O_tuser  <= r_fs_pending;
                             r_fs_pending <= 1'b0;

@@ -22,7 +22,7 @@ def load_profile(path=PROFILE_PATH):
     base = profile["base_gains_q8"]
     if len(base) != 3 or base[1] != 256 or any(not 64 <= v <= 511 for v in base):
         raise ValueError("Expected bounded Q8 RGB gains, with G=256")
-    if not 2500 <= profile["reference_kelvin"] <= 10000:
+    if not 2500 <= profile["reference_kelvin"] <= 10000 or profile["reference_kelvin"] % 100:
         raise ValueError("Reference temperature is outside the supported curve")
     return profile
 

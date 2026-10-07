@@ -51,8 +51,9 @@ module group_fifo (
     );
 
     assign O_rd_data  = w_rd_word[39:0];
-    assign O_rd_tuser = w_rd_word[40];
-    assign O_rd_tlast = w_rd_word[41];
+    // Packing is {frame_start, line_last, data}; do not exchange the two tags.
+    assign O_rd_tuser = w_rd_word[41];
+    assign O_rd_tlast = w_rd_word[40];
 
     /* ---- 读节律: 5 拍/组(齿轮箱收组 1 拍 + 弹出 4 拍) ---- */
     reg [2:0] r_gap;

@@ -446,7 +446,8 @@ group_fifo u_group_fifo (
 
 cvp_proc #(
     .IMG_W  ( 1280 ),
-    .IMG_H  (  720 )
+    .IMG_H  (  720 ),
+    .AE_EXP_CODE (16'd500) // v25 default exposure, synchronized with wb_profile.json.
 ) u_cvp_proc (
     .i_clk              ( S_100m_clk ),
     .i_rst_n            ( S_rst_n      ),

@@ -77,7 +77,9 @@ module cvp_eth_dbg #(
     localparam integer PXF_AW         = 11;   // 24bit x 2048 像素跨域 FIFO(≥2 行)
 
     // 帧内字节计数终点(每有效拍写 1 字节, 一帧 = IMG_W*IMG_H*3 字节)
-    localparam [20:0] PX_LAST = IMG_W * IMG_H * 3 - 1;
+    localparam integer FRAME_BYTES = IMG_W * IMG_H * 3;
+    localparam integer BYTE_COUNT_W = $clog2(FRAME_BYTES);
+    localparam [BYTE_COUNT_W-1:0] PX_LAST = FRAME_BYTES - 1;
 
     /* ---------------- 测试图案发生器（GEN_TESTPAT=1 时替代上游像素流） ----------------
      * 自由时序：每行 IMG_W/4 个 96bit 拍(4像素/拍) + 25 消隐拍；8 条等宽竖彩条。
@@ -164,7 +166,9 @@ module cvp_eth_dbg #(
      * 帧对齐: 输入 bit96=帧头标记。新拍首字节拍(sel0/bsel0)若标记=1 ->
      * r_px 清 0(本拍即帧 byte0), r_bsel/r_sel 已在切换点天然为 0,
      * 跳帧判定在此拍做。字节计数 PX_LAST 仍作兜底(丢数据时防卡死)。 */
-    reg  [20:0] r_px;        // 帧内字节计数(每展开拍 +1, 与原版语义一致: 不看 capture)
+    reg  [BYTE_COUNT_W-1:0] r_px; // Index of the next byte of a real sensor frame.
+    reg         r_frame_active;
+    reg         r_read_pending;
     reg  [1:0]  r_bsel;      // 当前字节 0=R 1=G 2=B
     reg  [1:0]  r_sel;       // 当前像素 0..3 (像素序 [95:72] 最先)
     reg  [95:0] r_beat;      // 正在展开的 96bit 拍
@@ -180,7 +184,11 @@ module cvp_eth_dbg #(
     wire [7:0]  w_rd_data;
 
     // 取新拍: 装载态常取; 展开中在 (sel==3, bsel==1) 预取
-    assign w_pxf_rd = (!w_pxf_empty) && ( (!r_run) || ((r_sel == 2'd3) && (r_bsel == 2'd1)) );
+    // One outstanding read; reserve room for the current and prefetched word.
+    // Otherwise the idle path can pop a second word while accepting the first.
+    assign w_pxf_rd = (!w_pxf_empty) && !r_read_pending && !w_pxf_valid &&
+                     (w_bf_level < (1 << FIFO_AW) - 32) &&
+                     ((!r_run) || ((r_sel == 2'd3) && (r_bsel == 2'd1)));
 
     // 本拍有字节活动: 展开中, 或装载拍(FIFO 数据已到)
     wire w_load    = (!r_run) && w_pxf_valid;      // 装载拍: 该拍即写 byte0(sel0/bsel0)
@@ -196,12 +204,12 @@ module cvp_eth_dbg #(
     wire [6:0]  w_bsh  = (3 - r_sel) * 24 + (2 - r_bsel) * 8;   // 0..88
     wire [7:0]  w_byte = w_cur >> w_bsh;
 
-    wire w_frame_last = (r_px == PX_LAST);
+    wire w_frame_last = r_frame_active && (r_px == PX_LAST);
     // 帧头拍使用"本帧判定值"(跳帧判定在帧头拍即生效), 否则帧头第一字节会因
     // r_capture 尚未更新而被丢 -> 每帧缺 1 字节 -> 全帧错位
     wire w_cap_now    = w_sof ? ((r_skip == 4'd0) &&
                                  (w_bf_level < (1 << FIFO_AW >> 1)))
-                              : r_capture;
+                              : (r_frame_active && r_capture);
     wire w_write      = w_adv && w_cap_now && !w_bf_full;
     wire w_chunk_done = w_write && (r_burst == DATA_BYTES - 1);
 
@@ -236,7 +244,9 @@ module cvp_eth_dbg #(
 
     always @(posedge i_clk_gmii or negedge i_rst_gmii_n) begin
         if (!i_rst_gmii_n) begin
-            r_px          <= 21'd0;
+            r_px          <= 0;
+            r_frame_active<= 1'b0;
+            r_read_pending<= 1'b0;
             r_bsel        <= 2'd0;
             r_sel         <= 2'd0;
             r_beat        <= 96'd0;
@@ -246,7 +256,10 @@ module cvp_eth_dbg #(
             r_credit_bin  <= 7'd0;
             r_skip        <= 4'd0;
             r_capture     <= 1'b0;
-        end else if (w_adv) begin
+        end else begin
+            if (w_pxf_rd) r_read_pending <= 1'b1;
+            if (w_pxf_valid) r_read_pending <= 1'b0;
+            if (w_adv) begin
             /* 字节相位推进: 12 拍循环(帧尾字节=像素3的B, 帧字节预算为 12 的倍数,
              * 帧尾恰好回到切换点, 跨帧天然对齐; 帧头标记再做强制对齐兜底) */
             if ((r_sel == 2'd3) && (r_bsel == 2'd2)) begin
@@ -276,17 +289,17 @@ module cvp_eth_dbg #(
 
             /* 帧字节计数 + 帧头标记强制对齐(标记优先, 计数兜底) */
             if (w_sof) begin
-                r_px      <= 21'd0;
+                r_px      <= 1; // SOF byte zero is written on this clock.
+                r_frame_active <= 1'b1;
                 r_skip    <= (r_skip == FRAME_SKIP - 1) ? 4'd0 : r_skip + 4'd1;
                 r_capture <= (r_skip == 4'd0) &&
                              (w_bf_level < (1 << FIFO_AW >> 1));
             end else if (w_frame_last) begin
-                r_px      <= 21'd0;
-                r_skip    <= (r_skip == FRAME_SKIP - 1) ? 4'd0 : r_skip + 4'd1;
-                r_capture <= (r_skip == 4'd0) &&
-                             (w_bf_level < (1 << FIFO_AW >> 1));
-            end else begin
-                r_px <= r_px + 21'd1;
+                r_px      <= 0;
+                r_frame_active <= 1'b0;
+                r_capture <= 1'b0; // A byte budget is not permission to invent SOF.
+            end else if (r_frame_active) begin
+                r_px <= r_px + 1'b1;
             end
 
             /* 整块信用: 每写满 DATA_BYTES 字节记一次 */
@@ -295,6 +308,7 @@ module cvp_eth_dbg #(
                 r_credit_bin <= r_credit_bin + 7'd1;
             end else if (w_write) begin
                 r_burst <= r_burst + 11'd1;
+            end
             end
         end
     end

@@ -8,7 +8,7 @@ wire valid,selected_swap;
 wire [8:0] red,blue,sr,sg,sb;
 integer errors=0,k,last_r,last_b;
 // Reference-scene fixture; update these only after recording the calibration.
-localparam [8:0] CAL_R=291, CAL_B=246;
+localparam [8:0] CAL_R=344, CAL_B=451;
 wb_kelvin dut(.I_clk(clk),.I_rst_n(rst),.I_en(en),.I_kelvin_hk(kelvin),.o_valid(valid),.o_gain_r(red),.o_gain_b(blue));
 cvp_wb_select selector(.I_clk(clk),.I_rst_n(rst),.I_preset(preset),.I_kelvin(kelvin),.I_r(mr),.I_g(mg),.I_b(mb),.I_swap(swap),.O_r(sr),.O_g(sg),.O_b(sb),.O_swap(selected_swap));
 task check(input condition,input [8*80-1:0] label);

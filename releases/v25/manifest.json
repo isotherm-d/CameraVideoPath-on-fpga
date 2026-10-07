@@ -1,49 +1,56 @@
 {
-  "version": "v25-candidate",
+  "version": "v25",
   "baseline_commit": "8e69f05fb949327d6c2e247c177eaf6fb6106694",
   "branch": "fix/v25-color-calibration",
   "device": "PH1P35MDG324",
   "td_version": "6.2.168116",
   "python_tests": 18,
+  "rtl_tests": 10,
   "rtl_regression": "PASS",
   "timing_ns": {
-    "SWNS": 0.558,
-    "STNS": 0,
+    "SWNS": 0.348,
+    "STNS": 0.0,
     "HWNS": 0.02,
-    "HTNS": 0
+    "HTNS": 0.0
   },
-  "sta_coverage_percent": 93.69,
-  "hardware_verified": false,
-  "reference_calibration_status": "awaiting exclusive UDP 6000 capture; old viewer still open",
+  "hardware_verified": true,
+  "hardware_scope": "UDP camera video, exposure and white-balance controls; SRAM programming only",
   "profile": {
     "version": "v25",
     "reference_kelvin": 6500,
     "base_gains_q8": [
-      291,
+      344,
       256,
-      246
+      451
     ],
-    "default_exposure": 1700,
-    "calibration_status": "pending same-scene capture",
-    "note": "The reference Kelvin is a curve anchor, not a measurement of the lamp."
+    "default_exposure": 500,
+    "calibration_status": "single-scene phone-reference white balance, runtime verified",
+    "note": "6500 K is the reference anchor, not a measured lamp CCT; other temperatures use an approximate prior curve.",
+    "reference_object": "white straw in IMG_20261007_141523.jpg"
   },
+  "rtl_hash_note": "SHA256 after normalizing CRLF and trailing whitespace",
   "rtl_sha256": {
-    "design_top_wrapper.v": "7f2c432f963e93bfe93833957eb2a8980d002578d87a20fcafb23e86ff9b4c22",
+    "design_top_wrapper.v": "53ebf06cf15c535402a71b38918ebb3de11dc829e9303ee43f5ad1b287b6852c",
     "isp2/color_correct.v": "1f3cf23aa7c78d914289800d144e21f7be86131a33151c75f7e96ba7f495007d",
-    "isp2/wb_kelvin.v": "7d7c59599708173eb8ae7d3f9ff86783561a21b2ac13452b8e3ea80909761b76",
-    "isp2/cvp_proc.v": "711e791d96c2460e7f462c8c0b4af9d13a03749df808c3b25b533c66dca136e5",
-    "isp2/cvp_dpc.v": "72b3fa091dc6686124e6fdeaa77413b183a5386478c91188197bf1cdb5c74c5b"
+    "isp2/cvp_proc.v": "52e9a5b3ae3a45557c917c0f578c47740d693cc054054beefc06b1dfcb78a1f2",
+    "isp2/cvp_dpc.v": "0883dedda17b4d2b1a9968f6e9ccfce6b0a5225cb8e2b63afd94429b926ace13",
+    "isp2/cvp_demosaic.v": "cf0fba02801b93813a86e391cf9048087307425de0cf3e7afb437db4261043bb",
+    "isp2/imgproc_win3x3.v": "c313b88119d0dcd5939a13e8b56335dc71bc032647a514ac04579dc2e37bfd97",
+    "isp2/group_fifo.v": "d23966c9a0a653b99da7b3d7105d5e462abd37d57d86ea54387bd20043456638",
+    "isp2/pack_4.v": "542b60f7afb278cc693053cb70a3cd0d251bb64633a1403af9e88d1a892a70fa",
+    "isp2/wb_kelvin.v": "3a2305e277f03d114b9dbcf5953cd35940007f83048eb45088c67c68795695bb",
+    "net/cvp_eth_dbg.v": "ecc995c47fff173c79ee88102af1c3380ac7de074f048f09d93d6902662e3382"
   },
   "files": [
     {
       "file": "camera_to_dsi_display_v25.bit",
       "bytes": 1789539,
-      "sha256": "65de2fd61144cf5141896404853edee23db75a37390ca33fab33dae0de2f7cfe"
+      "sha256": "f85a0443e7ffb16ce888db9d3d554769750a351a8e73cefe92e00a809c32abed"
     },
     {
       "file": "camera_to_dsi_display_v25_compress.bit",
-      "bytes": 1325297,
-      "sha256": "9880f65c726d68b4d50eb54d9bcec021db390ed0207c6efd92d74929abf159ea"
+      "bytes": 1301873,
+      "sha256": "8c6e082774b70e98c097aba0c76178fb103fe1f291a8827afa4c73ff378911a4"
     }
   ]
 }

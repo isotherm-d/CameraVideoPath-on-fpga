@@ -1,9 +1,23 @@
 """Generate the synthesizable 100 K temperature table; run after calibration."""
 import argparse
+import re
 from pathlib import Path
 from color_model import load_profile, temperature_gains
 
 OUTPUT = Path(__file__).resolve().parents[1] / "user_source/hdl_source/isp2/wb_kelvin.v"
+TOP = OUTPUT.parents[1] / "design_top_wrapper.v"
+
+
+def synchronized_top():
+    text = TOP.read_text(encoding="utf-8")
+    value = load_profile()["default_exposure"]
+    if not 62 <= value <= 1800:
+        raise ValueError("Default exposure must be 62..1800")
+    text, count = re.subn(r"(\.AE_EXP_CODE\s*\(\s*16'd)\d+(\s*\))",
+                         lambda m: m[1] + str(value) + m[2], text)
+    if count != 1:
+        raise ValueError("Expected exactly one top-level default exposure")
+    return text
 
 
 def render():
@@ -79,9 +93,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     source = render()
     if args.check:
-        if OUTPUT.read_text(encoding="utf-8") != source:
+        if OUTPUT.read_text(encoding="utf-8") != source or TOP.read_text(encoding="utf-8") != synchronized_top():
             raise SystemExit("White-balance RTL differs from calibration profile")
         print("WB_LUT_PROFILE_MATCH")
     else:
         OUTPUT.write_text(source, encoding="utf-8", newline="\n")
+        TOP.write_text(synchronized_top(), encoding="utf-8", newline="\n")
         print(OUTPUT)

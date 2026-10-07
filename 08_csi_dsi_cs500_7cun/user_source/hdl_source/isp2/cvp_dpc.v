@@ -5,15 +5,47 @@
  * red centres have blue diagonals, and blue centres have red diagonals.
  * It can replace legitimate saturated colour with another colour. v25 therefore
  * instantiates BYPASS=1 in cvp_proc; tb_dpc_color reproduces this failure and
- * checks that the delayed centre pixel is preserved with the bypass.
+ * checks that the original RAW pixel is preserved with the bypass.
  *
- * Keep the window and four-cycle pipeline to preserve stream alignment.
+ * Keep four-cycle timing and original RAW coordinates in the bypass.
  * A future enabled detector needs phase-aware, genuinely same-colour neighbours
  * (for example a 5x5 RAW window). BYPASS=0 is retained for regression comparison.
  */
 `timescale 1ns/1ps
 
+// Bypass preserves the original RAW coordinates, in addition to four-cycle
+// timing. Passing the legacy window centre would shift the Bayer lattice.
 module cvp_dpc #(
+    parameter IMG_W=1024, IMG_H=600,
+    parameter [9:0] TH=10'd64, TH2=10'd32,
+    parameter BYPASS=0
+) (
+    input i_clk, i_rst_n, i_valid,
+    input [9:0] i_raw, input i_frame_start,
+    output o_valid, output [9:0] o_raw, output o_frame_start
+);
+    generate if (BYPASS) begin: raw_delay
+        reg [3:0] v, fs;
+        reg [9:0] d0,d1,d2,d3;
+        always @(posedge i_clk or negedge i_rst_n) begin
+            if (!i_rst_n) begin
+                v<=0; fs<=0; d0<=0; d1<=0; d2<=0; d3<=0;
+            end else begin
+                v <= {v[2:0],i_valid};
+                fs <= {fs[2:0],i_valid && i_frame_start};
+                d0<=i_raw; d1<=d0; d2<=d1; d3<=d2;
+            end
+        end
+        assign o_valid=v[3]; assign o_raw=d3; assign o_frame_start=fs[3];
+    end else begin: legacy_comparison
+        cvp_dpc_legacy #(.IMG_W(IMG_W),.IMG_H(IMG_H),.TH(TH),.TH2(TH2),.BYPASS(0)) detector (
+            .i_clk(i_clk),.i_rst_n(i_rst_n),.i_valid(i_valid),.i_raw(i_raw),
+            .i_frame_start(i_frame_start),.o_valid(o_valid),.o_raw(o_raw),.o_frame_start(o_frame_start)
+        );
+    end endgenerate
+endmodule
+
+module cvp_dpc_legacy #(
     parameter IMG_W  = 1024,         // 图像宽（行缓存深度）
     parameter IMG_H  = 600,
     parameter [9:0]  TH  = 10'd64,   // 与最亮/最暗同色邻居的最小偏离
