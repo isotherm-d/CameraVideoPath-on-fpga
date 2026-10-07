@@ -1,0 +1,33 @@
+{
+  "version": "v24",
+  "baseline": "v23 / 84db393",
+  "branch": "fix/v24-camera-startup-udp",
+  "device": "PH1P35MDG324",
+  "td_version": "6.2.168116",
+  "regression": "PASS",
+  "timing_ns": {
+    "SWNS": 0.028,
+    "STNS": 0.0,
+    "HWNS": 0.02,
+    "HTNS": 0.0
+  },
+  "hardware_verified": false,
+  "rtl_hash_note": "SHA256 after normalizing line endings and trailing whitespace only.",
+  "rtl_sha256": {
+    "user_source/hdl_source/isp2/cvp_proc.v": "c9a4c8dfdf0b922b9e7f46db9a3051fef1504773931c89dca768517a5f13ad19",
+    "user_source/hdl_source/net/cvp_cmd_rx.v": "9d46ed1a08e35a919c378688333a10cba74045593cd82f6ab0845031f1329983",
+    "user_source/hdl_source/uics500_cfg/uicfgcs500.v": "79df55a50a7b8ebf7564c0a0d1c8b0fc2afb6e38729cd61c33dab893b92aba22"
+  },
+  "files": [
+    {
+      "file": "camera_to_dsi_display_v24.bit",
+      "bytes": 1789539,
+      "sha256": "3ea52c211ef74c6b43cbffc0424600b7fea50131070268ea180a3b4fc5876cf7"
+    },
+    {
+      "file": "camera_to_dsi_display_v24_compress.bit",
+      "bytes": 1325553,
+      "sha256": "46642c9514e88b9a32940dc8c69d184ab0b6b176c02452069c0f43d40e2e9903"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# 安路 TD 编译产物(可由 syn_1/phy_1 重新生成, 且当前是合并前旧工程的产物)
+08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display_Runs/
+08_csi_dsi_cs500_7cun/td_project/log/
+08_csi_dsi_cs500_7cun/td_project/*.log
+08_csi_dsi_cs500_7cun/td_project/*.logw
+08_csi_dsi_cs500_7cun/td_project/*.timingsummary
+08_csi_dsi_cs500_7cun/td_project/bw_*.log*
+08_csi_dsi_cs500_7cun/td_project/.lock.f
+
+# 系统杂项
+Thumbs.db
+Desktop.ini
+__pycache__/
+*.pyc
+
+# Local ModelSim regression output.
+08_csi_dsi_cs500_7cun/td_project/v24_regression/
