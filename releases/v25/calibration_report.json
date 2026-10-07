@@ -1,0 +1,69 @@
+{
+  "reference_image": "IMG_20261007_141523.jpg",
+  "reference_image_sha256": "82e64855310a7708fae53a685d9776cdb185dfd4705eb5cc81c041802c7d7c7c",
+  "reference_roi_normalized": [
+    0.588,
+    0.1,
+    0.616,
+    0.26
+  ],
+  "camera_roi_normalized": [
+    0.707,
+    0.03,
+    0.742,
+    0.13
+  ],
+  "exposure_code": 500,
+  "input_gains_q8": [
+    256,
+    256,
+    256
+  ],
+  "fitted_gains_q8": [
+    344,
+    256,
+    451
+  ],
+  "frames_used": 5,
+  "method": "median RGB chromaticity ratios of corresponding white straw, averaged over five complete camera frames",
+  "white_reference_validation": {
+    "reference": {
+      "rg": 1.0473684210526315,
+      "bg": 0.95,
+      "median_rgb": [
+        195.0,
+        187.0,
+        178.0
+      ],
+      "usable_pixels": 56459
+    },
+    "core_unity_500": {
+      "rg": 0.7787037664145153,
+      "bg": 0.5388746057863705,
+      "relative_ratio_error_percent": {
+        "rg": 25.651399186553803,
+        "bg": 43.276357285645204
+      },
+      "median_rgb_average": [
+        145.2,
+        186.4,
+        101.0
+      ]
+    },
+    "core_calibrated_500": {
+      "rg": 1.0559922046677641,
+      "bg": 0.9599060775721074,
+      "relative_ratio_error_percent": {
+        "rg": 0.8233763250629078,
+        "bg": 1.0427450075902511
+      },
+      "median_rgb_average": [
+        168.8,
+        159.8,
+        153.0
+      ]
+    }
+  },
+  "scope": "single-scene appearance white balance; not absolute colour calibration or measured CCT",
+  "full_frame_matching": false
+}

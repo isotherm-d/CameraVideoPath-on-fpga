@@ -1,0 +1,13 @@
+{
+  "version": "v25",
+  "reference_kelvin": 6500,
+  "base_gains_q8": [
+    344,
+    256,
+    451
+  ],
+  "default_exposure": 500,
+  "calibration_status": "single-scene phone-reference white balance, runtime verified",
+  "note": "6500 K is the reference anchor, not a measured lamp CCT; other temperatures use an approximate prior curve.",
+  "reference_object": "white straw in IMG_20261007_141523.jpg"
+}

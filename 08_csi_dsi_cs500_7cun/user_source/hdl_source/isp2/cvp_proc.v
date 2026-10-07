@@ -7,9 +7,9 @@
  *
  * 本模块分三步：
  *   1) 齿轮箱（gearbox）：把 4 像素/拍的 40bit 组展开成 1 像素/拍的 10bit 流。
- *   2) 坏点检测/矫正：交给 cvp_dpc（RAW 域 3x3 同色判据，命中才用同色邻居
- *      中位数替换，其余直通）。必须在彩色重建之前修 —— 坏点经过 demosaic
- *      会扩散成 5 像素的十字彩色斑。固定 4 拍延迟（判据/矫正两级流水）。
+ *   2) cvp_dpc：v25 启用等延迟旁路。旧 3x3 对角判据把 R/B 异色邻居
+ *      当成同色，误改正常颜色。保留固定 4 拍延迟和原始 RAW 坐标；
+ *      后续若重启坏点矫正，需采用相位正确的同色邻域。
  *   3) 彩色重建：交给 cvp_demosaic（3x3 双线性，BGGR），固定 3 拍延迟。
  *      —— 原来那段“2 行近似”重建结构上就是坏的（探针 TB 扫遍所有对齐都对不上、
  *         色块自检饱和色会互换色平面），已整体替换。
@@ -149,7 +149,8 @@ module cvp_proc #(
 
     cvp_dpc #(
         .IMG_W (IMG_W),
-        .IMG_H (IMG_H)
+        .IMG_H (IMG_H),
+        .BYPASS (1) // v25: preserve RAW pixels and coordinates with a four-cycle delay.
     ) u_dpc (
         .i_clk         (i_clk),
         .i_rst_n       (i_rst_n),

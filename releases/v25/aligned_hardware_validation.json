@@ -1,0 +1,784 @@
+{
+  "passed": true,
+  "startup_capture": {
+    "settings_sent": {
+      "mode": null,
+      "kelvin": 6500,
+      "gains": [
+        256,
+        256,
+        256
+      ],
+      "exposure": null,
+      "swap": null
+    },
+    "video_packets": 345053,
+    "heartbeats": 3,
+    "complete_frames": 179,
+    "finished_frame_complete_percent": 100.0,
+    "fps": 29.962204362456557,
+    "samples": [
+      {
+        "file": "frame_00.png",
+        "time_s": 0.7696743999986211,
+        "rgb_means": [
+          95.65649739583333,
+          81.70646375868056,
+          81.80051866319444
+        ],
+        "mean_luma": 85.88824607530383,
+        "clipped_percent": 0.591796875
+      },
+      {
+        "file": "frame_01.png",
+        "time_s": 0.8032378000061726,
+        "rgb_means": [
+          95.62171657986111,
+          81.64054361979167,
+          81.73381293402778
+        ],
+        "mean_luma": 85.83154703667535,
+        "clipped_percent": 0.5890842013888888
+      },
+      {
+        "file": "frame_02.png",
+        "time_s": 0.8366073000070173,
+        "rgb_means": [
+          95.72395182291666,
+          81.74458116319444,
+          81.82907552083333
+        ],
+        "mean_luma": 85.93404534722222,
+        "clipped_percent": 0.6495225694444444
+      },
+      {
+        "file": "frame_03.png",
+        "time_s": 0.8697651999973459,
+        "rgb_means": [
+          95.68913628472222,
+          81.69531141493056,
+          81.83374348958333
+        ],
+        "mean_luma": 85.89524630750867,
+        "clipped_percent": 0.617947048611111
+      },
+      {
+        "file": "frame_04.png",
+        "time_s": 0.9031275000015739,
+        "rgb_means": [
+          95.68191731770834,
+          81.71613606770833,
+          81.82535590277777
+        ],
+        "mean_luma": 85.90435572265625,
+        "clipped_percent": 0.6315104166666666
+      }
+    ]
+  },
+  "control_checks": {
+    "video_all_modes": true,
+    "default_matches_reference_K": true,
+    "preset_matches_reference_K": true,
+    "temperature_changes_both_colour_channels": true,
+    "manual_red_gain_halves_red": true,
+    "red_blue_swap": true
+  },
+  "control_mode_captures": {
+    "final_default": {
+      "settings_sent": {
+        "mode": null,
+        "kelvin": 6500,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": null
+      },
+      "video_packets": 172550,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.9626794399122,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7676980999967782,
+          "rgb_means": [
+            95.865966796875,
+            81.68690646701388,
+            81.77309136284723
+          ],
+          "mean_luma": 85.93627058376735,
+          "clipped_percent": 0.6317274305555555
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.8011913000082131,
+          "rgb_means": [
+            95.86077473958333,
+            81.70109266493056,
+            81.7679709201389
+          ],
+          "mean_luma": 85.94246172634548,
+          "clipped_percent": 0.6223958333333333
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8344061999960104,
+          "rgb_means": [
+            95.78338758680556,
+            81.6076953125,
+            81.69488606770834
+          ],
+          "mean_luma": 85.85616704861111,
+          "clipped_percent": 0.6086154513888888
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.8677309000049718,
+          "rgb_means": [
+            95.85104709201389,
+            81.67262044270834,
+            81.71655381944444
+          ],
+          "mean_luma": 85.91697841579861,
+          "clipped_percent": 0.6350911458333333
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.9011895000003278,
+          "rgb_means": [
+            95.915703125,
+            81.721806640625,
+            81.76607964409722
+          ],
+          "mean_luma": 85.97082881184896,
+          "clipped_percent": 0.609157986111111
+        }
+      ],
+      "capture_directory": "aligned_final_default",
+      "cup_mean_rgb": [
+        67.57399331103679,
+        51.942956521739134,
+        54.00120401337792
+      ],
+      "cup_rg": 1.300926975205113,
+      "cup_bg": 1.0396251509245025
+    },
+    "final_k6500": {
+      "settings_sent": {
+        "mode": "kelvin",
+        "kelvin": 6500,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": null
+      },
+      "video_packets": 172990,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.96326197643886,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7521131999965291,
+          "rgb_means": [
+            95.94393446180555,
+            81.7555251736111,
+            81.8115353732639
+          ],
+          "mean_luma": 86.00424471354167,
+          "clipped_percent": 0.6245659722222222
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.7855566000071121,
+          "rgb_means": [
+            95.86809678819445,
+            81.67318793402778,
+            81.74213216145833
+          ],
+          "mean_luma": 85.9253253233507,
+          "clipped_percent": 0.5855034722222222
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8188510000036331,
+          "rgb_means": [
+            95.89924696180556,
+            81.71736328125,
+            81.80940646701389
+          ],
+          "mean_luma": 85.9682394249132,
+          "clipped_percent": 0.6533203125
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.8523075999983121,
+          "rgb_means": [
+            95.89643120659723,
+            81.73666558159722,
+            81.77866427951389
+          ],
+          "mean_luma": 85.97522335503471,
+          "clipped_percent": 0.627170138888889
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.8859268999949563,
+          "rgb_means": [
+            95.81337131076388,
+            81.6182888454861,
+            81.68843098958334
+          ],
+          "mean_luma": 85.87061470703125,
+          "clipped_percent": 0.5863715277777778
+        }
+      ],
+      "capture_directory": "aligned_final_k6500",
+      "cup_mean_rgb": [
+        68.09217391304348,
+        52.347772575250836,
+        54.247906354515045
+      ],
+      "cup_rg": 1.3007654492874514,
+      "cup_bg": 1.036298273752388
+    },
+    "final_k4000": {
+      "settings_sent": {
+        "mode": "kelvin",
+        "kelvin": 4000,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": null
+      },
+      "video_packets": 173066,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.96385575845833,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7503504999913275,
+          "rgb_means": [
+            74.48004123263888,
+            81.6702560763889,
+            92.70524956597222
+          ],
+          "mean_luma": 80.77837109592012,
+          "clipped_percent": 0.7996961805555555
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.7838667999894824,
+          "rgb_means": [
+            74.52871202256945,
+            81.73968098958333,
+            92.79352322048611
+          ],
+          "mean_luma": 80.84373928276909,
+          "clipped_percent": 0.8531901041666666
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8171619999920949,
+          "rgb_means": [
+            74.46007486979167,
+            81.65447265625,
+            92.71578884548612
+          ],
+          "mean_luma": 80.76433776367188,
+          "clipped_percent": 0.7717013888888888
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.8504952999937814,
+          "rgb_means": [
+            74.4935275607639,
+            81.67949435763889,
+            92.74902994791667
+          ],
+          "mean_luma": 80.79281734266493,
+          "clipped_percent": 0.8025173611111112
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.8838397999934386,
+          "rgb_means": [
+            74.45658203125,
+            81.66092122395834,
+            92.69911675347223
+          ],
+          "mean_luma": 80.7651780957031,
+          "clipped_percent": 0.7667100694444444
+        }
+      ],
+      "capture_directory": "aligned_final_k4000",
+      "cup_mean_rgb": [
+        52.32959197324415,
+        52.05460869565218,
+        61.41757859531773
+      ],
+      "cup_rg": 1.0052825923483493,
+      "cup_bg": 1.1798682217439775
+    },
+    "final_k8000": {
+      "settings_sent": {
+        "mode": "kelvin",
+        "kelvin": 8000,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": null
+      },
+      "video_packets": 173106,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.963736387983612,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7763648000109242,
+          "rgb_means": [
+            102.30856228298612,
+            81.60761610243055,
+            71.77285807291666
+          ],
+          "mean_luma": 86.67603659505207,
+          "clipped_percent": 1.606011284722222
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.8097551000100793,
+          "rgb_means": [
+            102.38202582465277,
+            81.65374891493056,
+            71.82317816840278
+          ],
+          "mean_luma": 86.73081864583334,
+          "clipped_percent": 1.6055772569444446
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8432862000045134,
+          "rgb_means": [
+            102.35064453125,
+            81.59813910590277,
+            71.74168077256944
+          ],
+          "mean_luma": 86.6795019780816,
+          "clipped_percent": 1.5194227430555556
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.87658029999875,
+          "rgb_means": [
+            102.3274880642361,
+            81.60353081597222,
+            71.75512586805556
+          ],
+          "mean_luma": 86.67727586914063,
+          "clipped_percent": 1.5794270833333333
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.9099163000064436,
+          "rgb_means": [
+            102.32370442708333,
+            81.60559136284722,
+            71.76851671006945
+          ],
+          "mean_luma": 86.67888065863714,
+          "clipped_percent": 1.5592447916666667
+        }
+      ],
+      "capture_directory": "aligned_final_k8000",
+      "cup_mean_rgb": [
+        72.15051505016723,
+        51.95883612040134,
+        47.420923076923074
+      ],
+      "cup_rg": 1.388609145958867,
+      "cup_bg": 0.9126633046020737
+    },
+    "final_unit": {
+      "settings_sent": {
+        "mode": "rgb",
+        "kelvin": 6500,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": 0
+      },
+      "video_packets": 173502,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.963715982865637,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7791411999933189,
+          "rgb_means": [
+            71.43325086805555,
+            81.68731119791667,
+            46.43022352430555
+          ],
+          "mean_luma": 74.60203916449653,
+          "clipped_percent": 0.2802734375
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.8124596999987261,
+          "rgb_means": [
+            71.4227615017361,
+            81.690517578125,
+            46.408420138888886
+          ],
+          "mean_luma": 74.5982994032118,
+          "clipped_percent": 0.2629123263888889
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8459322999988217,
+          "rgb_means": [
+            71.24264973958333,
+            81.47179036458333,
+            46.298075086805554
+          ],
+          "mean_luma": 74.40347377604166,
+          "clipped_percent": 0.2455512152777778
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.879306999995606,
+          "rgb_means": [
+            71.41291449652778,
+            81.69471896701388,
+            46.43681966145834
+          ],
+          "mean_luma": 74.60105890950521,
+          "clipped_percent": 0.279296875
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.9125671999936458,
+          "rgb_means": [
+            71.41370551215277,
+            81.67949544270833,
+            46.417759331597225
+          ],
+          "mean_luma": 74.59018633680556,
+          "clipped_percent": 0.2590060763888889
+        }
+      ],
+      "capture_directory": "aligned_final_unit",
+      "cup_mean_rgb": [
+        50.21190635451505,
+        52.008387959866226,
+        30.679799331103673
+      ],
+      "cup_rg": 0.9654578487082222,
+      "cup_bg": 0.5899009858713296
+    },
+    "final_red_half": {
+      "settings_sent": {
+        "mode": "rgb",
+        "kelvin": 6500,
+        "gains": [
+          128,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": null
+      },
+      "video_packets": 173564,
+      "heartbeats": 2,
+      "complete_frames": 90,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.962533703223684,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7599631000048248,
+          "rgb_means": [
+            36.034200303819446,
+            81.78902018229167,
+            46.43932942708334
+          ],
+          "mean_luma": 64.07846429253472,
+          "clipped_percent": 0.2517361111111111
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.7930504000105429,
+          "rgb_means": [
+            36.039745008680555,
+            81.82259874131944,
+            46.48100802951389
+          ],
+          "mean_luma": 64.10458413411457,
+          "clipped_percent": 0.2718098958333333
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8263854000106221,
+          "rgb_means": [
+            36.020092230902776,
+            81.76231336805556,
+            46.449717881944444
+          ],
+          "mean_luma": 64.0597533626302,
+          "clipped_percent": 0.2494574652777778
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.8597365000023274,
+          "rgb_means": [
+            36.015185546875,
+            81.75439778645833,
+            46.438671875
+          ],
+          "mean_luma": 64.05238057291668,
+          "clipped_percent": 0.24435763888888887
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.8931752000062261,
+          "rgb_means": [
+            36.00946940104166,
+            81.77907660590277,
+            46.454837239583334
+          ],
+          "mean_luma": 64.06700076388888,
+          "clipped_percent": 0.267578125
+        }
+      ],
+      "capture_directory": "aligned_final_red_half",
+      "cup_mean_rgb": [
+        25.488227424749162,
+        52.10909698996655,
+        30.600602006688963
+      ],
+      "cup_rg": 0.48913201143471824,
+      "cup_bg": 0.5872410725632228
+    },
+    "final_swap": {
+      "settings_sent": {
+        "mode": "rgb",
+        "kelvin": 6500,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": null,
+        "swap": 1
+      },
+      "video_packets": 173489,
+      "heartbeats": 2,
+      "complete_frames": 90,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.961893185091238,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7539544999890495,
+          "rgb_means": [
+            46.435581597222225,
+            81.77069010416666,
+            71.55242404513889
+          ],
+          "mean_luma": 70.0406103298611,
+          "clipped_percent": 0.2870008680555556
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.7874058000015793,
+          "rgb_means": [
+            46.429401041666665,
+            81.73245876736111,
+            71.54893663194444
+          ],
+          "mean_luma": 70.01592298394097,
+          "clipped_percent": 0.2768012152777778
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8210333999886643,
+          "rgb_means": [
+            46.346834852430554,
+            81.59845052083334,
+            71.44922526041667
+          ],
+          "mean_luma": 69.9012057562934,
+          "clipped_percent": 0.2605251736111111
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.854369399996358,
+          "rgb_means": [
+            46.40110568576389,
+            81.68952365451389,
+            71.49959635416667
+          ],
+          "mean_luma": 69.97663496961805,
+          "clipped_percent": 0.271484375
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.8876530999987153,
+          "rgb_means": [
+            46.42967881944445,
+            81.73552191840278,
+            71.52206380208334
+          ],
+          "mean_luma": 70.01474060655381,
+          "clipped_percent": 0.2757161458333333
+        }
+      ],
+      "capture_directory": "aligned_final_swap",
+      "cup_mean_rgb": [
+        30.55898327759197,
+        51.92747826086956,
+        50.513230769230766
+      ],
+      "cup_rg": 0.5884934971051728,
+      "cup_bg": 0.9727649495218311
+    },
+    "final_preset": {
+      "settings_sent": {
+        "mode": "preset",
+        "kelvin": 6500,
+        "gains": [
+          256,
+          256,
+          256
+        ],
+        "exposure": 500,
+        "swap": 0
+      },
+      "video_packets": 173352,
+      "heartbeats": 2,
+      "complete_frames": 89,
+      "finished_frame_complete_percent": 100.0,
+      "fps": 29.963575188472383,
+      "samples": [
+        {
+          "file": "frame_00.png",
+          "time_s": 0.7661167000042042,
+          "rgb_means": [
+            95.56793402777778,
+            81.32391818576389,
+            81.37043619791666
+          ],
+          "mean_luma": 85.58818197591147,
+          "clipped_percent": 0.6303168402777778
+        },
+        {
+          "file": "frame_01.png",
+          "time_s": 0.7995029000012437,
+          "rgb_means": [
+            95.54827690972222,
+            81.29646484375,
+            81.38681315104166
+          ],
+          "mean_luma": 85.56805635850694,
+          "clipped_percent": 0.5995008680555556
+        },
+        {
+          "file": "frame_02.png",
+          "time_s": 0.8328325000038603,
+          "rgb_means": [
+            95.46763237847222,
+            81.21157335069445,
+            81.27192925347222
+          ],
+          "mean_luma": 85.48101557291666,
+          "clipped_percent": 0.5715060763888888
+        },
+        {
+          "file": "frame_03.png",
+          "time_s": 0.8662531000009039,
+          "rgb_means": [
+            95.537763671875,
+            81.33151041666666,
+            81.3850998263889
+          ],
+          "mean_luma": 85.58528933268228,
+          "clipped_percent": 0.6358506944444444
+        },
+        {
+          "file": "frame_04.png",
+          "time_s": 0.8996447999961674,
+          "rgb_means": [
+            95.47600911458333,
+            81.24649305555556,
+            81.31171657986111
+          ],
+          "mean_luma": 85.50855383897569,
+          "clipped_percent": 0.5804036458333334
+        }
+      ],
+      "capture_directory": "aligned_final_preset",
+      "cup_mean_rgb": [
+        66.6017525083612,
+        50.855812709030104,
+        52.928989966555186
+      ],
+      "cup_rg": 1.3096192737970973,
+      "cup_bg": 1.040765787568605
+    }
+  },
+  "frame_shifts_between_samples_rows": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "frame_alignment_visual_check": "No whole-image circular split in final capture; a narrow top border is still visible and remains a known limitation.",
+  "latest_white_reference": {
+    "camera_roi_normalized": [
+      0.625,
+      0.03,
+      0.65,
+      0.11
+    ],
+    "reference_rg": 1.0473684210526315,
+    "reference_bg": 0.95,
+    "camera_rg": 1.0953851241006578,
+    "camera_bg": 0.9324370613899442,
+    "relative_ratio_error_percent": {
+      "rg": 4.584509336243725,
+      "bg": 1.8487303800058696
+    }
+  },
+  "final_state": "calibrated preset, exposure500, swap disabled",
+  "not_verified": [
+    "DSI display (not connected)"
+  ],
+  "known_limitations": [
+    "narrow top border remains visible",
+    "single-light reference calibration, not a full colour-chart calibration"
+  ]
+}

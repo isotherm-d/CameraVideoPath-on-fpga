@@ -446,7 +446,8 @@ group_fifo u_group_fifo (
 
 cvp_proc #(
     .IMG_W  ( 1280 ),
-    .IMG_H  (  720 )
+    .IMG_H  (  720 ),
+    .AE_EXP_CODE (16'd500) // v25 default exposure, synchronized with wb_profile.json.
 ) u_cvp_proc (
     .i_clk              ( S_100m_clk ),
     .i_rst_n            ( S_rst_n      ),
@@ -478,31 +479,22 @@ cvp_proc #(
 wire        S_cc_valid, S_cc_fs;
 wire [23:0] S_cc_rgb;
 
-// v21: 色温 K -> R/B 增益换算(普朗克黑体 LUT, 6500K 归一 1.0x)
-wire [8:0] S_kelvin_r, S_kelvin_b;
-
-wb_kelvin u_wb_kelvin (
-    .I_clk     ( S_100m_clk  ),
-    .I_rst_n   ( S_rst_n     ),
-    .I_en      ( S_cmd_awb_en == 1'b0 ),   // 手动白平衡(K)模式下持续换算
-    .I_kelvin_hk( S_cmd_kelvin ),
-    .o_valid   (               ),
-    .o_gain_r  ( S_kelvin_r   ),
-    .o_gain_b  ( S_kelvin_b   )
+// v25: one selector shared with the regression tests. All modes use the same
+// sensor calibration. Manual RGB is explicit (cmd6=0, cmd7=0), swap works in all.
+wire [8:0] S_cc_gain_r, S_cc_gain_g, S_cc_gain_b;
+wire S_cc_swap;
+cvp_wb_select u_wb_select (
+    .I_clk(S_100m_clk), .I_rst_n(S_rst_n), .I_preset(S_cmd_awb_en),
+    .I_kelvin(S_cmd_kelvin), .I_r(S_cmd_gr), .I_g(S_cmd_gg), .I_b(S_cmd_gb),
+    .I_swap(S_cmd_swap),
+    .O_r(S_cc_gain_r), .O_g(S_cc_gain_g), .O_b(S_cc_gain_b), .O_swap(S_cc_swap)
 );
-
-// 白平衡源: AWB 冻结(手动 K/手动增益)时走命令通道, 自动时用标定值(含 1.506x 补光, v23 恢复)
-wire       S_wb_frozen = (S_cmd_awb_en == 1'b0);
-wire [8:0] S_cc_gain_r = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_r : S_cmd_gr) : 9'd438;
-wire [8:0] S_cc_gain_g = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? 9'd256 : S_cmd_gg) : 9'd386;   // K 模式 G 固定 1.0x(无补光)
-wire [8:0] S_cc_gain_b = S_wb_frozen ? ((S_cmd_kelvin != 7'd0) ? S_kelvin_b : S_cmd_gb) : 9'd371;
-wire       S_cc_swap   = S_wb_frozen ? S_cmd_swap : 1'b0;
 
 color_correct #(
     .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
-    .GAIN_R  ( 9'd438 ),   // v23 恢复 v17 标定: 白平衡 1.136 x 数字补光 1.506 = 1.711x (v22 重构时误丢补光退回 291/256/246)
-    .GAIN_G  ( 9'd386 ),   // 1.506x
-    .GAIN_B  ( 9'd371 )    // 0.961 x 1.506 = 1.449x
+    .GAIN_R  ( 9'd256 ),   // Runtime selector supplies all calibrated gains.
+    .GAIN_G  ( 9'd256 ),
+    .GAIN_B  ( 9'd256 )
 ) u_color_correct (
     .I_clk         ( S_100m_clk    ),
     .I_rst_n       ( S_rst_n       ),
