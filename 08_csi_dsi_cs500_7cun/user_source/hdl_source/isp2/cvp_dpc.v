@@ -1,44 +1,15 @@
 /*
- * ============================================================================
- * cvp_dpc —— RAW 域坏点检测与矫正（DPC, Defective Pixel Correction）
+ * RAW-domain DPC and equal-latency diagnostic bypass.
  *
- * 位置：cvp_proc 里齿轮箱之后、cvp_demosaic 之前（1 像素/拍 RAW10 流）。
- * 放在 demosaic 之前的原因：坏点一旦经过彩色重建会扩散成 5 像素的十字彩色斑，
- * 到 RGB 域再修就是补救了；RAW 域一个坏点只是一个孤立的 10bit 值，处理代价最小。
+ * IMPORTANT: the legacy 3x3 diagonal detector below mixes Bayer colours:
+ * red centres have blue diagonals, and blue centres have red diagonals.
+ * It can replace legitimate saturated colour with another colour. v25 therefore
+ * instantiates BYPASS=1 in cvp_proc; tb_dpc_color reproduces this failure and
+ * checks that the delayed centre pixel is preserved with the bypass.
  *
- * 算法（经典“同色邻域”判据）：
- *   Bayer 排列下，3x3 窗口内与中心同色的恰好是 4 个对角点 —— 这对任何 2x2
- *   相位的 CFA（BGGR/GRBG/...）都成立，所以本模块不需要知道传感器相位。
- *   坏点的本质是“与所有同色邻居同时、同向、不连续地偏离”，据此两级判据：
- *     亮点坏点:  c > max(d_i) + TH    且    c > avg(d_i) + TH2
- *     暗点坏点:  c + TH < min(d_i)    且    c + TH2 < avg(d_i)
- *   只看 max/min 单阈值会把噪声尖峰误判成坏点（尤其高增益时），加上与均值的
- *   偏离量能滤掉大部分噪声；“四个邻居全部同向偏离”本身也抗纹理误检 —— 细线、
- *   边缘上邻居一亮一暗、方向不一致，不会触发。
- *   矫正：命中时输出 4 个同色邻居的中位数，未命中原样直通 —— 只动被判定的
- *   像素。这正是与 imgproc_median 那种全局中值滤波的本质区别（全局滤波会把
- *   整幅图的细节都过一遍，显微图像会伤分辨率）。
- *
- * 阈值：TH / TH2 为参数。固定阈值对高增益噪声不友好，后续可仿照 cvp_awb
- *   “上一帧统计调当前帧”的做法按帧调阈值；当前相机曝光固定，先用固定值。
- *
- * 边界（两处都选择“不矫正”，宁漏勿错）：
- *   1. imgproc_win3x3 复制边界：第 0/1 行、列的邻居被复制填充；窗口里出现与
- *      中心等值的邻居时，max>=c、min<=c，两个方向的判据自然失效，不会误矫。
- *   2. 每行第 1 个输出槽位：中心落在第 0 列，其“水平邻居”是上一行行尾回绕过
- *      来的像素，语义不可靠 —— 用列计数识别并直接旁路。
- *
- * 已知局限（接受）：宽度 1 像素的水平/垂直细线，其沿线的同色延续像素不在
- *   3x3 对角集合里（同行列是异色像素），判据看不到，会被当作坏点矫正掉。
- *   显微目标（细胞）远大于 1px，实际影响可忽略；若以后真出现 1px 细节，
- *   升级方案是 5x5 窗口取 8 个同色邻居（4 行缓存）。
- *
- * 时序：窗口 2 拍（imgproc_win3x3，与 cvp_demosaic 同款复用）+ 判据寄存 1 拍
- *   + 判定/矫正组合 + 输出寄存器 1 拍 = i_valid -> o_valid 固定 4 拍。
- *   最初判据/矫正收在一拍里，综合后 100MHz 写侧 SWNS 打到 -1.543ns（sort4 网络 +
- *   求和树 + 阈值加法 + 比较全串在一拍），已拆两级流水：第 1 拍寄存 sort4 输出与
- *   4 邻居均值，第 2 拍做阈值加法/比较/矫正选择。
- * ============================================================================
+ * Keep the window and four-cycle pipeline to preserve stream alignment.
+ * A future enabled detector needs phase-aware, genuinely same-colour neighbours
+ * (for example a 5x5 RAW window). BYPASS=0 is retained for regression comparison.
  */
 `timescale 1ns/1ps
 

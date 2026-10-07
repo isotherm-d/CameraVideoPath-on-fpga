@@ -4,8 +4,8 @@
  用途: 标定流程 = 拍标准白纸 -> PC 抓帧算三通道比例 -> 改这里的
  parameter -> 编译。参数:
    SWAP_RB  : 1 = R/B 通道交换(Bayer 相位错配一键修)
-   GAIN_R/G/B: Q8 增益(256=1.0x, 320=1.25x, 512=2.0x), 饱和到 255
- 位置: cvp_awb 输出 -> 本模块 -> pack_4(100M 域, 1像素/拍, 2 级流水)
+   GAIN_R/G/B: Q8 增益(256=1.0x, 320=1.25x, 511≈2.0x), 饱和到 255
+ 位置: demosaic 输出 -> 本模块 -> pack_4(100M 域, 1像素/拍, 1 级寄存)
 *****************************************************************/
 module color_correct #(
     parameter             SWAP_RB = 0,
@@ -29,9 +29,8 @@ module color_correct #(
     output reg  [23:0] O_rgb,
     output reg         O_frame_start
 );
-    wire       w_swap = I_swap_rt | (SWAP_RB && !I_swap_rt ? 1'b0 : 1'b0) | SWAP_RB;
-    // swap 语义: 参数 SWAP_RB 与运行时位均可独立开启; 运行时位由命令直接控制
-    wire       w_use_swap = I_swap_rt;
+    // Either the board calibration or the runtime command can request a swap.
+    wire       w_use_swap = I_swap_rt | SWAP_RB;
     wire [7:0] w_in_r = w_use_swap ? I_rgb[7:0]   : I_rgb[23:16];
     wire [7:0] w_in_g = I_rgb[15:8];
     wire [7:0] w_in_b = w_use_swap ? I_rgb[23:16] : I_rgb[7:0];
@@ -39,19 +38,17 @@ module color_correct #(
     wire [8:0] w_gg = (I_gain_g_rt != 9'd0) ? I_gain_g_rt : GAIN_G[8:0];
     wire [8:0] w_gb = (I_gain_b_rt != 9'd0) ? I_gain_b_rt : GAIN_B[8:0];
 
-    // Q8 乘(8bit x 9bit = 17bit, 取 [16:9]), 饱和 255
+    // Q8 means divide by 256, not 512. Keep the overflow bit before saturation.
     wire [16:0] w_mul_r = w_in_r * w_gr;
     wire [16:0] w_mul_g = w_in_g * w_gg;
     wire [16:0] w_mul_b = w_in_b * w_gb;
 
-    wire [7:0] w_sat_r = (w_gr > 9'd256 && w_mul_r[16:9] > 8'd255) ? 8'hFF : w_mul_r[16:9];
-    wire [7:0] w_sat_g = (w_gg > 9'd256 && w_mul_g[16:9] > 8'd255) ? 8'hFF : w_mul_g[16:9];
-    wire [7:0] w_sat_b = (w_gb > 9'd256 && w_mul_b[16:9] > 8'd255) ? 8'hFF : w_mul_b[16:9];
-
-    // 减益(<=1.0x)时截断即可; 增益(>1.0x)时饱和
-    wire [7:0] w_out_r = (w_gr <= 9'd256) ? w_mul_r[16:9] : w_sat_r;
-    wire [7:0] w_out_g = (w_gg <= 9'd256) ? w_mul_g[16:9] : w_sat_g;
-    wire [7:0] w_out_b = (w_gb <= 9'd256) ? w_mul_b[16:9] : w_sat_b;
+    wire [17:0] w_round_r = {1'b0, w_mul_r} + 18'd128;
+    wire [17:0] w_round_g = {1'b0, w_mul_g} + 18'd128;
+    wire [17:0] w_round_b = {1'b0, w_mul_b} + 18'd128;
+    wire [7:0] w_out_r = (|w_round_r[17:16]) ? 8'hFF : w_round_r[15:8];
+    wire [7:0] w_out_g = (|w_round_g[17:16]) ? 8'hFF : w_round_g[15:8];
+    wire [7:0] w_out_b = (|w_round_b[17:16]) ? 8'hFF : w_round_b[15:8];
 
     always @(posedge I_clk or negedge I_rst_n) begin
         if (!I_rst_n) begin

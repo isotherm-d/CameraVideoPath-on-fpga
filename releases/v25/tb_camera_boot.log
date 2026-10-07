@@ -1,0 +1,66 @@
+# vsim -do {run -all; quit -f} -l {C:\Users\DWX1105\Desktop\02_F02_FC02_PH1P35\tmp\v25_color_20261007\regression\tb_camera_boot.log} -c -novopt work.tb_camera_boot work.PH1P_PHY_GSR
+# //  ModelSim SE-64 10.1c Jul 28 2012
+# //
+# //  Copyright 1991-2012 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.tb_camera_boot
+# Loading work.tb_camera_boot
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.uicfgcs500
+# Loading work.uicfgcs500
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.uii2c
+# Loading work.uii2c
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.uics500reg
+# Loading work.uics500reg
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.SC500GainTbl
+# Loading work.SC500GainTbl
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.uics500regAE
+# Loading work.uics500regAE
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.cvp_proc
+# Loading work.cvp_proc
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.cvp_dpc
+# Loading work.cvp_dpc
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.cvp_demosaic
+# Loading work.cvp_demosaic
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.PH1P_PHY_GSR
+# Loading work.PH1P_PHY_GSR
+# ** Warning: (vsim-3017) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Too few port connections. Expected 13, found 11.
+#
+#         Region: /tb_camera_boot/init_camera/uii2c_inst
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Missing connection for port 'O_iic_bus_error'.
+#
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Missing connection for port 'IO_iic_sda_dg'.
+#
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(152): [PCDPC] - Port size (32 or 32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500reg.v(38).
+#
+#         Region: /tb_camera_boot/init_camera/uics500reg_inst
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(155): [PCDPC] - Port size (7 or 7) does not match connection size (32) for port 'I'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/SC500GainTbl.v(19).
+#
+#         Region: /tb_camera_boot/init_camera/gain_tbl
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(164): [PCDPC] - Port size (32 or 32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500regAE.v(36).
+#
+#         Region: /tb_camera_boot/init_camera/uics500regAE_inst
+# ** Warning: (vsim-3017) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Too few port connections. Expected 13, found 11.
+#
+#         Region: /tb_camera_boot/protected_camera/uii2c_inst
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Missing connection for port 'O_iic_bus_error'.
+#
+# ** Warning: (vsim-3722) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(143): [TFMPC] - Missing connection for port 'IO_iic_sda_dg'.
+#
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(152): [PCDPC] - Port size (32 or 32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500reg.v(38).
+#
+#         Region: /tb_camera_boot/protected_camera/uics500reg_inst
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(155): [PCDPC] - Port size (7 or 7) does not match connection size (32) for port 'I'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/SC500GainTbl.v(19).
+#
+#         Region: /tb_camera_boot/protected_camera/gain_tbl
+# ** Warning: (vsim-3015) C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v(164): [PCDPC] - Port size (32 or 32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500regAE.v(36).
+#
+#         Region: /tb_camera_boot/protected_camera/uics500regAE_inst
+# run -all
+# TEST_RESULT PASS camera_boot_and_exposure
+# ** Note: $finish    : C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/tools/sim/tb_camera_boot.v(59)
+#    Time: 2300440 ns  Iteration: 0  Instance: /tb_camera_boot

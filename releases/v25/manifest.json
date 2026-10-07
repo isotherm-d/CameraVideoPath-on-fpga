@@ -1,0 +1,49 @@
+{
+  "version": "v25-candidate",
+  "baseline_commit": "8e69f05fb949327d6c2e247c177eaf6fb6106694",
+  "branch": "fix/v25-color-calibration",
+  "device": "PH1P35MDG324",
+  "td_version": "6.2.168116",
+  "python_tests": 18,
+  "rtl_regression": "PASS",
+  "timing_ns": {
+    "SWNS": 0.558,
+    "STNS": 0,
+    "HWNS": 0.02,
+    "HTNS": 0
+  },
+  "sta_coverage_percent": 93.69,
+  "hardware_verified": false,
+  "reference_calibration_status": "awaiting exclusive UDP 6000 capture; old viewer still open",
+  "profile": {
+    "version": "v25",
+    "reference_kelvin": 6500,
+    "base_gains_q8": [
+      291,
+      256,
+      246
+    ],
+    "default_exposure": 1700,
+    "calibration_status": "pending same-scene capture",
+    "note": "The reference Kelvin is a curve anchor, not a measurement of the lamp."
+  },
+  "rtl_sha256": {
+    "design_top_wrapper.v": "7f2c432f963e93bfe93833957eb2a8980d002578d87a20fcafb23e86ff9b4c22",
+    "isp2/color_correct.v": "1f3cf23aa7c78d914289800d144e21f7be86131a33151c75f7e96ba7f495007d",
+    "isp2/wb_kelvin.v": "7d7c59599708173eb8ae7d3f9ff86783561a21b2ac13452b8e3ea80909761b76",
+    "isp2/cvp_proc.v": "711e791d96c2460e7f462c8c0b4af9d13a03749df808c3b25b533c66dca136e5",
+    "isp2/cvp_dpc.v": "72b3fa091dc6686124e6fdeaa77413b183a5386478c91188197bf1cdb5c74c5b"
+  },
+  "files": [
+    {
+      "file": "camera_to_dsi_display_v25.bit",
+      "bytes": 1789539,
+      "sha256": "65de2fd61144cf5141896404853edee23db75a37390ca33fab33dae0de2f7cfe"
+    },
+    {
+      "file": "camera_to_dsi_display_v25_compress.bit",
+      "bytes": 1325297,
+      "sha256": "9880f65c726d68b4d50eb54d9bcec021db390ed0207c6efd92d74929abf159ea"
+    }
+  ]
+}

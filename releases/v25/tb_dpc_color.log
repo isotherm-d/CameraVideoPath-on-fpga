@@ -1,0 +1,25 @@
+# vsim -do {run -all; quit -f} -l {C:\Users\DWX1105\Desktop\02_F02_FC02_PH1P35\tmp\v25_color_20261007\regression\tb_dpc_color.log} -c -novopt work.tb_dpc_color
+# //  ModelSim SE-64 10.1c Jul 28 2012
+# //
+# //  Copyright 1991-2012 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.tb_dpc_color
+# Loading work.tb_dpc_color
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.cvp_dpc
+# Loading work.cvp_dpc
+# Refreshing C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/regression/work.imgproc_win3x3
+# Loading work.imgproc_win3x3
+# run -all
+# DPC_CHANGED genuine_color_sample=100 result=700
+# DPC_CHANGED genuine_color_sample=100 result=900
+# DPC_CHANGED genuine_color_sample=100 result=900
+# DPC_CHANGED genuine_color_sample=100 result=900
+# DPC_COLOR_DIAGNOSTIC changed=202 samples=512
+# TEST_RESULT PASS dpc_color_preservation
+# ** Note: $finish    : C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/cvp/cvp/08_csi_dsi_cs500_7cun/tools/sim/tb_dpc_color.v(35)
+#    Time: 5240 ns  Iteration: 1  Instance: /tb_dpc_color

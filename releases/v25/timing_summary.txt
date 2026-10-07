@@ -1,0 +1,100 @@
+Created by          : Tang Dynasty v6.2.168116
+                    : Copyright (c) 2012-2025 Anlogic Inc.
+Generated           : Wed Oct  7 14:43:10 2026
+
+Top Model           : design_top_wrapper
+Device              : PH1P35MDG324
+Speed               : 3
+STA coverage        : 93.69%
+Constraint File     : C:/Users/DWX1105/Desktop/02_F02_FC02_PH1P35/tmp/v25_color_20261007/build_project/td_project/camera_to_dsi_display.sdc;
+Confidence          : Routed
+Check Corner        : Both (Slow and Fast)
+CRPR Enabled        : Yes
+Report Scheme       : 10 end point(s) per path group, 1 path(s) per end point
+
+
+Check Status
+-------------
+
+Corner   | Max      Min
+------------------------------------
+Slow     | yes      yes
+Fast     | yes      yes
+
+
+Timing Status
+--------------------
+	SWNS: 0.558ns, STNS: 0.000ns
+	HWNS: 0.020ns, HTNS: 0.000ns
+	Period Check WNS: 4.729ns
+
+
+Clock Summary
+--------------------
+
+       Clock-Id:       C-Freq       Fanout   Clock-Name
+--------------------------------------------------------------------------------
+           clk0:      100.000         3930   pll_clk_100m
+           clk1:      132.820         2558   u_ph1p35_324_ddr_wrapper/u_ddr2/usr_clk
+           clk2:      112.511          711   MIPI_RX_BYTE_CLK
+           clk3:       68.493          482   MIPI_TX_BYTE_CLK
+           clk4:      125.000          353   u_pll_gmii125/PH1P_PHY_PLL_WRAPPER_d2616deaaa79_Inst/u_PH1P_PHY_PLL.clkc[0]
+           clk5:       10.000          342   pll_clk_10m
+           clk6:       25.000           93   sys_clk_25m
+           clk7:       23.999           46   pll_clk_24m
+           clk8:       50.597           28   u_ph1p35_324_ddr_wrapper/u_ddr2/mcu_clk
+           clk9:       68.493           16   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.ln0_data_c16_sample
+          clk10:       68.493           16   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.ln1_data_c16_sample
+          clk11:       68.493           16   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.ln2_data_c16_sample
+          clk12:       68.493           16   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.ln3_data_c16_sample
+          clk13:       68.493           16   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.lnck_data_c16_sample
+          clk14:      132.820            6   u_ph1p35_324_ddr_wrapper/u_ddr2/ctl_clk
+          clk15:      531.350            6   u_ph1p35_324_ddr_wrapper/u_ddr2/ddr_clk
+          clk16:       52.176            2   dpll_ref_clk
+          clk17:      450.045            1   mipi_rx_ck_pad
+          clk18:      112.511            1   u_mipi_dphy_rx_ph1p_mipiio_wrapper/u_ph1p_mipiio_rx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_RX.tif_c16_in
+          clk19:      132.820            1   u_ph1p35_324_ddr_wrapper/u_ddr2/ref_clk
+          clk20:      450.045            0   u_mipi_dphy_rx_ph1p_mipiio_wrapper/u_ph1p_mipiio_rx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_RX.io_clk_pad_p
+          clk21:       52.176            0   u_mipi_dphy_tx_over_ph1p_mipiio_wrapper/u_ph1p_mipiio_tx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_TX.i_phy_dpll_ref_clk
+--------------------------------------------------------------------------------
+
+       Name            Type         Rise(ns)   Fall(ns)          C-Period(ns)     C-Freq(MHz)          R-Period(ns)     R-Freq(MHz)         SWNS(ns)   STNS(ns)         HWNS(ns)   HTNS(ns)         Skew(ns)           Fanout        Max-Level        CC-From    CC-To
+       clk0       User GCLK            0.000      5.000                10.000         100.000                 8.749         114.299            1.251      0.000            0.024      0.000            0.225             3930                7             no       no
+       clk1       User GCLK            0.000      3.764                 7.529         132.820                 6.971         143.451            0.558      0.000            0.020      0.000            0.225             2558                7             no       no
+       clk2       User GCLK            0.000      4.444                 8.888         112.511                 5.529         180.865            3.359      0.000            0.027      0.000            0.177              711                6             no       no
+       clk3       User GCLK            0.000      7.300                14.600          68.493                 5.625         177.778            8.975      0.000            0.049      0.000            0.191              482                8             no       no
+       clk4       User GCLK            0.000      4.000                 8.000         125.000                 7.165         139.567            0.835      0.000            0.026      0.000            0.340              353                8             no       no
+       clk5   Inferred GCLK            0.000     50.000               100.000          10.000                 5.924         168.805           94.076      0.000            0.023      0.000            0.209              342                7             no       no
+       clk6   Inferred GCLK            0.000     20.000                40.000          25.000                 4.628         216.076           35.372      0.000            0.055      0.000            0.150               93                3             no       no
+       clk7   Inferred GCLK            0.000     20.834                41.668          23.999                 4.966         201.369           36.702      0.000            0.083      0.000            0.114               46                6             no       no
+       clk8   Inferred GCLK            0.000      9.882                19.764          50.597                 9.213         108.542           10.551      0.000            0.055      0.000            0.174               28                6             no       no
+       clk9           local            0.000      7.300                14.600          68.493                 3.674         272.183           10.926      0.000            1.111      0.000            0.000               16                0             no       no
+      clk10           local            0.000      7.300                14.600          68.493                 3.676         272.035           10.924      0.000            1.140      0.000            0.000               16                0             no       no
+      clk11           local            0.000      7.300                14.600          68.493                 4.159         240.442           10.441      0.000            1.251      0.000            0.000               16                0             no       no
+      clk12           local            0.000      7.300                14.600          68.493                 4.426         225.938           10.174      0.000            1.266      0.000            0.000               16                0             no       no
+      clk13           local            0.000      7.300                14.600          68.493                 3.885         257.400           10.715      0.000            1.167      0.000            0.000               16                0             no       no
+      clk14      User MLCLK            0.000      3.764                 7.529         132.820                 7.529         132.820            0.000      0.000            0.000      0.000            0.222                6                0             no       no
+      clk15      User MLCLK            0.000      0.941                 1.882         531.350                 1.882         531.350            0.000      0.000            0.000      0.000            0.225                6                0             no       no
+      clk16   Inferred GCLK            0.000      9.583                19.166          52.176                 1.000        1000.000           18.467      0.000            0.192      0.000            1.972                2                1             no       no
+      clk17           local            0.000      1.111                 2.222         450.045                 2.222         450.045            0.000      0.000            0.000      0.000            0.000                1                0             no       no
+      clk18           local            0.000      4.444                 8.888         112.511                 8.888         112.511            0.000      0.000            0.000      0.000            0.000                1                0             no       no
+      clk19           local            0.000      3.764                 7.529         132.820                 7.529         132.820            0.000      0.000            0.000      0.000            0.000                1                0             no       no
+      clk20           local            0.000      1.111                 2.222         450.045                 2.222         450.045            0.000      0.000            0.000      0.000            0.000                0                0             no       no
+      clk21           local            0.000      9.583                19.166          52.176                19.166          52.176            0.000      0.000            0.000      0.000            0.000                0                0             no       no
+
+Notes
+----------
+C-Period  :  constraint period
+C-Freq    :  constraint freq
+R-Period  :  report min period
+R-Freq    :  report fmax
+CC-From   :  has path(s) from cross-domain clock
+CC-To     :  has path(s) to cross-domain clock
+
+
+*   Clock R-Period data only takes intra-clock timing. SWNS/STNS/HWNS/HTNS take both intra-clock and inter-clock timing.
+*   If there is mismatch between R-Period and SWNS, check inter-clock timing of this clock as capture clock.
+*   SWNS/STNS/HWNS/HTNS of timing exception (SMCP/SMD) only counted in global Timing Status, not counted in Clock Summary.
+
+Intra clock domain timing
+--------------------------------------------------

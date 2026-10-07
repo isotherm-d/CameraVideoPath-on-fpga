@@ -1,0 +1,8 @@
+{
+  "version": "v25",
+  "reference_kelvin": 6500,
+  "base_gains_q8": [291, 256, 246],
+  "default_exposure": 1700,
+  "calibration_status": "pending same-scene capture",
+  "note": "The reference Kelvin is a curve anchor, not a measurement of the lamp."
+}
