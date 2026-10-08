@@ -7,8 +7,8 @@ from frame_tools import FrameAssembler
 from v26_client import V26Control
 
 class Harness:
-    def __init__(self):
-        self.control=V26Control()
+    def __init__(self,control_class=V26Control):
+        self.control=control_class()
         self.sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,64<<20)
         self.sock.bind(("",6000));self.sock.settimeout(.2)

@@ -1,9 +1,10 @@
 import argparse,struct,zlib
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument("--output",type=Path,required=True)
+p.add_argument('--filename',default='net_packets.hex')
 a=p.parse_args()
 count=0
-for line in (a.output/"net_packets.hex").read_text().splitlines():
+for line in (a.output/a.filename).read_text().splitlines():
     packet=bytes.fromhex(line)
     assert packet[:8]==b"\x55"*7+b"\xd5"
     ethernet=packet[8:]

@@ -27,6 +27,10 @@ class ClockMapping:
         return board_tick*10+best[1],(best[0]/2+50_000+drift)/1e6
 
 class V26Control:
+    parse_status=staticmethod(status)
+    LIMITS=((0,6),(0,1),(0,3),(62,1800),(16,143),(25,100),
+            (64,1024),(64,1024),(64,1024),(0,1),(0,1),(0,1),
+            (0,255),(0,2040),(0,2040))
     def __init__(self,target=("192.168.1.255",6001)):
         self.target=target
         self.tx=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
@@ -68,7 +72,7 @@ class V26Control:
                 return
             if address[0]!="192.168.1.66":
                 continue
-            parsed=status(packet)
+            parsed=self.parse_status(packet)
             if parsed is None:
                 continue
             parsed["received_ns"]=stamp
@@ -167,9 +171,7 @@ class V26Control:
         return confirmed
 
     def apply(self,changes):
-        limits=((0,6),(0,1),(0,3),(62,1800),(16,143),(25,100),
-                (64,1024),(64,1024),(64,1024),(0,1),(0,1),(0,1),
-                (0,255),(0,2040),(0,2040))
+        limits=self.LIMITS
         for addr,value in changes.items():
             if not 0<=int(addr)<len(limits) or not limits[int(addr)][0]<=int(value)<=limits[int(addr)][1]:
                 raise ValueError(f"参数 {addr} 超出合法范围")

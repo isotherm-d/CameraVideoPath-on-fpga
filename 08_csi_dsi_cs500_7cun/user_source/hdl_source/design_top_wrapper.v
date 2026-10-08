@@ -72,7 +72,7 @@ module design_top_wrapper (
     wire [31:0] v2_value;wire [23:0] legacy_value;
     wire cfg_error,iic_error;wire adv_valid,adv_sof,adv_eof;
     wire [23:0] adv_rgb;wire [31:0] adv_frame_id,pack_frame_id;
-    wire [1023:0] adv_status;wire adv_status_valid,adv_status_ready;
+    wire [1535:0] adv_status;wire [127:0] sensor_diagnostics;wire adv_status_valid,adv_status_ready;
     wire net_overflow,net_tx_done;wire [31:0] net_tx_fid;
     wire [1:0]  S_cmd_mode;
     wire [15:0] S_cmd_ae;
@@ -283,7 +283,7 @@ module design_top_wrapper (
       .O_cam_scl(O_cam_scl),  //I2C总线，SCL时钟
       .IO_cam_sda(IO_cam_sda),  //I2C总线，SDA数据
       .O_cfg_done(S_cam_cfg_done),  //摄像头寄存器初始化完成
-      .O_cfg_error(cfg_error),.O_iic_error(iic_error),
+      .O_cfg_error(cfg_error),.O_iic_error(iic_error),.O_diagnostics(sensor_diagnostics),
       .O_ae_cfg_done(S_ae_cfg_done)  //AE配置完成
   );
 	
@@ -460,9 +460,9 @@ cvp_proc #(
     .i_rst_n            ( S_rst_n      ),
     .i_mode             ( 3'd0         ),   // 0=彩色直通(像素级算法不用)
 
-    .i_grp_valid        ( S_gf_valid   ),
+    .i_grp_valid        ( camera_group_valid   ),
     .i_grp_data         ( S_gf_data    ),
-    .i_grp_frame_start  ( S_gf_tuser   ),
+    .i_grp_frame_start  ( camera_group_sof   ),
     .i_grp_line_last    ( S_gf_tlast   ),
 
     .o_pix_valid        ( S_isp_pix_valid ),
@@ -481,16 +481,20 @@ cvp_proc #(
     .o_ag               (            )
 );
 
+// V27 startup qualification: wait for initialization, then begin at a real SOF.
+wire camera_group_valid,camera_group_sof;
+cvp_camera_gate startup_gate(.clk(S_100m_clk),.rst_n(S_rst_n),.i_cfg_done(S_cam_cfg_done),.i_ae_done(S_ae_cfg_done),
+ .i_valid(S_gf_valid),.i_sof(S_gf_tuser),.o_valid(camera_group_valid),.o_sof(camera_group_sof));
 // V26: shared 30 fps processing core and configuration/status interfaces.
-cvp_advanced advanced(
- .clk(S_100m_clk),.rst_n(S_rst_n),.i_capture_valid(S_gf_valid),.i_capture_event(S_gf_valid&&S_gf_tuser),.keys_n(I_button),
+cvp_advanced #(.V27(1)) advanced(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_capture_valid(camera_group_valid),.i_capture_event(camera_group_sof),.keys_n(I_button),
  .i_valid(S_isp_pix_valid),.i_sof(S_isp_pix_fs),.i_rgb(S_isp_pix_rgb),
  .cmd_valid(v2_valid),.cmd_req(v2_req),.cmd_cfg(v2_cfg),.cmd_op(v2_op),.cmd_addr(v2_addr),.cmd_value(v2_value),
  .legacy_valid(legacy_valid),.legacy_cmd(legacy_cmd),.legacy_value(legacy_value),
  .cfg_clk(S_24m_clk),.i_cam_done(S_cam_cfg_done),.i_ae_done(S_ae_cfg_done),.i_iic_error(iic_error),.i_cfg_error(cfg_error),
  .sensor_req(S_ae_req),.sensor_exp_cfg(S_ae),.sensor_gain_cfg(S_ag),
  .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),
- .status_data(adv_status),.status_valid(adv_status_valid),.status_ready(adv_status_ready),
+ .i_sensor_diagnostics(sensor_diagnostics),.status_data(adv_status),.status_valid(adv_status_valid),.status_ready(adv_status_ready),
  .i_net_overflow(net_overflow),.i_net_tx_done(net_tx_done),.i_net_tx_fid(net_tx_fid),.net_clk(S_gmii_125m),.net_rst_n(S_gmii_lock),
  .time_ticks(),.result_done_tick(64'd0),.result_valid(1'b0),.result_ready(),.result_frame(32'd0),.result_roi(16'd0),.result_class(8'd0),.result_bbox(64'd0),.result_score(32'd0),.result_format(7'd0),
  .clean_pixel(),.clean_valid(),.clean_sof(),.clean_eol(),.clean_eof(),.clean_rgb(),.clean_x(),.clean_y(),.clean_frame_id(),.clean_cfg_id()
@@ -908,7 +912,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
     // 1280x720 每帧都发 = 30fps, 1920包/帧, 约697Mbps; 电脑端: eth_video_rx.py --width 1280 --height 720)
     cvp_eth_dbg #(
-        .ENABLE_STATUS(1),
+        .ENABLE_STATUS(1),.STATUS_BITS(1536),
         .IMG_W       ( 1280      ),
         .IMG_H       ( 720       ),
         .FRAME_SKIP  ( 1         ),

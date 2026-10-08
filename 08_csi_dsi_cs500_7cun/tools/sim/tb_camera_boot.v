@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Actual control RTL and I2C engine; accelerated divider, no sensor ACK model.
+// Actual control RTL and I2C engine; accelerated divider, sensor ACK responder.
 module tb_camera_boot;
 reg clk100=0,clk24=0,rst_n=0;
 always #5 clk100=~clk100;
@@ -10,7 +10,8 @@ wire cfg_done,ae_done,ae_req,scl;
 wire [15:0] exposure,gain;
 tri1 sda;
 integer transactions=0,errors=0,before_transactions;
-uicfgcs500 #(.CLK_DIV(3)) init_camera(.I_clk(clk24),.I_rst_n(rst_n),.I_ae_req(ae_req),.I_ae(exposure),.I_ag(gain),.O_cam_scl(scl),.IO_cam_sda(sda),.O_cfg_done(cfg_done),.O_ae_cfg_done(ae_done));
+assign sda=init_camera.uii2c_inst.IIC_S==3?1'b0:1'bz;
+uicfgcs500 #(.CLK_DIV(3),.STARTUP_CYCLES(128),.SOFT_RESET_CYCLES(128),.RETRY_CYCLES(32),.TIMEOUT_CYCLES(2000)) init_camera(.I_clk(clk24),.I_rst_n(rst_n),.I_ae_req(ae_req),.I_ae(exposure),.I_ag(gain),.O_cam_scl(scl),.IO_cam_sda(sda),.O_cfg_done(cfg_done),.O_ae_cfg_done(ae_done));
 cvp_proc proc_camera(.i_clk(clk100),.i_rst_n(rst_n),.i_mode(3'd0),.i_cam_cfg_done(cfg_done),.i_cmd_ae(command_ae),.i_cmd_ae_wr(command_wr),.i_grp_valid(1'b0),.i_grp_data(40'd0),.i_grp_frame_start(1'b0),.i_grp_line_last(1'b0),.o_ae_req(ae_req),.o_ae(exposure),.o_ag(gain),.o_pix_valid(),.o_pix_rgb(),.o_pix_frame_start(),.o_pix_line_last());
 always @(posedge init_camera.iic_req) transactions=transactions+1;
 always @(posedge clk100)
@@ -20,7 +21,8 @@ always @(posedge clk100)
 // Defend the consumer against an early request from an older producer.
 wire protected_cfg,protected_ae,protected_scl;
 tri1 protected_sda;
-uicfgcs500 #(.CLK_DIV(3)) protected_camera(.I_clk(clk24),.I_rst_n(rst_n),.I_ae_req(!protected_cfg),.I_ae(16'd1700),.I_ag(16'd108),.O_cam_scl(protected_scl),.IO_cam_sda(protected_sda),.O_cfg_done(protected_cfg),.O_ae_cfg_done(protected_ae));
+assign protected_sda=protected_camera.uii2c_inst.IIC_S==3?1'b0:1'bz;
+uicfgcs500 #(.CLK_DIV(3),.STARTUP_CYCLES(128),.SOFT_RESET_CYCLES(128),.RETRY_CYCLES(32),.TIMEOUT_CYCLES(2000)) protected_camera(.I_clk(clk24),.I_rst_n(rst_n),.I_ae_req(!protected_cfg),.I_ae(16'd1700),.I_ag(16'd108),.O_cam_scl(protected_scl),.IO_cam_sda(protected_sda),.O_cfg_done(protected_cfg),.O_ae_cfg_done(protected_ae));
 task check_boot;
 begin
  if(cfg_done!==1'b1 || ae_done!==1'b1 || transactions==0) begin

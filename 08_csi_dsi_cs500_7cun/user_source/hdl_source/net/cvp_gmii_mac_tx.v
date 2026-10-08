@@ -32,6 +32,7 @@
  */
 module cvp_gmii_mac_tx #(
     parameter integer ENABLE_STATUS=0,
+    parameter integer STATUS_BITS=1024,
     parameter integer DATA_BYTES     = 1440,   // 每包像素字节（须被 3 整除）
     parameter integer PKTS_PER_FRAME = 1920,   // 一帧的包数（IMG_W*IMG_H*3/DATA_BYTES）
     parameter [47:0]  MAC_DST = 48'hFF_FF_FF_FF_FF_FF,  // 广播：PC 无需配 ARP
@@ -42,7 +43,7 @@ module cvp_gmii_mac_tx #(
     parameter [15:0]  UDP_DPORT = 16'd6000
 ) (
     input  wire        i_clk,        // 125MHz GMII
-    input wire [1023:0] i_status_data,input wire i_status_valid,output reg o_status_pop,
+    input wire [STATUS_BITS-1:0] i_status_data,input wire i_status_valid,output reg o_status_pop,
     input wire i_frame_valid,input wire [31:0] i_frame_id,output reg o_frame_pop,
     output reg o_frame_done,output reg [31:0] o_frame_done_id,
     input  wire        i_rst,        // 高有效（顶层已按域同步）
@@ -176,7 +177,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
     wire [6:0] w_cred_avail = w_cred_bin - r_cred_pop;   // 模 128 差值
 
     /* ---------------- 发送主状态机 ---------------- */
-    reg [1023:0] status_packet;reg [31:0] active_frame_id;
+    reg [STATUS_BITS-1:0] status_packet;reg [31:0] active_frame_id;
     reg [11:0] r_idx;
     reg        r_sending;
     reg [4:0]  r_ifg;
@@ -219,17 +220,24 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
         (r_idx[0])           ? i_scan_word[15:8] :
                                i_scan_word[7:0];
 
-    reg [6:0] status_index;reg [7:0] status_octet;
-    always @(posedge i_clk)begin
+    reg [7:0] status_index;reg [7:0] status_octet;
+    generate if(STATUS_BITS>1024)begin:extended_status
+     always @(posedge i_clk)begin
+      status_index<=r_idx[7:0]+8'd2-PAY_BEG[7:0];
+      status_octet<=status_index[7]?status_packet[1024+{~status_index[5:0],3'b000}+:8]:status_packet[{~status_index[6:0],3'b000}+:8];
+     end
+    end else begin:base_status
+     always @(posedge i_clk)begin
       status_index<=r_idx[6:0]+7'd2-PAY_BEG[6:0];
-      status_octet<=status_packet[{~status_index,3'b000}+:8];
-    end
+      status_octet<=status_packet[{~status_index[6:0],3'b000}+:8];
+     end
+    end endgenerate
     wire [7:0] w_next_byte =
         (r_idx <  PRE_LEN) ? ((r_idx == PRE_LEN - 1) ? 8'hD5 : 8'h55) :
         (r_idx < APP_BEG) ? (ENABLE_STATUS&&r_hb_mode&&r_idx==44?8'h17:
                               ENABLE_STATUS&&r_hb_mode&&r_idx==45?8'h72:hdr_byte(r_idx[7:0]-PRE_LEN[7:0])) :
         (r_idx <  PAY_BEG) ? app_byte(r_idx[7:0] - APP_BEG[7:0]) :
-        (r_idx <  FCS_BEG) ? (r_hb_mode ? (ENABLE_STATUS?(w_pay_pos<128?status_octet:8'd0):w_hb_byte) : i_rd_data) :
+        (r_idx <  FCS_BEG) ? (r_hb_mode ? (ENABLE_STATUS?(w_pay_pos<STATUS_BITS/8?status_octet:8'd0):w_hb_byte) : i_rd_data) :
                              w_fcs_b;
 
     // CRC 覆盖 DA..payload（线上位置 8..FCS_BEG-1）

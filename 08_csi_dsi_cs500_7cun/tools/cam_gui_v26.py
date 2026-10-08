@@ -8,20 +8,27 @@ from tkinter import ttk
 from pathlib import Path
 import cv2
 import numpy as np
-from PIL import Image,ImageTk
+from PIL import Image,ImageTk,ImageDraw,ImageFont
 from frame_tools import FrameAssembler
 from v26_client import V26Control
 from v26_protocol import MODE_NAMES
 
 class App:
+    CONTROL_CLASS=V26Control
+    WINDOW_TITLE="MLKPAI-F02 v26 - 1280x720@30fps"
+    CAPTURE_PREFIX='v26'
+    def extra_controls(self,panel):pass
+    def create_panel(self,root):
+        panel=ttk.LabelFrame(root,text="算法与自动图像调节")
+        panel.grid(row=0,column=1,sticky="ns",padx=6)
+        return panel
     def __init__(self,root):
         self.root=root
-        root.title("MLKPAI-F02 v26 - 1280x720@30fps")
+        root.title(self.WINDOW_TITLE)
         root.protocol("WM_DELETE_WINDOW",self.quit)
         self.video=tk.Label(root,bg="black")
         self.video.grid(row=0,column=0,padx=2,pady=2)
-        panel=ttk.LabelFrame(root,text="算法与自动图像调节")
-        panel.grid(row=0,column=1,sticky="ns",padx=6)
+        panel=self.create_panel(root)
         self.row=0
         self.callbacks={}
         def label(text):
@@ -34,15 +41,15 @@ class App:
         self.mode.bind("<<ComboboxSelected>>",lambda e:self.submit({0:self.mode.current()}))
         self.ae=tk.BooleanVar(value=False)
         self.toggle(panel,"自动曝光",self.ae,lambda:self.submit({1:int(self.ae.get())}))
-        self.exp=self.scale(panel,"曝光（半行，62～1800）",62,1800,500,lambda:self.manual_exposure())
-        self.sensor_gain=self.scale(panel,"传感器增益档（16～143）",16,143,108,lambda:self.manual_gain())
+        self.exp=self.scale(panel,"手动曝光设定（半行，62～1800）",62,1800,500,lambda:self.manual_exposure())
+        self.sensor_gain=self.scale(panel,"手动增益设定（档位16～143）",16,143,108,lambda:self.manual_gain())
         label("白平衡模式")
         self.wb=ttk.Combobox(panel,values=("标定预设","色温 K","手动 RGB","自动场景"),state="readonly",width=28)
         self.wb.current(0)
         self.wb.grid(row=self.row,column=0,columnspan=3,padx=6,sticky="ew");self.row+=1
         self.wb.bind("<<ComboboxSelected>>",lambda e:self.submit({2:self.wb.current()}))
         self.k=self.scale(panel,"色温（K，近似标定曲线）",2500,10000,6500,self.manual_temperature)
-        self.gains=[self.scale(panel,f"{c} 增益 Q8（256=1倍）",64,1024,d,self.manual_rgb)
+        self.gains=[self.scale(panel,f"手动 {c} 增益设定 Q8（256=1倍）",64,1024,d,self.manual_rgb)
                     for c,d in zip("RGB",(344,256,451))]
         self.swap=tk.BooleanVar(value=False)
         self.toggle(panel,"R/B 通道互换",self.swap,lambda:self.submit({9:int(self.swap.get())}))
@@ -50,6 +57,7 @@ class App:
         self.toggle(panel,"显示支路自动对比度",self.tone,lambda:self.submit({10:int(self.tone.get())}))
         self.osd=tk.BooleanVar(value=True)
         self.toggle(panel,"FPGA 状态文字",self.osd,lambda:self.submit({11:int(self.osd.get())}))
+        self.extra_controls(panel)
         ttk.Button(panel,text="应用全部设置",command=self.apply_all).grid(row=self.row,column=0,columnspan=3,padx=6,sticky="ew");self.row+=1
         self.actual=ttk.Label(panel,text="等待板端回读",wraplength=300,justify="left")
         self.actual.grid(row=self.row,column=0,columnspan=3,sticky="w",padx=6,pady=8);self.row+=1
@@ -57,7 +65,9 @@ class App:
         self.command.grid(row=self.row,column=0,columnspan=3,sticky="w",padx=6)
         self.status=ttk.Label(root,text="等待完整帧…",wraplength=1550)
         self.status.grid(row=1,column=0,columnspan=2,sticky="w")
-        self.control=V26Control()
+        self.control=self.CONTROL_CLASS()
+        try:self.overlay_font=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',20)
+        except OSError:self.overlay_font=None
         self.sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         if hasattr(socket,"SO_EXCLUSIVEADDRUSE"):
             self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_EXCLUSIVEADDRUSE,1)
@@ -152,8 +162,15 @@ class App:
                                 cv2.FONT_HERSHEY_SIMPLEX,.5,(0,255,0),1)
         text=f"{self.fps if fresh else 0:.1f} fps complete={self.complete:.0f}%"
         if metadata:text+=f" {MODE_NAMES[metadata['mode']] if metadata['mode']<7 else '?'} F{metadata['frame_id']}"
-        cv2.putText(frame,text,(8,60),cv2.FONT_HERSHEY_SIMPLEX,.65,(0,255,0),2)
-        self.photo=ImageTk.PhotoImage(Image.fromarray(frame))
+        display=Image.fromarray(frame)
+        if self.overlay_font:
+            ImageDraw.Draw(display).text((8,43),text,font=self.overlay_font,fill=(0,255,0),stroke_width=1)
+        else:
+            names=('ORIG','GRAY','BINARY','EDGE','CARTOON','SKETCH','SEPIA')
+            text=f"{self.fps if fresh else 0:.1f} fps complete={self.complete:.0f}%"
+            if metadata:text+=f" {names[metadata['mode']] if metadata['mode']<7 else 'UNKNOWN'} F{metadata['frame_id']}"
+            fallback=np.asarray(display).copy();cv2.putText(fallback,text,(8,60),cv2.FONT_HERSHEY_SIMPLEX,.65,(0,255,0),2);display=Image.fromarray(fallback)
+        self.photo=ImageTk.PhotoImage(display)
         submitted_now=time.monotonic_ns()
         self.video.configure(image=self.photo)
         if fresh:
@@ -193,7 +210,7 @@ class App:
             frame=self.frame.copy()
         folder=Path.cwd()/"captures"
         folder.mkdir(exist_ok=True)
-        p=folder/time.strftime("v26_%Y%m%d_%H%M%S.png")
+        p=folder/time.strftime(self.CAPTURE_PREFIX+"_%Y%m%d_%H%M%S.png")
         Image.fromarray(frame).save(p)
         self.control.notice=f"已保存 FPGA 输出：{p.name}"
     def quit(self):

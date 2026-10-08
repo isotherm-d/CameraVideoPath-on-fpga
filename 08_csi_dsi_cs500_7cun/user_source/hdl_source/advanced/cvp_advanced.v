@@ -1,4 +1,4 @@
-module cvp_advanced #(parameter W=1280,H=720)(
+module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  input clk,rst_n,input i_capture_valid,input i_capture_event,input [1:0] keys_n,
  input i_valid,i_sof,input [23:0] i_rgb,
  input cmd_valid,input [15:0] cmd_req,cmd_cfg,input [7:0] cmd_op,cmd_addr,input [31:0] cmd_value,
@@ -6,7 +6,8 @@ module cvp_advanced #(parameter W=1280,H=720)(
  input cfg_clk,i_cam_done,i_ae_done,i_iic_error,i_cfg_error,
  output sensor_req,output [15:0] sensor_exp_cfg,sensor_gain_cfg,
  output o_valid,o_sof,o_eof,output [23:0] o_rgb,output [31:0] o_frame_id,
- output [1023:0] status_data,output status_valid,input status_ready,
+ output [1535:0] status_data,output status_valid,input status_ready,
+ input [127:0] i_sensor_diagnostics,
  input i_net_overflow,input i_net_tx_done,input [31:0] i_net_tx_fid,input net_clk,net_rst_n,
  // Canonical, unstylized image connection for a teammate ROI producer.
  output clean_valid,clean_sof,clean_eol,clean_eof,output [23:0] clean_rgb,
@@ -30,6 +31,7 @@ module cvp_advanced #(parameter W=1280,H=720)(
  wire [7:0] cfg_binary;
  wire [10:0] cfg_edge_low;
  wire [10:0] cfg_edge_high;
+ wire [10:0] cfg_sketch_low,cfg_sketch_high;wire [1:0] cfg_edge_width,cfg_sketch_width;
  wire [15:0] cfg_id;
  reg [63:0] ticks,capture_mem[0:3];reg [31:0] capture_id;
  assign time_ticks=ticks;
@@ -56,6 +58,7 @@ module cvp_advanced #(parameter W=1280,H=720)(
  .i_valid(cmd_valid),.i_req_id(cmd_req),.i_cfg_id(cmd_cfg),.i_op(cmd_op),.i_addr(cmd_addr),.i_value(cmd_value),
  .i_legacy_valid(legacy_valid),.i_legacy_cmd(legacy_cmd),.i_legacy_value(legacy_value),.i_ticks(ticks),
  .o_mode(cfg_mode),.o_ae_en(cfg_ae_en),.o_wb_mode(cfg_wb_mode),.o_exposure(cfg_exposure),.o_gain(cfg_gain),.o_kelvin(cfg_kelvin),.o_gain_r(cfg_gain_r),.o_gain_g(cfg_gain_g),.o_gain_b(cfg_gain_b),.o_swap(cfg_swap),.o_tone(cfg_tone),.o_osd(cfg_osd),.o_binary(cfg_binary),.o_edge_low(cfg_edge_low),.o_edge_high(cfg_edge_high),.o_cfg_id(cfg_id),.o_sensor_valid(manual_valid),.o_sensor_exp(manual_exp),.o_sensor_gain(manual_gain),
+ .o_sketch_low(cfg_sketch_low),.o_sketch_high(cfg_sketch_high),.o_edge_width(cfg_edge_width),.o_sketch_width(cfg_sketch_width),
  .o_reply_valid(reply_valid),.o_reply_req(reply_req),.o_reply_cfg(reply_cfg),.o_reply_status(reply_status),
  .o_reply_value(reply_value),.o_sync_rx_tick(sync_rx),.o_sync_id(sync_id));
  wire rv,rs,rl,re,frame_error;wire [23:0] raw_rgb;wire [11:0] rx,ry;wire [31:0] rf;
@@ -69,15 +72,17 @@ module cvp_advanced #(parameter W=1280,H=720)(
  wire [10:0] temp_r,temp_b;
  cvp_temperature temperature(.i_kelvin(cfg_kelvin),.o_r(temp_r),.o_b(temp_b));
  reg [10:0] gr_tag,gg_tag,gb_tag;reg swap_tag;reg [3:0] flags_tag;
- reg [7:0] binary_tag;reg [21:0] edge_tag;
+ reg [7:0] binary_tag;reg [21:0] edge_tag;reg [1:0] width_tag;
  wire [10:0] selected_r=cfg_wb_mode==3?awb_r:cfg_wb_mode==2?cfg_gain_r:cfg_wb_mode==1?temp_r:11'd344;
  wire [10:0] selected_g=cfg_wb_mode==3?awb_g:cfg_wb_mode==2?cfg_gain_g:11'd256;
  wire [10:0] selected_b=cfg_wb_mode==3?awb_b:cfg_wb_mode==2?cfg_gain_b:cfg_wb_mode==1?temp_b:11'd451;
  always @(posedge clk or negedge rst_n)begin
-  if(!rst_n)begin gr_tag<=344;gg_tag<=256;gb_tag<=451;swap_tag<=0;flags_tag<=4'b1000;binary_tag<=130;edge_tag<={11'd130,11'd190};end
+  if(!rst_n)begin gr_tag<=344;gg_tag<=256;gb_tag<=451;swap_tag<=0;flags_tag<=4'b1000;binary_tag<=130;edge_tag<={11'd130,11'd190};width_tag<=1;end
   else if(i_valid&&i_sof)begin
    gr_tag<=selected_r;gg_tag<=selected_g;gb_tag<=selected_b;swap_tag<=cfg_swap;
-   flags_tag<={cfg_osd,cfg_ae_en,cfg_wb_mode};binary_tag<=cfg_binary;edge_tag<={cfg_edge_low,cfg_edge_high};
+   flags_tag<={cfg_osd,cfg_ae_en,cfg_wb_mode};binary_tag<=cfg_binary;
+   edge_tag<=cfg_mode==5?{cfg_sketch_low,cfg_sketch_high}:{cfg_edge_low,cfg_edge_high};
+   width_tag<=cfg_mode==5?cfg_sketch_width:cfg_edge_width;
   end
  end
  cvp_gain11 gain(.clk(clk),.rst_n(rst_n),.i_valid(rv),.i_sof(rs),.i_rgb(raw_rgb),
@@ -88,10 +93,11 @@ module cvp_advanced #(parameter W=1280,H=720)(
  assign clean_pixel={16'd0,cc_flags[1:0],cc_flags[2],cc_flags[3],fault,clean_eof,clean_eol,clean_sof,8'd0,clean_cfg_id,clean_frame_id,clean_y,clean_x,clean_rgb};
  assign clean_cfg_id=cc_meta[23:8];assign clean_eol=clean_valid&&clean_x==W-1;
  assign clean_eof=clean_eol&&clean_y==H-1;
- cvp_frame_stats #(.W(W),.H(H)) stats(.clk(clk),.rst_n(rst_n),
+ wire [7:0] awb_reason;wire [3:0] awb_regions;
+ cvp_frame_stats #(.W(W),.H(H),.SAFE_AWB(V27)) stats(.clk(clk),.rst_n(rst_n),
  .i_valid(clean_valid),.i_sof(clean_sof),.i_eof(clean_eof),.i_rgb(clean_rgb),.i_raw_rgb(cc_raw),.i_awb_en(cfg_wb_mode==3&&!fault),
  .o_done(stats_done),.o_mean(mean),.o_black(black),.o_white(white),.o_awb_r(awb_r),.o_awb_g(awb_g),.o_awb_b(awb_b),
- .o_awb_state(awb_state),.o_samples(samples),.o_neutral(neutrals),.o_clipped(clipped),.o_stat_overrun(stats_overrun));
+ .o_awb_state(awb_state),.o_samples(samples),.o_neutral(neutrals),.o_clipped(clipped),.o_stat_overrun(stats_overrun),.o_awb_reason(awb_reason),.o_awb_regions(awb_regions));
  reg cam1,cam2,err1,err2;
  always @(posedge clk or negedge rst_n)begin
   if(!rst_n)begin cam1<=0;cam2<=0;err1<=0;err2<=0;end
@@ -109,16 +115,16 @@ module cvp_advanced #(parameter W=1280,H=720)(
  wire tv,ts;wire [23:0] trgb;
  cvp_tone tone(.clk(clk),.rst_n(rst_n),.i_valid(clean_valid),.i_sof(clean_sof),.i_rgb(clean_rgb),.i_en(cfg_tone),
  .i_stats_done(stats_done),.i_black(black),.i_white(white),.o_valid(tv),.o_sof(ts),.o_rgb(trgb));
- reg [79:0] tone_meta;reg [3:0] tone_flags;reg [7:0] tone_binary;reg [21:0] tone_edges;
- always @(posedge clk)begin tone_meta<=cc_meta;tone_flags<=cc_flags;tone_binary<=cc_binary;tone_edges<=cc_edges;end
+ reg [79:0] tone_meta;reg [3:0] tone_flags;reg [7:0] tone_binary;reg [21:0] tone_edges;reg [1:0] cc_width,tone_width;
+ always @(posedge clk)begin cc_width<=width_tag;tone_width<=cc_width;tone_meta<=cc_meta;tone_flags<=cc_flags;tone_binary<=cc_binary;tone_edges<=cc_edges;end
  wire fv,fs,fl,fe,style_overflow;wire [23:0] frgb;wire [11:0] fx,fy;wire [31:0] ff;wire [15:0] fc;
  wire [7:0] fm;wire fosd,fae;wire [1:0] fwb;
  wire [127:0] display_input,display_pixel;
  assign display_input={16'd0,tone_flags[1:0],tone_flags[2],tone_flags[3],fault,
   (tv&&tone_meta[79:68]==W-1&&tone_meta[67:56]==H-1),
   (tv&&tone_meta[79:68]==W-1),ts,tone_meta[7:0],tone_meta[23:8],tone_meta[55:24],tone_meta[67:56],tone_meta[79:68],trgb};
- cvp_style_stream #(.W(W),.H(H)) style(.clk(clk),.rst_n(rst_n),.i_valid(tv),.i_pixel(display_input),
- .i_binary_th(tone_binary),.i_edge_low(tone_edges[21:11]),.i_edge_high(tone_edges[10:0]),
+ cvp_style_stream #(.W(W),.H(H),.USE_CONTOUR(V27)) style(.clk(clk),.rst_n(rst_n),.i_valid(tv),.i_pixel(display_input),
+ .i_binary_th(tone_binary),.i_edge_low(tone_edges[21:11]),.i_edge_high(tone_edges[10:0]),.i_edge_width(tone_width),
  .o_valid(fv),.o_pixel(display_pixel),.o_overflow(style_overflow));
  assign frgb=display_pixel[23:0];assign fx=display_pixel[35:24];assign fy=display_pixel[47:36];
  assign ff=display_pixel[79:48];assign fc=display_pixel[95:80];assign fm=display_pixel[103:96];
@@ -161,6 +167,13 @@ module cvp_advanced #(parameter W=1280,H=720)(
  end
  wire [31:0] process_delta=last_process-last_capture,eof_delta=last_eof-last_capture;
  wire [7:0] flags={cfg_wb_mode==3,cam2,fault,(sensor_error||err2),sensor_busy,cfg_osd,cfg_tone,cfg_ae_en};
- assign status_data={32'h43563236,8'd1,last_mode,{6'd0,cfg_wb_mode},flags,last_fid,cfg_id,reply_req,reply_status,sensor_gain,sensor_exp,{5'd0,gr_tag},{5'd0,gg_tag},{5'd0,gb_tag},16'd1280,16'd720,16'd30,mean,black,white,{6'd0,awb_state},last_capture,process_delta,eof_delta,ticks,sync_rx,sync_id,16'd0,stream_errors,sensor_errors,last_tx_fid,last_tx_tick,res_flags,res_class,res_roi,res_frame,res_bbox,res_score,res_tick,last_cfg,reply_value,16'd0};
+ // Existing first 128 bytes are unchanged. V27 adds 64 bytes after that prefix.
+ wire diag_valid;wire [127:0] diag;
+ cvp_mailbox #(.DW(128)) diagnostics(.s_clk(cfg_clk),.s_rst_n(rst_n),.s_valid(1'b1),.s_data(i_sensor_diagnostics),.s_ready(),
+ .m_clk(clk),.m_rst_n(rst_n),.m_valid(diag_valid),.m_data(diag),.m_ready(1'b1));
+ assign status_data[1023:0]={32'h43563236,8'd1,last_mode,{6'd0,cfg_wb_mode},flags,last_fid,cfg_id,reply_req,reply_status,sensor_gain,sensor_exp,{5'd0,gr_tag},{5'd0,gg_tag},{5'd0,gb_tag},16'd1280,16'd720,16'd30,mean,black,white,{6'd0,awb_state},last_capture,process_delta,eof_delta,ticks,sync_rx,sync_id,16'd0,stream_errors,sensor_errors,last_tx_fid,last_tx_tick,res_flags,res_class,res_roi,res_frame,res_bbox,res_score,res_tick,last_cfg,reply_value,16'd0};
+ assign status_data[1535:1024]=V27?{32'h56323721,8'd1,8'd0,16'd0,diag,
+  {5'd0,cfg_edge_low},{5'd0,cfg_edge_high},{5'd0,cfg_sketch_low},{5'd0,cfg_sketch_high},
+  {6'd0,cfg_edge_width},{6'd0,cfg_sketch_width},neutrals,awb_reason,{4'd0,awb_regions},192'd0}:512'd0;
  assign status_valid=(reply_valid||fe_delayed||tx_delayed||result_pending||heartbeat==10000000)&&status_ready;
 endmodule

@@ -24,6 +24,7 @@
  */
 module cvp_eth_dbg #(
     parameter integer ENABLE_STATUS=0,
+    parameter integer STATUS_BITS=1024,
     parameter integer IMG_W        = 1280,
     parameter integer IMG_H        = 720,
     parameter integer FRAME_SKIP   = 3,      // 每 N 帧发 1 帧
@@ -43,7 +44,7 @@ module cvp_eth_dbg #(
     input  wire        i_valid,          // 96bit 拍有效
     input  wire [95:0] i_rgb,            // {pix0[23:0], pix1, pix2, pix3}
     input wire [31:0] i_frame_id,
-    input wire [1023:0] i_status_data,input wire i_status_valid,output wire o_status_ready,
+    input wire [STATUS_BITS-1:0] i_status_data,input wire i_status_valid,output wire o_status_ready,
     output wire o_frame_tx_done,output wire [31:0] o_frame_tx_id,output wire o_pixel_overflow,
     input  wire        i_tuser,          // 帧头拍标记(与 i_valid 同拍, 单拍脉冲)
 
@@ -358,12 +359,12 @@ module cvp_eth_dbg #(
       .i_valid(w_sof&&w_cap_now&&ENABLE_STATUS),
       .i_data(w_load?w_pxf_data[128:97]:beat_frame_id),
       .o_ready(desc_ready),.o_valid(desc_valid),.o_data(desc_id),.i_ready(desc_pop),.o_level());
-    wire status_valid,status_pop;wire [1023:0] status_data;
-    cvp_mailbox status_bridge(
+    wire status_valid,status_pop;wire [STATUS_BITS-1:0] status_data;
+    cvp_mailbox #(.DW(STATUS_BITS)) status_bridge(
       .s_clk(i_clk_100m),.s_rst_n(i_rst_100m_n),.s_valid(i_status_valid),.s_data(i_status_data),.s_ready(o_status_ready),
       .m_clk(i_clk_gmii),.m_rst_n(i_rst_gmii_n),.m_valid(status_valid),.m_data(status_data),.m_ready(status_pop));
     cvp_gmii_mac_tx #(
-        .ENABLE_STATUS(ENABLE_STATUS),
+        .ENABLE_STATUS(ENABLE_STATUS),.STATUS_BITS(STATUS_BITS),
         .DATA_BYTES     (DATA_BYTES),
         .PKTS_PER_FRAME (PKTS_PER_FRAME),
         .MAC_DST        (MAC_DST),
