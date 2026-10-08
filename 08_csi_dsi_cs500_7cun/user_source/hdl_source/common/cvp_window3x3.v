@@ -19,12 +19,17 @@ module cvp_window3x3 #(parameter W=1280,H=720,DW=24,BAYER_PAD=0,FIFO_AW=11)(
  wire drain=state!=NORMAL;
  wire [11:0] tx=state==DRAIN?flush_x:state==TAIL?12'd0:q[DW]?12'd0:nx;
  wire [11:0] ty=state==DRAIN?H:state==TAIL?H+1:q[DW]?12'd0:ny;
- reg [DW-1:0] line1[0:W-1],line2[0:W-1],rd1,rd2;
+ localparam COL_AW=$clog2(W);
+ reg [DW-1:0] line1[0:W-1];
+ reg [DW-1:0] line2[0:W-1];
+ reg [DW-1:0] rd1,rd2;
  reg [DW-1:0] c1,c2,prev2;
  reg v1,v2,d1,d2;reg [11:0] x1,x2,y1,y2;
  always @(posedge clk)begin
-  if(token)begin rd1<=line1[tx];if(!drain)line1[tx]<=q[DW-1:0];end
-  if(v1)begin rd2<=line2[x1];if(!d1)line2[x1]<=rd1;end
+  // Read-before-write is the vendor single-port ERAM template. During drain,
+  // an address is no longer needed after its old row has been read.
+  if(token)begin rd1<=line1[tx[COL_AW-1:0]];line1[tx[COL_AW-1:0]]<=q[DW-1:0];end
+  if(v1)begin rd2<=line2[x1[COL_AW-1:0]];line2[x1[COL_AW-1:0]]<=rd1;end
  end
  wire [DW-1:0] bottom=d2 ? (BAYER_PAD ? rd2:prev2):c2;
  wire [DW-1:0] top=y2==1?(BAYER_PAD?bottom:prev2):rd2;

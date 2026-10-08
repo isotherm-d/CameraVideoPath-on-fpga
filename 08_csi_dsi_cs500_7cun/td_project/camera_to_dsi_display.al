@@ -134,6 +134,7 @@
             </File>
             <File Path="../user_source/hdl_source/isp2/imgproc_win3x3.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -151,6 +152,7 @@
             </File>
             <File Path="../user_source/hdl_source/isp2/color_correct.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -183,6 +185,7 @@
             </File>
             <File Path="../user_source/hdl_source/isp2/wb_kelvin.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -415,9 +418,6 @@
                     <Attr Name="CompileOrder" Val="54"/>
                 </FileInfo>
             </File>
-        <File Path="../user_source/hdl_source/common/cvp_sync_fifo.v"><FileInfo><Attr Name="UsedInSyn" Val="true"/><Attr Name="UsedInP&R" Val="true"/><Attr Name="BelongTo" Val="design_1"/></FileInfo></File>
-<File Path="../user_source/hdl_source/common/cvp_window3x3.v"><FileInfo><Attr Name="UsedInSyn" Val="true"/><Attr Name="UsedInP&R" Val="true"/><Attr Name="BelongTo" Val="design_1"/></FileInfo></File>
-<File Path="../user_source/hdl_source/common/cvp_stream_tag.v"><FileInfo><Attr Name="UsedInSyn" Val="true"/><Attr Name="UsedInP&R" Val="true"/><Attr Name="BelongTo" Val="design_1"/></FileInfo></File>
         </Verilog>
         <System_Verilog>
             <File Path="../user_source/hdl_source/mipi_dphy_rx/mipi_dphy_rx_ph1p_mipiio_wrapper.sv">

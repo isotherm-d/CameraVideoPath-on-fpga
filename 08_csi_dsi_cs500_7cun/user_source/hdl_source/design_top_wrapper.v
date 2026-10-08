@@ -68,6 +68,12 @@ module design_top_wrapper (
     wire 		S_ae_req;
 
     // v20: 网络命令接收(RXCK 域解析, 100M 域寄存器输出)
+    wire v2_valid,legacy_valid;wire [15:0] v2_req,v2_cfg;wire [7:0] v2_op,v2_addr,legacy_cmd;
+    wire [31:0] v2_value;wire [23:0] legacy_value;
+    wire cfg_error,iic_error;wire adv_valid,adv_sof,adv_eof;
+    wire [23:0] adv_rgb;wire [31:0] adv_frame_id,pack_frame_id;
+    wire [1023:0] adv_status;wire adv_status_valid,adv_status_ready;
+    wire net_overflow,net_tx_done;wire [31:0] net_tx_fid;
     wire [1:0]  S_cmd_mode;
     wire [15:0] S_cmd_ae;
     wire        S_cmd_ae_wr;   // v23: 曝光命令单拍(通知 cvp_proc 重写传感器)
@@ -277,6 +283,7 @@ module design_top_wrapper (
       .O_cam_scl(O_cam_scl),  //I2C总线，SCL时钟
       .IO_cam_sda(IO_cam_sda),  //I2C总线，SDA数据
       .O_cfg_done(S_cam_cfg_done),  //摄像头寄存器初始化完成
+      .O_cfg_error(cfg_error),.O_iic_error(iic_error),
       .O_ae_cfg_done(S_ae_cfg_done)  //AE配置完成
   );
 	
@@ -467,56 +474,35 @@ cvp_proc #(
 
     /* v23: 网络曝光命令(与 i_clk 同 100M 域, 直连免 CDC) */
     .i_cmd_ae           ( S_cmd_ae        ),
-    .i_cmd_ae_wr        ( S_cmd_ae_wr     ),
+    .i_cmd_ae_wr        ( 1'b0     ),
 
-    .o_ae_req           ( S_ae_req        ),
-    .o_ae               ( S_ae            ),
-    .o_ag               ( S_ag            )
+    .o_ae_req           (         ),
+    .o_ae               (             ),
+    .o_ag               (            )
 );
 
-// v22: cvp_awb(自动白平衡)摘除 —— 白平衡 = color_correct 参数化增益
-// (网络命令运行时覆盖 + 编译期标定默认), 自动白平衡不再使用。
-wire        S_cc_valid, S_cc_fs;
-wire [23:0] S_cc_rgb;
-
-// v25: one selector shared with the regression tests. All modes use the same
-// sensor calibration. Manual RGB is explicit (cmd6=0, cmd7=0), swap works in all.
-wire [8:0] S_cc_gain_r, S_cc_gain_g, S_cc_gain_b;
-wire S_cc_swap;
-cvp_wb_select u_wb_select (
-    .I_clk(S_100m_clk), .I_rst_n(S_rst_n), .I_preset(S_cmd_awb_en),
-    .I_kelvin(S_cmd_kelvin), .I_r(S_cmd_gr), .I_g(S_cmd_gg), .I_b(S_cmd_gb),
-    .I_swap(S_cmd_swap),
-    .O_r(S_cc_gain_r), .O_g(S_cc_gain_g), .O_b(S_cc_gain_b), .O_swap(S_cc_swap)
+// V26: shared 30 fps processing core and configuration/status interfaces.
+cvp_advanced advanced(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_capture_valid(S_gf_valid),.i_capture_event(S_gf_valid&&S_gf_tuser),.keys_n(I_button),
+ .i_valid(S_isp_pix_valid),.i_sof(S_isp_pix_fs),.i_rgb(S_isp_pix_rgb),
+ .cmd_valid(v2_valid),.cmd_req(v2_req),.cmd_cfg(v2_cfg),.cmd_op(v2_op),.cmd_addr(v2_addr),.cmd_value(v2_value),
+ .legacy_valid(legacy_valid),.legacy_cmd(legacy_cmd),.legacy_value(legacy_value),
+ .cfg_clk(S_24m_clk),.i_cam_done(S_cam_cfg_done),.i_ae_done(S_ae_cfg_done),.i_iic_error(iic_error),.i_cfg_error(cfg_error),
+ .sensor_req(S_ae_req),.sensor_exp_cfg(S_ae),.sensor_gain_cfg(S_ag),
+ .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),
+ .status_data(adv_status),.status_valid(adv_status_valid),.status_ready(adv_status_ready),
+ .i_net_overflow(net_overflow),.i_net_tx_done(net_tx_done),.i_net_tx_fid(net_tx_fid),.net_clk(S_gmii_125m),.net_rst_n(S_gmii_lock),
+ .time_ticks(),.result_done_tick(64'd0),.result_valid(1'b0),.result_ready(),.result_frame(32'd0),.result_roi(16'd0),.result_class(8'd0),.result_bbox(64'd0),.result_score(32'd0),.result_format(7'd0),
+ .clean_pixel(),.clean_valid(),.clean_sof(),.clean_eol(),.clean_eof(),.clean_rgb(),.clean_x(),.clean_y(),.clean_frame_id(),.clean_cfg_id()
 );
-
-color_correct #(
-    .SWAP_RB ( 0      ),   // 标定: 1=R/B 互换
-    .GAIN_R  ( 9'd256 ),   // Runtime selector supplies all calibrated gains.
-    .GAIN_G  ( 9'd256 ),
-    .GAIN_B  ( 9'd256 )
-) u_color_correct (
-    .I_clk         ( S_100m_clk    ),
-    .I_rst_n       ( S_rst_n       ),
-    .I_valid       ( S_isp_pix_valid ),
-    .I_rgb         ( S_isp_pix_rgb   ),
-    .I_frame_start ( S_isp_pix_fs    ),
-    .I_gain_r_rt   ( S_cc_gain_r   ),
-    .I_gain_g_rt   ( S_cc_gain_g   ),
-    .I_gain_b_rt   ( S_cc_gain_b   ),
-    .I_swap_rt     ( S_cc_swap     ),
-    .O_valid       ( S_cc_valid    ),
-    .O_rgb         ( S_cc_rgb      ),
-    .O_frame_start ( S_cc_fs       )
-);
-
 // 1像素/拍 -> 96bit 组(4像素), 驱动网口观测口语义信号 S_awb_*
 pack_4 u_pack4 (
+    .I_frame_id(adv_frame_id),.O_frame_id(pack_frame_id),
     .I_clk         ( S_100m_clk   ),
     .I_rst_n       ( S_rst_n      ),
-    .I_valid       ( S_cc_valid   ),
-    .I_rgb         ( S_cc_rgb     ),
-    .I_frame_start ( S_cc_fs      ),
+    .I_valid       ( adv_valid   ),
+    .I_rgb         ( adv_rgb     ),
+    .I_frame_start ( adv_sof      ),
     .O_tvalid      ( S_awb_tvalid ),
     .O_tdata       ( S_awb_tdata  ),
     .O_tuser       ( S_awb_tuser  )
@@ -902,6 +888,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .I_clk_gmii    ( S_gmii_125m        ),
         .I_clk100      ( S_100m_clk         ),
         .I_rst_n_100   ( S_rst_n            ),
+        .o_v2_valid(v2_valid),.o_req_id(v2_req),.o_cfg_id(v2_cfg),.o_op(v2_op),.o_addr(v2_addr),.o_value(v2_value),
+        .o_legacy_valid(legacy_valid),.o_legacy_cmd(legacy_cmd),.o_legacy_value(legacy_value),
         .o_mode        ( S_cmd_mode         ),
         .o_net_ae      ( S_cmd_ae           ),
         .o_gain_r      ( S_cmd_gr           ),
@@ -920,6 +908,7 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     // 以太网视频调试通路(网络模块; UDP: 192.168.1.66 -> 192.168.1.100, 端口 6000,
     // 1280x720 每帧都发 = 30fps, 1920包/帧, 约697Mbps; 电脑端: eth_video_rx.py --width 1280 --height 720)
     cvp_eth_dbg #(
+        .ENABLE_STATUS(1),
         .IMG_W       ( 1280      ),
         .IMG_H       ( 720       ),
         .FRAME_SKIP  ( 1         ),
@@ -927,6 +916,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
         .GEN_TESTPAT ( 0         ),   // 0=相机流(彩条分诊已于 v11b 验证通路正确)
         .PHY_ADDR    ( 5'd1      )
     ) u_eth_dbg (
+        .i_frame_id(pack_frame_id),.i_status_data(adv_status),.i_status_valid(adv_status_valid),.o_status_ready(adv_status_ready),
+        .o_pixel_overflow(net_overflow),.o_frame_tx_done(net_tx_done),.o_frame_tx_id(net_tx_fid),
         .i_clk_pix      ( S_100m_clk        ),   // v13d: cvp ISP 在 100M 域
         .i_rst_pix_n    ( S_rst_n           ),
         .i_valid        ( S_awb_tvalid      ),

@@ -48,6 +48,9 @@ module cvp_cmd_rx (
     output reg         o_awb_en,     // v21: 0=冻结 AWB(手动白平衡), 1=自动
     output reg  [6:0]  o_kelvin,     // v21: 色温, 单位 100K(25..100 = 2500K..10000K)
     output reg         o_exp_wr,     // v23: 曝光命令单拍(100M 域, 通知 cvp_proc 重写传感器)
+    output reg o_v2_valid,output reg [15:0] o_req_id,o_cfg_id,
+    output reg [7:0] o_op,o_addr,output reg [31:0] o_value,
+    output reg o_legacy_valid,output reg [7:0] o_legacy_cmd,output reg [23:0] o_legacy_value,
     output reg  [7:0]  o_evt_cnt
 );
 
@@ -76,6 +79,7 @@ module cvp_cmd_rx (
     reg        r_arm;         // 载荷窗口使能(全部校验通过)
     reg [23:0] r_val;         // 命令值
     reg [7:0]  r_cmd;
+    reg r_v2;reg [15:0] r_reqid,r_cfgid;reg [7:0] r_op,r_addr;reg [31:0] r_value;
     reg        r_evt;         // 命令事件(单拍, RXCK 域)
 
     reg        r_frame_cnt = 8'd0;
@@ -90,7 +94,7 @@ module cvp_cmd_rx (
     always @(posedge I_rxclk or negedge I_rst_n_rx) begin
         if (!I_rst_n_rx) begin
             r_idx <= 0; r_fail <= 0; r_arm <= 0;
-            r_val <= 0; r_cmd <= 0; r_evt <= 0;
+            r_val <= 0; r_cmd <= 0; r_evt <= 0;r_v2<=0;r_reqid<=0;r_cfgid<=0;r_op<=0;r_addr<=0;r_value<=0;
             o_evt_cnt <= 8'd0;
         end else begin
             r_evt <= 1'b0;
@@ -113,17 +117,17 @@ module cvp_cmd_rx (
                     8'd49: if (w_byte != M0)    r_fail <= 1'b1;   // 魔数 0
                     8'd50: if (w_byte != M1)    r_fail <= 1'b1;   // 魔数 1
                     8'd51: if (w_byte != M2)    r_fail <= 1'b1;   // 魔数 2
-                    8'd52: if (w_byte != M3)    r_fail <= 1'b1;   // 魔数 3
-                    8'd53: begin
-                               r_cmd <= w_byte;
-                               r_arm <= !r_fail;               // 前置校验全过才武装
-                           end
-                    8'd54: if (r_arm) r_val[23:16] <= w_byte;
-                    8'd55: if (r_arm) r_val[15:8] <= w_byte;
-                    8'd56: if (r_arm) begin
-                               r_val[7:0]  <= w_byte;
-                               r_evt       <= 1'b1;      // 三个数值字节全部到齐才提交
-                           end
+                    8'd52: begin r_v2<=w_byte==8'h02;if(w_byte!=M3 && w_byte!=8'h02)r_fail<=1;end   // 魔数 3
+                    8'd53:begin r_arm<=!r_fail;if(r_v2)r_reqid[15:8]<=w_byte;else r_cmd<=w_byte;end
+                    8'd54:if(r_arm)begin if(r_v2)r_reqid[7:0]<=w_byte;else r_val[23:16]<=w_byte;end
+                    8'd55:if(r_arm)begin if(r_v2)r_cfgid[15:8]<=w_byte;else r_val[15:8]<=w_byte;end
+                    8'd56:if(r_arm)begin if(r_v2)r_cfgid[7:0]<=w_byte;else begin r_val[7:0]<=w_byte;r_evt<=1;end end
+                    8'd57:if(r_arm&&r_v2)r_op<=w_byte;
+                    8'd58:if(r_arm&&r_v2)r_addr<=w_byte;
+                    8'd61:if(r_arm&&r_v2)r_value[31:24]<=w_byte;
+                    8'd62:if(r_arm&&r_v2)r_value[23:16]<=w_byte;
+                    8'd63:if(r_arm&&r_v2)r_value[15:8]<=w_byte;
+                    8'd64:if(r_arm&&r_v2)begin r_value[7:0]<=w_byte;r_evt<=1;end
                     default: ;
                 endcase
             end
@@ -133,6 +137,7 @@ module cvp_cmd_rx (
     reg        r_tgl;
     reg        s_t1, s_t2;
     reg [31:0] s_data1, s_data2;
+    reg [80:0] extended_source,extended1,extended2;
     wire [31:0] w_evt_data = {r_cmd, r_val[23:0]};
 
     always @(posedge I_rxclk or negedge I_rst_n_rx) begin
@@ -140,8 +145,8 @@ module cvp_cmd_rx (
         else if (r_evt)  r_tgl <= ~r_tgl;
     end
     always @(posedge I_rxclk or negedge I_rst_n_rx) begin
-        if (!I_rst_n_rx) s_data1 <= 32'd0;
-        else if (r_evt)  s_data1 <= w_evt_data;      // 数据与 toggle 同拍更新, 翻转沿前已稳定
+        if (!I_rst_n_rx) begin s_data1<=0;extended_source<=0;end
+        else if(r_evt)begin s_data1<=w_evt_data;extended_source<={r_v2,r_reqid,r_cfgid,r_op,r_addr,r_value};end      // 数据与 toggle 同拍更新, 翻转沿前已稳定
     end
 
     /* ================= 4. 100M 域: 同步 + 命令寄存器 ================= */
@@ -167,13 +172,20 @@ module cvp_cmd_rx (
             o_awb_en  <= 1'b1;
             o_kelvin  <= 7'd65;   // 默认 6500K
             o_exp_wr  <= 1'b0;
-            r_ev_d    <= 1'b0;
+            r_ev_d    <= 1'b0;extended1<=0;extended2<=0;
+            o_v2_valid<=0;o_req_id<=0;o_cfg_id<=0;o_op<=0;o_addr<=0;o_value<=0;
+            o_legacy_valid<=0;o_legacy_cmd<=0;o_legacy_value<=0;
         end else begin
             s_tg1 <= r_tgl;  s_tg2 <= s_tg1;  s_tg3 <= s_tg2;   // toggle 双拍
             s_dt1 <= s_data1; s_dt2 <= s_dt1;                    // 数据直过(翻转前已稳定)
             r_ev_d <= w_sync_edge;
-            o_exp_wr <= 1'b0;
+            o_exp_wr<=0;o_v2_valid<=0;o_legacy_valid<=0;
+            extended1<=extended_source;extended2<=extended1;
             if (w_sync_edge && !r_ev_d) begin                    // 新命令
+                if(extended2[80])begin
+                o_v2_valid<=1;{o_req_id,o_cfg_id,o_op,o_addr,o_value}<=extended2[79:0];
+                end else begin
+                o_legacy_valid<=1;o_legacy_cmd<=w_cmd;o_legacy_value<=w_val;
                 case (w_cmd)
                     8'd0:    o_mode   <= w_val[1:0];
                     8'd1:    o_net_ae <= w_val[15:0];
@@ -186,7 +198,8 @@ module cvp_cmd_rx (
                     default: ;
                 endcase
                 if (w_cmd == 8'd1)
-                    o_exp_wr <= 1'b1;   // 曝光命令: 单拍通知(o_net_ae 同拍已更新)
+                    o_exp_wr <= 1'b1;
+                end   // 曝光命令: 单拍通知(o_net_ae 同拍已更新)
             end
         end
     end

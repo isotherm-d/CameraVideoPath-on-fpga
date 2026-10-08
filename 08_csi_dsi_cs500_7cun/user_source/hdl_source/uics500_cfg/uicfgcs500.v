@@ -47,6 +47,7 @@ input  wire	 [15:0] 	I_ag,
 output wire             O_cam_scl, //I2C总线，SCL时钟
 inout  wire             IO_cam_sda, //I2C总线，SDA数据
 output reg              O_cfg_done, //配置完成
+output wire O_iic_error,output reg O_cfg_error,
 output reg              O_ae_cfg_done
 );	
 
@@ -62,6 +63,10 @@ always@(posedge I_clk or negedge I_rst_n)
        rst_cnt <= rst_cnt; 
 
 reg  iic_req;//请求操作I2C控制器信号
+wire bus_error;
+reg transaction_error;
+reg [15:0] held_ae,held_ag;
+assign O_iic_error=transaction_error;
 wire iic_busy; //I2C控制器忙信号
 reg  [31:0] wr_data;     //写数据寄存器
 reg  [1 :0] TS_S = 2'd0; //状态机寄存器
@@ -72,6 +77,16 @@ wire [23:0] REG_DATA_AE;    //寄存器数据
 wire [8 :0] REG_SIZE;    //寄存器数量
 wire [8 :0] REG_SIZE_REG;    //寄存器数量
 wire [8 :0] REG_SIZE_AE;    //寄存器数量
+
+always @(posedge I_clk)begin
+ if(!rst_cnt[7])begin held_ae<=I_ae;held_ag<=I_ag;transaction_error<=0;O_cfg_error<=0;end
+ else begin
+  if(bus_error)begin transaction_error<=1;if(!O_cfg_done)O_cfg_error<=1;end
+  if(TS_S==0 && ((reg_index==REG_SIZE&&!O_cfg_done)||(I_ae_req&&O_cfg_done&&O_ae_cfg_done)))begin
+   held_ae<=I_ae;held_ag<=I_ag;transaction_error<=0;
+  end
+ end
+end
 
 always@(posedge I_clk ) begin 
     if(rst_cnt[7] == 1'b0)begin //复位初始化寄存器
@@ -91,7 +106,7 @@ always@(posedge I_clk ) begin
         else if(reg_index == REG_SIZE && O_ae_cfg_done == 1'b0) begin//如果配置完成
             O_ae_cfg_done <= 1'b1;       //设置 cfg_done标准
         end 
-        else if(I_ae_req && O_cfg_done)begin
+        else if(I_ae_req && O_cfg_done && O_ae_cfg_done)begin
             O_ae_cfg_done <= 0;
             reg_index   <= 0;
         end
@@ -139,6 +154,7 @@ uii2c_inst
 .I_rd_cnt(8'd0),//需要读的数据BYTES
 .I_iic_mode(1'b0),//读模式设置
 .I_iic_req(iic_req),//I2C控制器请求
+.O_iic_bus_error(bus_error),
 .O_iic_busy(iic_busy)//I2C控制器忙
 );
 
@@ -152,7 +168,7 @@ uics500reg uics500reg_inst
 );  
 
 wire 	[15:0] 	w_gain_val; 
-SC500GainTbl gain_tbl (.I_clk(I_clk), .I_rstn(rst_cnt[7]==1'b0), .I(I_ag - 16), .O(w_gain_val));
+SC500GainTbl gain_tbl (.I_clk(I_clk), .I_rstn(rst_cnt[7]==1'b0), .I(held_ag - 16), .O(w_gain_val));
 //例化CAM AE的寄存器配置表
 uics500regAE uics500regAE_inst
 (
@@ -160,7 +176,7 @@ uics500regAE uics500regAE_inst
 .REG_INDEX(reg_index),//寄存索引
 .REG_DATA(REG_DATA_AE),   //寄存器数据
 .I_AG(w_gain_val),
-.I_AE(I_ae)
+.I_AE(held_ae)
 );  
 
 
