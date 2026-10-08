@@ -1,0 +1,31 @@
+{
+  "60": {
+    "total_edge_fraction": 0.103974609375,
+    "flat_box_noise_fraction": 0.0
+  },
+  "90": {
+    "total_edge_fraction": 0.07303059895833333,
+    "flat_box_noise_fraction": 0.0
+  },
+  "130": {
+    "total_edge_fraction": 0.04031792534722222,
+    "flat_box_noise_fraction": 0.0
+  },
+  "190": {
+    "total_edge_fraction": 0.014046223958333333,
+    "flat_box_noise_fraction": 0.0
+  },
+  "awb": {
+    "samples": 116501,
+    "regions": [
+      445,
+      50307,
+      41149,
+      24600
+    ],
+    "candidate_gains": [
+      345.26733792506224,
+      451.1885911438682
+    ]
+  }
+}
