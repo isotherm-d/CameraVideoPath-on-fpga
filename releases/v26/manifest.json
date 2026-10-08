@@ -232,43 +232,57 @@
   "files": [
     {
       "file": "baseline-tests.log",
-      "bytes": 28601,
-      "sha256": "5b0cd8f3b0e084926dfce74ebbeb8b596631150ae5b86d398530304a4a22a4a4"
+      "bytes": 28134,
+      "sha256": "a4061e3a6f447a133ef55a91ddbf018e587d9919391f74c9ea453e4154641b94",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "camera_to_dsi_display_v26.bit",
       "bytes": 1789539,
-      "sha256": "1529786dc3b070fb8736ed4a95e7bfda514c40c053bf9b7ced1fcac22171998b"
+      "sha256": "1529786dc3b070fb8736ed4a95e7bfda514c40c053bf9b7ced1fcac22171998b",
+      "hash_mode": "raw"
     },
     {
       "file": "hardware-tests.log",
-      "bytes": 2163,
-      "sha256": "8b7a661efcc7aa0e5a13acfe272e4f51cf34dccd56b45aaa287d42cc2266b13f"
+      "bytes": 2126,
+      "sha256": "a5341918e7375f415ce1f2e3f16c71e1b470f03e3d9280e6e25bc518a145234b",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "hardware_validation.json",
-      "bytes": 32170,
-      "sha256": "d91d46ec5e935d2d137955d01b9b28b5240c927fdacd10269c4c35b50a7eb56b"
+      "bytes": 30862,
+      "sha256": "1c457dd108be9a79c212ee16801eeedc78a7fdafd3a6ef82b561db3b751713bb",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "python-tests.log",
-      "bytes": 131,
-      "sha256": "8311c147d8508b912ee12694b32b6fe989d0ae8a9a6a70e053ad24206a087d87"
+      "bytes": 126,
+      "sha256": "e4aadb51eb988f5c83c2e81f44bd14a1aebc0b414f29ee0e732dbe3593f55819",
+      "hash_mode": "crlf-to-lf"
+    },
+    {
+      "file": "README.md",
+      "bytes": 2218,
+      "sha256": "daedad41ec8f396cde98a0b2d71ee56d467abac8fde40de615dc508de67e37d1",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "resource_report.txt",
-      "bytes": 60939,
-      "sha256": "ce60f3ed017a1dc9b318d2ba0a92648abb3f5b4e63802349ff922de2a2a8981f"
+      "bytes": 60581,
+      "sha256": "fd4a47b771f38a3633f94ed1418c794fc277c39e199d1345d484d04de42644ee",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "rtl-tests.log",
-      "bytes": 235,
-      "sha256": "1c2fc0008c2fce1fce660081899cd49dc055deda38b0e38787ceac23eb024c4c"
+      "bytes": 223,
+      "sha256": "be50365dd414859382413bdd24932a2b3b8e3d738fe602872e6e17c8fd94a2dc",
+      "hash_mode": "crlf-to-lf"
     },
     {
       "file": "timing_report.txt",
-      "bytes": 5823897,
-      "sha256": "04a3aeb7382c8000cfc82a9ab38c2c1a9eba03b12509b85f4454eb1a1e8aecaa"
+      "bytes": 5779633,
+      "sha256": "eab44dbac52b75aaac37cb7707ada7ac4aeed5a09cae15e292927879cc3b5a86",
+      "hash_mode": "crlf-to-lf"
     }
   ],
   "released_at_utc": "2026-10-08T04:34:33.632269+00:00",
@@ -277,5 +291,6 @@
     "frames": 53953,
     "fps": 29.9636474007689,
     "complete": 100.0
-  }
+  },
+  "checksum_note": "For text artifacts, bytes and SHA256 use CRLF-to-LF normalized bytes (Git blob form); .bit uses raw bytes."
 }
