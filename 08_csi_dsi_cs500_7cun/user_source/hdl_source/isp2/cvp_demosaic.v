@@ -11,14 +11,17 @@ module cvp_demosaic #(
 );
     wire win_valid, win_fs, centre_x_odd, centre_y_odd;
     wire [9:0] p00,p01,p02,p10,p11,p12,p20,p21,p22;
-    imgproc_win3x3 #(.IMG_W(IMG_W),.IMG_H(IMG_H),.DW(10)) window (
-        .i_clk(i_clk),.i_rst_n(i_rst_n),.i_valid(i_valid),
-        .i_data(i_raw),.i_frame_start(i_frame_start),
-        .o_valid(win_valid),.o_frame_start(win_fs),
-        .o_center_x_odd(centre_x_odd),.o_center_y_odd(centre_y_odd),
-        .o_p00(p00),.o_p01(p01),.o_p02(p02),
-        .o_p10(p10),.o_p11(p11),.o_p12(p12),
-        .o_p20(p20),.o_p21(p21),.o_p22(p22)
+    wire [11:0] centre_x,centre_y;
+    assign centre_x_odd=centre_x[0];
+    assign centre_y_odd=centre_y[0];
+    cvp_window3x3 #(.W(IMG_W),.H(IMG_H),.DW(10),.BAYER_PAD(1)) window (
+        .clk(i_clk),.rst_n(i_rst_n),.i_valid(i_valid),
+        .i_data(i_raw),.i_sof(i_frame_start),
+        .o_valid(win_valid),.o_sof(win_fs),.o_eol(),.o_eof(),
+        .o_x(centre_x),.o_y(centre_y),.o_overflow(),
+        .p00(p00),.p01(p01),.p02(p02),
+        .p10(p10),.p11(p11),.p12(p12),
+        .p20(p20),.p21(p21),.p22(p22)
     );
     wire [1:0] phase={centre_y_odd,centre_x_odd} ^ BAYER_PATTERN;
     wire [11:0] cross_sum={2'b0,p01}+{2'b0,p10}+{2'b0,p12}+{2'b0,p21};

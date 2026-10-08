@@ -1,0 +1,40 @@
+test_neutral_sensor_with_balanced_reference (test_camera_tools.CalibrationTests.test_neutral_sensor_with_balanced_reference) ... ok
+test_recover_sensor_sensitivity_with_existing_gains (test_camera_tools.CalibrationTests.test_recover_sensor_sensitivity_with_existing_gains) ... ok
+test_unreachable_or_invalid_calibration_is_rejected (test_camera_tools.CalibrationTests.test_unreachable_or_invalid_calibration_is_rejected) ... ok
+test_exposure_and_gain_bounds (test_camera_tools.ControlTests.test_exposure_and_gain_bounds) ... ok
+test_kelvin_and_preset_modes (test_camera_tools.ControlTests.test_kelvin_and_preset_modes) ... ok
+test_manual_mode_clears_kelvin_and_sends_all_gains (test_camera_tools.ControlTests.test_manual_mode_clears_kelvin_and_sends_all_gains) ... ok
+test_bad_packets_are_ignored (test_camera_tools.FrameTests.test_bad_packets_are_ignored) ... ok
+test_board_restart_after_silence (test_camera_tools.FrameTests.test_board_restart_after_silence) ... ok
+test_complete_frames_do_not_mix (test_camera_tools.FrameTests.test_complete_frames_do_not_mix) ... ok
+test_completeness_measures_finished_frames (test_camera_tools.FrameTests.test_completeness_measures_finished_frames) ... ok
+test_duplicates_wrap_and_old_packets (test_camera_tools.FrameTests.test_duplicates_wrap_and_old_packets) ... ok
+test_rgb_preview_and_png_have_same_channel_order (test_camera_tools.FrameTests.test_rgb_preview_and_png_have_same_channel_order) ... ok
+test_calibrated_reference_and_monotonic_curve (test_camera_tools.TemperatureTests.test_calibrated_reference_and_monotonic_curve) ... ok
+test_actual_preview_preserves_red_and_blue (test_gui_commands.GuiTests.test_actual_preview_preserves_red_and_blue) ... ok
+test_apply_all_stops_on_first_failure (test_gui_commands.GuiTests.test_apply_all_stops_on_first_failure) ... ok
+test_gain_slider_enters_manual_mode (test_gui_commands.GuiTests.test_gain_slider_enters_manual_mode) ... ok
+test_kelvin_slider_and_preset (test_gui_commands.GuiTests.test_kelvin_slider_and_preset) ... ok
+test_send_error_is_visible_and_does_not_claim_success (test_gui_commands.GuiTests.test_send_error_is_visible_and_does_not_claim_success) ... ok
+test_entire_configuration_retries_then_reports_verified (test_v26_client.RequestTests.test_entire_configuration_retries_then_reports_verified) ... ok
+test_invalid_ranges_never_reach_transport (test_v26_client.RequestTests.test_invalid_ranges_never_reach_transport) ... ok
+test_old_same_id_ack_does_not_complete_new_request (test_v26_client.RequestTests.test_old_same_id_ack_does_not_complete_new_request) ... ok
+test_clock_mapping_with_board_processing (test_v26_protocol.ProtocolTests.test_clock_mapping_with_board_processing) ... ok
+test_control_fields (test_v26_protocol.ProtocolTests.test_control_fields) ... ok
+test_malformed_status (test_v26_protocol.ProtocolTests.test_malformed_status) ... ok
+test_reject_invalid_sync (test_v26_protocol.ProtocolTests.test_reject_invalid_sync) ... ok
+test_reject_out_of_range (test_v26_protocol.ProtocolTests.test_reject_out_of_range) ... ok
+test_status_and_signed_score (test_v26_protocol.ProtocolTests.test_status_and_signed_score) ... ok
+test_constant_has_no_contours (test_v27_quality.ImageTests.test_constant_has_no_contours) ... ok
+test_low_contrast_step_requires_lower_threshold (test_v27_quality.ImageTests.test_low_contrast_step_requires_lower_threshold) ... ok
+test_small_noise_is_rejected (test_v27_quality.ImageTests.test_small_noise_is_rejected) ... ok
+test_stroke_expands_without_mutating_input (test_v27_quality.ImageTests.test_stroke_expands_without_mutating_input) ... ok
+test_invalid_profiles (test_v27_quality.WireTests.test_invalid_profiles) ... ok
+test_legacy_and_unknown_extension (test_v27_quality.WireTests.test_legacy_and_unknown_extension) ... ok
+test_modes_have_independent_addresses (test_v27_quality.WireTests.test_modes_have_independent_addresses) ... ok
+test_prefix_is_compatible_with_v26 (test_v27_quality.WireTests.test_prefix_is_compatible_with_v26) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 4.256s
+
+OK

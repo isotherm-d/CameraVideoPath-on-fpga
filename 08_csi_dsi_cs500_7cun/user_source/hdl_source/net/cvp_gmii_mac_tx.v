@@ -31,6 +31,8 @@
  * ============================================================================
  */
 module cvp_gmii_mac_tx #(
+    parameter integer ENABLE_STATUS=0,
+    parameter integer STATUS_BITS=1024,
     parameter integer DATA_BYTES     = 1440,   // 每包像素字节（须被 3 整除）
     parameter integer PKTS_PER_FRAME = 1920,   // 一帧的包数（IMG_W*IMG_H*3/DATA_BYTES）
     parameter [47:0]  MAC_DST = 48'hFF_FF_FF_FF_FF_FF,  // 广播：PC 无需配 ARP
@@ -41,6 +43,9 @@ module cvp_gmii_mac_tx #(
     parameter [15:0]  UDP_DPORT = 16'd6000
 ) (
     input  wire        i_clk,        // 125MHz GMII
+    input wire [STATUS_BITS-1:0] i_status_data,input wire i_status_valid,output reg o_status_pop,
+    input wire i_frame_valid,input wire [31:0] i_frame_id,output reg o_frame_pop,
+    output reg o_frame_done,output reg [31:0] o_frame_done_id,
     input  wire        i_rst,        // 高有效（顶层已按域同步）
 
     /* ---- payload FIFO 读侧（cvp_async_fifo，8bit，纯像素字节流） ---- */
@@ -172,6 +177,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
     wire [6:0] w_cred_avail = w_cred_bin - r_cred_pop;   // 模 128 差值
 
     /* ---------------- 发送主状态机 ---------------- */
+    reg [STATUS_BITS-1:0] status_packet;reg [31:0] active_frame_id;
     reg [11:0] r_idx;
     reg        r_sending;
     reg [4:0]  r_ifg;
@@ -214,11 +220,24 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
         (r_idx[0])           ? i_scan_word[15:8] :
                                i_scan_word[7:0];
 
+    reg [7:0] status_index;reg [7:0] status_octet;
+    generate if(STATUS_BITS>1024)begin:extended_status
+     always @(posedge i_clk)begin
+      status_index<=r_idx[7:0]+8'd2-PAY_BEG[7:0];
+      status_octet<=status_index[7]?status_packet[1024+{~status_index[5:0],3'b000}+:8]:status_packet[{~status_index[6:0],3'b000}+:8];
+     end
+    end else begin:base_status
+     always @(posedge i_clk)begin
+      status_index<=r_idx[6:0]+7'd2-PAY_BEG[6:0];
+      status_octet<=status_packet[{~status_index[6:0],3'b000}+:8];
+     end
+    end endgenerate
     wire [7:0] w_next_byte =
         (r_idx <  PRE_LEN) ? ((r_idx == PRE_LEN - 1) ? 8'hD5 : 8'h55) :
-        (r_idx <  APP_BEG) ? hdr_byte(r_idx[7:0] - PRE_LEN[7:0]) :
+        (r_idx < APP_BEG) ? (ENABLE_STATUS&&r_hb_mode&&r_idx==44?8'h17:
+                              ENABLE_STATUS&&r_hb_mode&&r_idx==45?8'h72:hdr_byte(r_idx[7:0]-PRE_LEN[7:0])) :
         (r_idx <  PAY_BEG) ? app_byte(r_idx[7:0] - APP_BEG[7:0]) :
-        (r_idx <  FCS_BEG) ? (r_hb_mode ? w_hb_byte : i_rd_data) :
+        (r_idx <  FCS_BEG) ? (r_hb_mode ? (ENABLE_STATUS?(w_pay_pos<STATUS_BITS/8?status_octet:8'd0):w_hb_byte) : i_rd_data) :
                              w_fcs_b;
 
     // CRC 覆盖 DA..payload（线上位置 8..FCS_BEG-1）
@@ -249,10 +268,10 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
             r_app_hdr   <= 48'h01_00_00_00_00_00;
             r_cred_pop  <= 7'd0;
             r_hb_cnt    <= 26'd0;
-            r_hb_mode   <= 1'b0;
+            r_hb_mode   <= 1'b0;status_packet<=0;active_frame_id<=0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;o_frame_done_id<=0;
         end else begin
             o_tx_pkt  <= 1'b0;
-            o_hb_pkt  <= 1'b0;
+            o_hb_pkt  <= 1'b0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;
 
             if (!r_sending) begin
                 r_tx_en <= 1'b0;
@@ -261,7 +280,11 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                     r_hb_cnt <= r_hb_cnt + 26'd1;
                 if (r_ifg != IFG_CYC[4:0]) begin
                     r_ifg <= r_ifg + 5'd1;
-                end else if (w_cred_avail >= 7'd1) begin
+                end else if(ENABLE_STATUS && i_status_valid)begin
+                    r_sending<=1;r_idx<=0;r_crc<=32'hffffffff;o_tx_pkt<=1;
+                    r_hb_mode<=1;status_packet<=i_status_data;o_status_pop<=1;
+                    r_app_hdr<={8'd0,8'h26,32'd0};
+                end else if (w_cred_avail >= 7'd1 && (!ENABLE_STATUS||r_pkt_seq!=0||i_frame_valid)) begin
                     /* 开新包：锁存应用头，取一块信用，推进包/帧序
                      * (v11d: 正常发包不再清心跳计时 —— 心跳改为每 0.5s 无条件
                      *  发一包, 否则视频连续时永远静默, 诊断 scan word 无法上报) */
@@ -271,7 +294,8 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                     o_tx_pkt   <= 1'b1;
                     r_hb_mode  <= 1'b0;
                     r_cred_pop <= r_cred_pop + 7'd1;
-                    r_app_hdr  <= {r_frame_seq, 8'h01, r_off[31:24], r_off[23:16],
+                    if(ENABLE_STATUS&&r_pkt_seq==0)begin active_frame_id<=i_frame_id;o_frame_pop<=1;end
+                    r_app_hdr  <= {(ENABLE_STATUS?(r_pkt_seq==0?i_frame_id[7:0]:active_frame_id[7:0]):r_frame_seq), 8'h01, r_off[31:24], r_off[23:16],
                                    r_off[15:8], r_off[7:0]};
                     if (r_pkt_seq == PKTS_PER_FRAME - 1) begin
                         r_pkt_seq   <= 'd0;
@@ -281,7 +305,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                         r_pkt_seq <= r_pkt_seq + 1'b1;
                         r_off     <= (r_pkt_seq + 1'b1) * DATA_BYTES;
                     end
-                end else if (r_hb_cnt >= HB_CYCLES) begin
+                end else if (!ENABLE_STATUS && r_hb_cnt >= HB_CYCLES) begin
                     /* 视频静默超时：发心跳状态包（fmt=0x02，不吃信用） */
                     r_sending  <= 1'b1;
                     r_idx      <= 12'd0;
@@ -302,6 +326,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                 r_crc     <= w_crc_ce ? crc32_byte(r_crc, w_next_byte) : r_crc;
 
                 if (w_last) begin
+                    if(!r_hb_mode&&r_app_hdr[31:0]==(PKTS_PER_FRAME-1)*DATA_BYTES)begin o_frame_done<=1;o_frame_done_id<=active_frame_id;end
                     r_sending <= 1'b0;
                     r_hb_mode <= 1'b0;
                     r_idx     <= 12'd0;

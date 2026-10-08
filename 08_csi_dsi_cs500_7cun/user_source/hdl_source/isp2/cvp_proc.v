@@ -205,6 +205,14 @@ module cvp_proc #(
         endcase
     end
 
+    /* v26: EOL belongs to the demosaiced output, including bottom drain. */
+    reg [11:0] dem_next_x;
+    always @(posedge i_clk or negedge i_rst_n) begin
+        if (!i_rst_n) dem_next_x <= 0;
+        else if (w_dem_valid)
+            dem_next_x <= w_dem_fs ? 12'd1 :
+                          dem_next_x == IMG_W-1 ? 12'd0 : dem_next_x+1'b1;
+    end
     /* ================= 5. 输出寄存 ================= */
     always @(posedge i_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
@@ -216,7 +224,7 @@ module cvp_proc #(
             o_pix_valid       <= w_dem_valid;
             o_pix_frame_start <= w_dem_fs;
             /* 行结束标记当前没被下游使用，先跟着 valid 走（保留原端口） */
-            o_pix_line_last   <= w_dem_valid && w_pix_last;
+            o_pix_line_last   <= w_dem_valid && !w_dem_fs && dem_next_x == IMG_W-1;
             if (w_dem_valid)
                 o_pix_rgb <= r_rgb;
         end

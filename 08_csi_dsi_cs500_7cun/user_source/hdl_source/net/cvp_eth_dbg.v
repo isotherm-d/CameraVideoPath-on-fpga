@@ -23,6 +23,8 @@
  * ============================================================================
  */
 module cvp_eth_dbg #(
+    parameter integer ENABLE_STATUS=0,
+    parameter integer STATUS_BITS=1024,
     parameter integer IMG_W        = 1280,
     parameter integer IMG_H        = 720,
     parameter integer FRAME_SKIP   = 3,      // 每 N 帧发 1 帧
@@ -41,6 +43,9 @@ module cvp_eth_dbg #(
     input  wire        i_rst_pix_n,
     input  wire        i_valid,          // 96bit 拍有效
     input  wire [95:0] i_rgb,            // {pix0[23:0], pix1, pix2, pix3}
+    input wire [31:0] i_frame_id,
+    input wire [STATUS_BITS-1:0] i_status_data,input wire i_status_valid,output wire o_status_ready,
+    output wire o_frame_tx_done,output wire [31:0] o_frame_tx_id,output wire o_pixel_overflow,
     input  wire        i_tuser,          // 帧头拍标记(与 i_valid 同拍, 单拍脉冲)
 
     /* ---- 100MHz（MDIO 域） ---- */
@@ -137,17 +142,19 @@ module cvp_eth_dbg #(
      * 稳态水位 0~200 波动: 读时 FIFO 几乎常有货, Gray 保守空判决
      * 每行至多触发一次(损失 ~1%), 无需本地预取队列(v8/v9 方案已弃)。 */
     wire        w_pxf_rd, w_pxf_valid, w_pxf_empty;
-    wire [96:0] w_pxf_data;
+    wire [128:0] w_pxf_data;
+    wire px_full;
+    assign o_pixel_overflow=w_pix_valid&&px_full;
 
     cvp_async_fifo #(
-        .DATA_WIDTH (97),
+        .DATA_WIDTH (129),
         .ADDR_WIDTH (PXF_AW)
     ) u_px_fifo (
         .wr_clk   (i_clk_pix),
         .wr_rst_n (i_rst_pix_n),
         .wr_en    (w_pix_valid),          // 满则丢(上游平均速率远低于读能力)
-        .wr_data  ({w_pix_tuser, w_pix_rgb}),
-        .wr_full  (),
+        .wr_data  ({i_frame_id,w_pix_tuser, w_pix_rgb}),
+        .wr_full  (px_full),
         .wr_level (),
         .wr_flush (1'b0),
         .rd_clk   (i_clk_gmii),
@@ -198,6 +205,7 @@ module cvp_eth_dbg #(
     wire w_beat_first = w_load || (r_run && (r_sel == 2'd0) && (r_bsel == 2'd0));
     // 切换拍锁存的新拍 SOF 标记(下拍 = 新拍首字节拍生效)
     reg  r_sof_pending;
+    reg [31:0] beat_frame_id;
     wire w_sof = w_beat_first && (w_load ? w_pxf_data[96] : r_sof_pending);
     wire [95:0] w_cur = w_load ? w_pxf_data[95:0] : r_beat;
     // 字节选择: 像素 r_sel(0=[95:72] 最先) x 字节 r_bsel(0=R)
@@ -274,12 +282,12 @@ module cvp_eth_dbg #(
 
             /* 96bit 拍锁存/展开状态 */
             if (w_load) begin
-                r_beat        <= w_pxf_data[95:0];   // 装载新拍
+                r_beat        <= w_pxf_data[95:0];beat_frame_id<=w_pxf_data[128:97];   // 装载新拍
                 r_sof_pending <= 1'b0;
                 r_run         <= 1'b1;
             end else if ((r_sel == 2'd3) && (r_bsel == 2'd2)) begin
                 if (w_pxf_valid) begin
-                    r_beat        <= w_pxf_data[95:0]; // 无气泡切换下一拍
+                    r_beat        <= w_pxf_data[95:0];beat_frame_id<=w_pxf_data[128:97]; // 无气泡切换下一拍
                     r_sof_pending <= w_pxf_data[96];
                 end else begin
                     r_run         <= 1'b0;             // 供数中断, 回装载态
@@ -345,7 +353,18 @@ module cvp_eth_dbg #(
         endcase
     end
 
+    wire desc_valid,desc_ready,desc_pop;wire [31:0] desc_id;
+    cvp_sync_fifo #(.DW(32),.AW(4)) frame_descriptors(
+      .clk(i_clk_gmii),.rst_n(i_rst_gmii_n),
+      .i_valid(w_sof&&w_cap_now&&ENABLE_STATUS),
+      .i_data(w_load?w_pxf_data[128:97]:beat_frame_id),
+      .o_ready(desc_ready),.o_valid(desc_valid),.o_data(desc_id),.i_ready(desc_pop),.o_level());
+    wire status_valid,status_pop;wire [STATUS_BITS-1:0] status_data;
+    cvp_mailbox #(.DW(STATUS_BITS)) status_bridge(
+      .s_clk(i_clk_100m),.s_rst_n(i_rst_100m_n),.s_valid(i_status_valid),.s_data(i_status_data),.s_ready(o_status_ready),
+      .m_clk(i_clk_gmii),.m_rst_n(i_rst_gmii_n),.m_valid(status_valid),.m_data(status_data),.m_ready(status_pop));
     cvp_gmii_mac_tx #(
+        .ENABLE_STATUS(ENABLE_STATUS),.STATUS_BITS(STATUS_BITS),
         .DATA_BYTES     (DATA_BYTES),
         .PKTS_PER_FRAME (PKTS_PER_FRAME),
         .MAC_DST        (MAC_DST),
@@ -355,6 +374,10 @@ module cvp_eth_dbg #(
         .UDP_SPORT      (UDP_SPORT),
         .UDP_DPORT      (UDP_DPORT)
     ) u_mac (
+        .i_status_valid(status_valid),.i_status_data(status_data),.o_status_pop(status_pop),
+        .i_frame_valid(desc_valid),.i_frame_id(desc_id),.o_frame_pop(desc_pop),
+        .o_frame_done(o_frame_tx_done),.o_frame_done_id(o_frame_tx_id),
+
         .i_clk          (i_clk_gmii),
         .i_rst          (~i_rst_gmii_n),
         .i_txd_swap     (i_txd_swap),

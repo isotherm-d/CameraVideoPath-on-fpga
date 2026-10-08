@@ -38,7 +38,8 @@ try {
     $result = Get-Content -LiteralPath $testLog -Raw
     if ($LASTEXITCODE -ne 0 -or $result -notmatch 'TEST_RESULT PASS' -or $result -match 'TEST_RESULT FAIL') { throw 'Group FIFO sideband regression failed' }
     # Verify actual FIFO transport, RAW gearbox, Bayer window and interpolation.
-    & $vlog -work work (Join-Path $rtl 'cvp_proc.v') (Join-Path $rtl 'cvp_demosaic.v') (Join-Path $PSScriptRoot 'sim\tb_cvp_color_path.v')
+    $common = Join-Path $projectDir 'user_source\hdl_source\common'
+    & $vlog -work work (Join-Path $common 'cvp_sync_fifo.v') (Join-Path $common 'cvp_window3x3.v') (Join-Path $common 'cvp_mailbox.v') (Join-Path $rtl 'cvp_proc.v') (Join-Path $rtl 'cvp_demosaic.v') (Join-Path $PSScriptRoot 'sim\tb_cvp_color_path.v')
     if ($LASTEXITCODE -ne 0) { throw 'Full colour pipeline compilation failed' }
     $testLog = Join-Path $OutputDir 'tb_cvp_color_path.log'
     & $vsim -c -novopt -l $testLog work.tb_cvp_color_path -do 'run -all; quit -f'

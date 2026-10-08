@@ -56,6 +56,7 @@ input  wire [7:0]I_rd_cnt,//读数据计数器
 input  wire I_iic_req,//I_iic_req == 1 使能I2C传输
 input  wire I_iic_mode,//I_iic_mode = 1 随机读   I_iic_mode = 0 读当前寄存器或者页读
 output reg  O_iic_busy = 1'b0,//I2C控制器忙
+output reg [2:0] O_error_byte,
 output reg  O_iic_bus_error, //I2C总线，无法读到正确ACK出错
 output reg  IO_iic_sda_dg
 );
@@ -108,7 +109,8 @@ assign  IO_iic_sda = (sda_o == 1'b0) ?  1'b0 : 1'bz;    //写总线，1'bz代表高阻，
 
 //scl 时钟分频器
 always@(posedge I_clk)
-    if(clkdiv < SCL_DIV)    
+    if(!I_rstn)begin clkdiv<=0;scl_clk<=0;end
+    else if(clkdiv < SCL_DIV)    
         clkdiv <= clkdiv + 1'b1;
     else begin
         clkdiv <= 16'd0; 
@@ -117,7 +119,7 @@ always@(posedge I_clk)
 
 
 assign  scl_offset  = (clkdiv == OFFSET);//设置scl_offset的时间参数
-always @(posedge I_clk) O_iic_scl <=  scl_offset ?  scl_r : O_iic_scl; //O_iic_scl延迟scl_offset时间的scl_r
+always @(posedge I_clk) O_iic_scl <= !I_rstn ? 1'b1 : scl_offset ? scl_r : O_iic_scl; //O_iic_scl延迟scl_offset时间的scl_r
 
 //采集I2C 数据总线sda
 always @(posedge I_clk) IO_iic_sda_dg <= sda_i;  
@@ -173,6 +175,12 @@ always @(posedge scl_clk or negedge I_rstn )begin
 end
 
 //总线忙状态
+
+always @(negedge scl_clk or negedge I_rstn)begin
+ if(!I_rstn)O_error_byte<=0;
+ else if(IIC_S==W_ACK && sda_i)O_error_byte<=wcnt[2:0];
+ else if(I_iic_req)O_error_byte<=0;
+end
 always @(negedge scl_clk or negedge I_rstn )begin
 	if(I_rstn == 1'b0)
     	O_iic_bus_error <= 1'b0;  	

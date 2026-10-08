@@ -1,0 +1,17 @@
+{"capture": "preset", "frame": 1707, "complete": 100.0}
+{"capture": "edge_190", "frame": 1742, "complete": 100.0}
+{"capture": "edge_90", "frame": 1773, "complete": 100.0}
+{"capture": "edge_60", "frame": 1835, "complete": 100.0}
+{"capture": "edge_thick", "frame": 1866, "complete": 100.0}
+{"capture": "sketch", "frame": 1913, "complete": 100.0}
+{"capture": "auto", "frame": 2035, "complete": 100.0}
+{"capture": "ae_auto", "frame": 2129, "complete": 100.0}
+{"stress_seconds": 30, "frames": 903, "complete": 100.0, "mode": 3}
+{"stress_seconds": 60, "frames": 1806, "complete": 100.0, "mode": 5}
+{"stress_seconds": 90, "frames": 2710, "complete": 100.0, "mode": 1}
+{"stress_seconds": 121, "frames": 3613, "complete": 100.0, "mode": 4}
+{"stress_seconds": 151, "frames": 4516, "complete": 100.0, "mode": 0}
+{"stress_seconds": 181, "frames": 5419, "complete": 100.0, "mode": 3}
+{"stress_seconds": 211, "frames": 6323, "complete": 100.0, "mode": 6}
+{"stress_seconds": 241, "frames": 7227, "complete": 100.0, "mode": 2}
+{"stress_seconds": 271, "frames": 8129, "complete": 100.0, "mode": 5}
