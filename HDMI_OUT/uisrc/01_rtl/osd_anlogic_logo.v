@@ -36,7 +36,23 @@ module osd_anlogic_logo #(
 
     reg [11:0] x_cnt = 0;
     reg [11:0] y_cnt = 0;
-    reg        de_d = 0;
+
+    /* 像素坐标计数: I_de 期数 x, 行尾(de 拉低)进 y, I_vs 场清零 */
+    always @(posedge I_clk) begin
+        if (!I_rst_n) begin
+            x_cnt <= 12'd0;
+            y_cnt <= 12'd0;
+        end else if (I_vs) begin
+            x_cnt <= 12'd0;
+            y_cnt <= 12'd0;
+        end else if (I_de) begin
+            x_cnt <= x_cnt + 12'd1;
+        end else if (x_cnt != 12'd0) begin
+            x_cnt <= 12'd0;
+            y_cnt <= y_cnt + 12'd1;
+        end
+    end
+
     wire       in_crop_c = I_de && (x_cnt >= X_C0) && (x_cnt < X_C1) &&
                            (y_cnt >= Y_C0) && (y_cnt < Y_C1);
     wire [13:0] bram_addr_c = (y_cnt - Y_C0) * CROP_W + (x_cnt - X_C0);
@@ -66,10 +82,10 @@ module osd_anlogic_logo #(
         end
     end
 
-    /* 二级: BRAM 同步读 {alpha, 调色板索引} */
+    /* 二级: BRAM 同步读 {alpha, 调色板索引} (rom_q 唯一驱动在下方独立读出拍) */
     always @(posedge I_clk) begin
         if (!I_rst_n) begin
-            hit_b <= 1'b0; rom_q <= 9'h000;
+            hit_b <= 1'b0;
             idx_b <= 8'h00;
         end else begin
             hit_b <= hit_a;

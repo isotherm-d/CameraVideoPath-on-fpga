@@ -52,7 +52,6 @@
             </File>
             <File Path="uisrc/03_ip/al_ip/hdmi_pll.v">
                 <FileInfo>
-                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -317,7 +316,6 @@
             </File>
             <File Path="uisrc/03_ip/uiudp_stack/uimdio_ctr.v">
                 <FileInfo>
-                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -326,7 +324,6 @@
             </File>
             <File Path="uisrc/03_ip/uiudp_stack/uirgmii_rx.v">
                 <FileInfo>
-                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -335,7 +332,6 @@
             </File>
             <File Path="uisrc/03_ip/uiudp_stack/uirgmii_tx.v">
                 <FileInfo>
-                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
@@ -390,14 +386,7 @@
                     <Attr Name="CompileOrder" Val="52"/>
                 </FileInfo>
             </File>
-                        <File Path="uisrc/01_rtl/anlogic_logo_rom.v">
-                <FileInfo>
-                    <Attr Name="UsedInSyn" Val="true"/>
-                    <Attr Name="UsedInP&R" Val="true"/>
-                    <Attr Name="BelongTo" Val="design_1"/>
-                </FileInfo>
-            </File>
-<File Path="uisrc/01_rtl/osd_anlogic_logo.v">
+            <File Path="uisrc/01_rtl/osd_anlogic_logo.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>

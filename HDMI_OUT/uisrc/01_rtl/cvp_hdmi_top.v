@@ -478,8 +478,9 @@ module cvp_hdmi_top #(
     wire        osd_de;
 
     osd_anlogic_logo #(
-        .IMG_WIDTH(1280), .LOGO_W(160), .LOGO_H(160),
-        .X_POS(1096), .Y_POS(24)
+        .IMG_WIDTH(1280),
+        .X_POS(1096), .Y_POS(24),
+        .CROP_X(7), .CROP_Y(34), .CROP_W(146), .CROP_H(94)
     ) u_osd_logo (
         .I_clk  (pclkx1),
         .I_rst_n(vid_rst),
