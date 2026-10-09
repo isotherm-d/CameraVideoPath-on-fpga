@@ -24,3 +24,11 @@ __pycache__/
 cvp_hdmi_top_timing.rpt
 cvp_hdmi_top_timing.tsm
 td_*.log
+
+# 临时/本地产物
+*\.bak_*
+modelsim.ini
+tools/sim/osdwork/
+tools/sim/vlogchk/
+tools/sim/dump_row.do
+tools/sim/probe_osd.do
