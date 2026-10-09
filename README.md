@@ -1,8 +1,71 @@
 # CameraVideoPath-on-fpga
 
-当前版本：**v27**。基于 MLKPAI-F02 / PH1P35 和 SC500CS 的 1280×720@30fps 相机图像处理工程。
+安路 FPGA 双板实时视频系统。主板把相机图像编码为 UDP 千兆以太网流，子板接收后在本地重组、缓存并输出 HDMI 显示；上位机 Python GUI 同时完成收图与曝光/白平衡控制。
 
-## v27 下载与使用
+当前版本：**v28**（新增子板 HDMI_OUT 实时回显工程）。主板相机工程维持 **v27** 验收状态。
+
+## 系统拓扑
+
+```
+ SC500CS MIPI          自研 ISP/分类            千兆 UDP                 RGMII 点对点
+┌──────────┐   ┌─────────────────────┐   ┌──────────────┐   ┌─────────────────────┐
+│  主板    │   │  08_csi_dsi_cs500_7cun │   │ ETHA → PC    │   │  子板 HDMI_OUT       │
+│ PH1P35   ├──►│  相机 + ISP 工程(v27)  ├──►│ ETHB ────────┼──►│  EG4D20 (MLKPAI-F01)│
+│ MLKPAI-F02│  │                     │   │  (镜像TX)     │   │  → HDMI 720p60      │
+└──────────┘   └─────────────────────┘   └──────────────┘   └─────────────────────┘
+```
+
+## 仓库结构
+
+| 目录 | 内容 |
+| --- | --- |
+| `08_csi_dsi_cs500_7cun/` | 主板相机工程（v27）：MIPI 接收、ISP、边缘/素描、分类、UDP 发送、上位机脚本 |
+| `HDMI_OUT/` | 子板 HDMI 回显工程（本版本新增）：网口收流 → 帧重组 → DDR 三缓冲 → HDMI |
+| `releases/` | 各版本比特流与发布记录 |
+| `HDMI_OUT/tools/sim/` | ModelSim 全链路仿真环境（Python 向量注入 + 记分板回归） |
+
+## HDMI_OUT 子板工程（v28 新增）
+
+1280×720@60Hz HDMI 实时回显主板 30fps 视频流。
+
+数据通路：RGMII(PLL2 采样 + IDDR) → rgmii_cdc 异步 FIFO → MAC/IP/UDP 协议栈 → `cvp_rx_assemble` 帧重组器（应用头解析、缺口白名单、跟踪-丢弃、描述符队列）→ `uidbuf` 三缓冲 + FDMA → DDR1 → VTC → 安路 logo OSD 叠加 → TMDS 编码 + LVDS 串化输出。
+
+### 关键设计点
+
+- **时钟结构**：PLL2 CPHASE 控制 RGMII 采样相位；ddr_pll / hdmi_pll 异步域在 SDC 中显式声明时钟组。
+- **帧重组**：UDP 包 6 字节应用头携带偏移量，缺口 ≤4 包白名单放行并冻结延展填充；更大缺口跟踪-丢弃直到下一帧头。
+- **三缓冲**：写 30fps / 读 60Hz 异步，场头锁存切换缓冲；AE 预取水位 1023。事务级 DDR 仲裁仿真（含 2ms 总线黑窗注入）验证显示通路鲁棒。
+- **OSD**：右上角安路 logo，16384×9 EBR 位图 + $readmemh 初始化 + 125 色调色板，落点账本仿真逐像素 diff=0。
+
+### 构建（安路 TD 5.6.59063）
+
+1. TD 打开 `HDMI_OUT/HDMI_OUT.al`（EG4D20EG176）。
+2. 综合 + 布局布线 + 输出比特流；参考时序约束 `HDMI_OUT/uisrc/04_pin/timing.sdc`。
+3. PROGRAM_SRAM 加载 `HDMI_OUT.bit`。
+
+资源占用（门级报告）：LUT 7556/19600（38.9%）、BRAM 44/64、PLL 4/4。
+
+### 仿真（ModelSim 2020.4）
+
+`HDMI_OUT/tools/sim/` 提供三类回归：
+
+| 入口 | 覆盖 |
+| --- | --- |
+| `run_sim.sh` | 小分辨率协议/重组场景（8 场景记分板） |
+| `run_ddr_sim.sh` + `stim_real.hex` | 全分辨率真机工况（1920 包/帧 × 11 帧，逐字节比对） |
+| `tb_tear.v` / `tb_osd.v` | DDR 仲裁+刷新压力扫描、OSD 落点账本 |
+
+向量由 `gen_real.py`/`make_vectors.py` 生成（含 CRC 正确的 RGMII 线上字节流）。
+
+### 已知状态
+
+- 上板 HDMI 显示正常，logo 正常；偶发丢包引起的画面闪烁已由冻结延展填充缓解。
+- 偶发丢包根因为 RGMII 采样相位随电源状态漂移（CRC 偶发全错），诊断 LED：LED2=crc_bad、LED3=crc_ok；可用 `tools/sim/sweep_cphase.sh` 配合盲扫 CPHASE 求稳定采样点。
+- 详细调试交接见 `HDMI_OUT/doc/`。
+
+## 主板相机工程（v27，维持原验收）
+
+基于 MLKPAI-F02 / PH1P35 和 SC500CS 的 1280×720@30fps 相机图像处理工程。
 
 - [v27 比特流](releases/v27/camera_to_dsi_display_v27.bit)
 - [发布记录、资源与验证范围](releases/v27/README.md)
@@ -10,20 +73,11 @@
 - [统一像素流与分类接口](08_csi_dsi_cs500_7cun/V26开发与接口说明.md)
 - [队友挂接示例](08_csi_dsi_cs500_7cun/V26队友挂接示例.md)
 
-TD 选择 PROGRAM_SRAM 加载 v27，比特流断电后丢失。电脑网卡为 192.168.1.100/24，连接板端网口后双击工程 tools/打开收图窗口.bat。收图 UDP6000、控制 UDP6001、状态 UDP6002，只打开一个收图程序。
+TD 选择 PROGRAM_SRAM 加载 v27，比特流断电后丢失。电脑网卡为 192.168.1.100/24，连接板端网口后双击工程 `tools/打开收图窗口.bat`（脚本自动检测并修正本机 IP）。收图 UDP6000、控制 UDP6001、状态 UDP6002，只打开一个收图程序。
 
-v27 增加边缘/素描独立高低阈值和线宽，优化弱轮廓与自动白平衡，修复中文问号，并增加摄像头启动重试与分类 I2C 诊断。原图标定和统一分类挂接接口保留。
+v27 验收摘要：28 项 RTL、35 项 Python 测试通过；七模式轮换、AE/AWB 开启运行 5 分钟，平均 29.965fps、完整率 100%；布线 setup WNS 0.107ns、hold WNS 0.020ns、TNS 0。详见 [releases/v27/README.md](releases/v27/README.md)。
 
-## 验证结果
+## 版本历史
 
-28 项 RTL、35 项 Python 测试通过；七模式轮换、AE/AWB 开启运行 5 分钟，平均 29.965fps、完整率100%。两次 SRAM 热重载未按 SW1，初始化错误0。布线 setup WNS0.107ns、hold WNS0.020ns、TNS0。
-
-Slice17359/21216（81.82%）、ERAM66/108、DSP10/40。真实 LeNet 核心尚未接入，模型挂接后需要重新评估资源和时序。断电 Flash 启动、两光源精度和 DSI/HDMI 未列入本轮验收。详见发布记录。
-
-## 历史版本
-
-- [v26 发布文件](releases/v26/README.md)
-- [v25 发布文件](releases/v25/README.md)
-- [v24 标签](https://github.com/isotherm-d/CameraVideoPath-on-fpga/tree/v24)
-
-恢复 v26 时下载对应比特流、短按 SW1，运行 tools/打开v26收图窗口.bat。旧版本及提交历史保留。
+- **v28**：新增子板 HDMI_OUT 实时回显工程（本仓库第二块板卡）；帧重组器多项修复（缺口白名单、跟踪-丢弃、描述符队列、位宽截断）；全分辨率逐字节仿真回归体系（真机工况 11 帧 + DDR 仲裁压力扫描 + OSD 落点账本）。
+- **v27**：边缘/素描独立阈值、AWB 优化、摄像头启动重试与分类 I2C 诊断。

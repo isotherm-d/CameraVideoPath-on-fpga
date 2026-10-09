@@ -1,0 +1,12 @@
+{
+  "files": {
+    "HDMI_OUT.bit": {
+      "sha256": "b36814670ac881b339cef425818c12c98ba28e8fa9996d1bf7ef296f4fa31d25",
+      "size": 689006
+    },
+    "README.md": {
+      "sha256": "4a3cb90d7586eac21d133c88124f1c6d7cd8e40bd2a59d05b0c4489d4ea6c2e2",
+      "norm": "CRLF->LF"
+    }
+  }
+}
