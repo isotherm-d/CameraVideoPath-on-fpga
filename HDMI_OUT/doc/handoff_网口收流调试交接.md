@@ -159,6 +159,27 @@ FIFO 模型 `eg_logic_fifo_sim.v`）**——注意 TD5.6 sim_release 里的 eg_l
 的正确写法，重编即可消除该变量。若重编后仍冻结，下一排查对象是 DDR 控制器
 (uieg4d_dram) 读写仲裁与 uiphyrst 复位时序（仿真需再挂 DDR 模型）。
 
+**④d+ 上电随机冻结的诊断结论与 .al 修复（2026-10-09 晚）**：上电首次烧录视频正常
+（偶发跳帧），断电重烧后画面冻结：LED1 闪（MAC 入口字节流 ✓）、LED2/LED3 常亮
+（重组器零出帧、FDMA 零写）。同时综合报 HDL-8001" Incorrect top-level module
+name cvp_hdmi_top"。**根因（两个独立问题叠加）**：
+1. **编译侧**：此前 frame_cnt 拼写错误的编译失败让 TD 把 cvp_hdmi_top.v 标记
+   AutoExcluded=true 并持久化在 .al（§7 已知坑第 4 次），后续综合全部跳过顶层
+   ——18:31 的综合只分析了 osd_anlogic_logo.v 一个文件即为实证。已清除标记
+   （f0b8c46），**今后编译失败后必须检查 .al 的 AutoExcluded 再重编**。
+2. **板侧**：冻结的 bit = 修复前旧版本（SDC 空组 + 无跟踪-丢弃），其上电随机
+   冻结与"首次正常"并存 = 采样相位/链路协商的电源状态依赖（同最初 CRC 全错）。
+   诊断手段已就位：新 bit 的 LED2=crc_bad/LED3=crc_ok——上电看灯分类：
+   LED3 闪 LED2 灭 = CRC 通过查下游；LED2 闪 = 采样相位问题走 CPHASE 盲扫
+   （tools/sweep_cphase.sh）；LED1 慢闪 = 协商降 100M（换线/两板同复位）。
+
+**④e 右上角安路 logo OSD（用户需求）**：参照 lab_ex3_osd 例程的 hdmi_mixer +
+anlogic_logo_rom，副板新增 `osd_anlogic_logo.v`（窗口判定 + ROM + alpha 选通，
+插在 uidbuf 读出口与 RGB 输出寄存之间，pclkx1 域，输出固定延迟 2 拍），
+logo 160×160 显示于右上角（X=1096, Y=24, 边距 24）。GEN_TESTPAT 彩条模式下
+logo 同样叠加（便于点亮验证）。**TD 工程需 Add Sources 两个新文件：
+`osd_anlogic_logo.v` / `anlogic_logo_rom.v`（uisrc/01_rtl/），已入 git（bac8365）**。
+
 **⑤ DDR 层仿真也已打通（同日追加）**：`tools/sim/run_ddr_sim.sh` 从 **RGMII 引脚级**
 （4bit DDR behavioral PHY，数据随 RXC 沿翻转 = 无延迟 strap 模式）注入，经
 rgmii_interface（行为级 PLL2：clk1=RXC 滞后 2ns 采样 + 安路 EG_LOGIC_IDDR 库模型 +
