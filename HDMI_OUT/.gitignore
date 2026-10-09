@@ -1,0 +1,26 @@
+# TD 编译产物(HDMI_OUT_Runs 可由 build_check.tcl 重新生成)
+HDMI_OUT_Runs/
+*.log
+*.logw
+
+# ModelSim 仿真工作区(库/编译缓存/波形/日志, 全部可由 run_*.sh 重建)
+tools/sim/work/
+tools/sim/work_ddr/
+tools/sim/work_full/
+tools/sim/lib_ddr/
+tools/sim/_opt*
+tools/sim/transcript
+tools/sim/vish_stacktrace.vstf
+tools/sim/*.vcd
+tools/sim/*.wlf
+
+# 仿真激励/期望 hex(由 make_vectors.py / gen_real.py 重新生成, 单文件可达 46MB)
+tools/sim/stim_*.hex
+tools/sim/exp_*.hex
+
+# Python
+__pycache__/
+*.pyc
+cvp_hdmi_top_timing.rpt
+cvp_hdmi_top_timing.tsm
+td_*.log

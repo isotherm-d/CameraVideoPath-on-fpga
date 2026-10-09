@@ -1,0 +1,38 @@
+# ============================================================================
+# cvp_hdmi_top 引脚约束 (MLKPAI-F01, EG4D20EG176)
+# 网口引脚取自 3_1_02_fpga_udp/02_udp_tri 例程 (YT8531DH-CA RGMII)
+# HDMI 引脚取自 23_rgb2hdmi_output 例程 (LVDS 直连 TMDS)
+# 片内合封 DDR1 走 EG_PHY_DDR_8M_16 硬宏, 无引脚约束
+# ============================================================================
+
+# 25MHz 系统时钟
+set_pin_assignment	{ I_sys_clk }		{ LOCATION = P61; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+
+# 以太网 PHY (YT8531)
+set_pin_assignment	{ O_phy_rst }		{ LOCATION = P62; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+
+set_pin_assignment	{ I_rgmii_rx_ctl }	{ LOCATION = P72; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rgmii_rxc }		{ LOCATION = P63; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rgmii_rxd[0] }	{ LOCATION = P73; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rgmii_rxd[1] }	{ LOCATION = P74; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rgmii_rxd[2] }	{ LOCATION = P75; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_rgmii_rxd[3] }	{ LOCATION = P76; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+
+set_pin_assignment	{ O_rgmii_tx_ctl }	{ LOCATION = P78; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_rgmii_txc }		{ LOCATION = P77; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_rgmii_txd[0] }	{ LOCATION = P79; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_rgmii_txd[1] }	{ LOCATION = P81; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_rgmii_txd[2] }	{ LOCATION = P82; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_rgmii_txd[3] }	{ LOCATION = P83; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+
+# HDMI 输出 (仅 P 端, 与例程23一致; 差分对自动配对 P23/P27/P29/P30)
+set_pin_assignment	{ O_HDMI_CLK_P }	{ LOCATION = P22; IOSTANDARD = LVDS33_E; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_HDMI_TX_P[0] }	{ LOCATION = P31; IOSTANDARD = LVDS33_E; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_HDMI_TX_P[1] }	{ LOCATION = P28; IOSTANDARD = LVDS33_E; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_HDMI_TX_P[2] }	{ LOCATION = P26; IOSTANDARD = LVDS33_E; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+
+# 调试/心跳 LED (例程05_run_led: P91/P104/P109/P112)
+set_pin_assignment	{ O_led[0] }		{ LOCATION = P91;  IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_led[1] }		{ LOCATION = P104; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_led[2] }		{ LOCATION = P109; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
+set_pin_assignment	{ O_led[3] }		{ LOCATION = P112; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }

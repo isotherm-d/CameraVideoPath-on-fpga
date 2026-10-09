@@ -32,4 +32,15 @@ set_pin_assignment	{ I_eth_rgmii_rx_ctl }	{ LOCATION = J1; IOSTANDARD = LVCMOS33
 set_pin_assignment	{ I_eth_rgmii_rx_clk }	{ LOCATION = N6; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ O_eth_rst_n }			{ LOCATION = H2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
 
+# ---- CAM CHECK/NET: ETHB 网口(镜像 ETHA 发送方向, 接副板 HDMI 输出; 引脚同出
+#      《04_以太网管脚定义表-J1.xlsx》ETHB 表; TXCK U2 与 A 口同为 OUTDEL=3;
+#      ETHB_MDIO(R5) 无 FPGA 侧管理, 不约束) ----
+set_pin_assignment	{ O_ethb_rgmii_txd[0] }	{ LOCATION = P4; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_ethb_rgmii_txd[1] }	{ LOCATION = P5; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_ethb_rgmii_txd[2] }	{ LOCATION = T4; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_ethb_rgmii_txd[3] }	{ LOCATION = T3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_ethb_rgmii_tx_ctl }	{ LOCATION = P1; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }
+set_pin_assignment	{ O_ethb_rgmii_txc }	{ LOCATION = U2; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; OUTDEL = 3; }
+set_pin_assignment	{ O_ethb_mdc }			{ LOCATION = P6; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
+
 

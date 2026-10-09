@@ -1,0 +1,8 @@
+clean 5 0
+lossmid 5 0
+dropframe 4 0
+dup 4 0
+reorder 4 0
+badfcs 4 1
+biggap 4 0
+fmt 5 0

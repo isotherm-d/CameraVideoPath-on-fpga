@@ -26,6 +26,13 @@ module design_top_wrapper (
     inout  wire       IO_eth_mdio,
     output wire       O_eth_rst_n,
 
+    // ---- CAM CHECK/NET: ETHB 网口(镜像 ETHA 发送方向, 接副板做 HDMI 输出) ----
+    // 仅 TX 镜像, 无接收/命令通路; ETHB_MDIO(R5) 不接(副板无需 MDIO 管理)
+    output wire [3:0] O_ethb_rgmii_txd,
+    output wire       O_ethb_rgmii_tx_ctl,
+    output wire       O_ethb_rgmii_txc,
+    output wire       O_ethb_mdc,
+
     inout wire        IO_rx_clk_pad_n, 
     inout wire        IO_rx_clk_pad_p, 
     inout wire[3:0]   IO_rx_data_pad_n,
@@ -950,5 +957,13 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     assign O_eth_rst_n = 1'b1;
     assign IO_eth_mdio = S_mdio_oe ? S_mdio_o : 1'bz;
     assign S_mdio_i    = IO_eth_mdio;
+
+    // ETHB 发送镜像: 与 ETHA 完全相同的 RGMII TX(同一 MAC, 两颗 PHY 发出相同
+    // UDP 流)。RGMII DDR 数据/ODDR 原语输出 fanout=2, 125M DDR 下无时序影响。
+    // 命令通路(RX)仅在 ETHA; ETH_RST_B(H2) 两路 PHY 共用, 上面已恒 1。
+    assign {O_ethb_rgmii_txd, O_ethb_rgmii_tx_ctl, O_ethb_rgmii_txc} =
+           {O_eth_rgmii_txd,  O_eth_rgmii_tx_ctl,  O_eth_rgmii_txc};
+    // ETHB MDC 复用 A 口 MDC(ETHA 只读监测总线); ETHB_MDIO(R5) 留空不接
+    assign O_ethb_mdc = O_eth_mdc;
 
 endmodule
