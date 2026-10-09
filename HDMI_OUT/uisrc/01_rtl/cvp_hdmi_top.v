@@ -266,7 +266,8 @@ module cvp_hdmi_top #(
     wire        fdma_wbusy, fdma_rbusy, fdma_wvalid, fdma_rvalid;
     wire [31:0] fdma_wdata, fdma_rdata;
 
-    wire [7:0]  W_sync_cnt, R_buf;
+    wire [7:0]  W_sync_cnt, rbuf_next;
+    reg  [7:0]  R_buf;
     wire [31:0] R_data;   // uidbuf 32bit 通路, 像素在 [23:0]
 
     wire fdma_clk = ddr_clk0;
@@ -330,8 +331,22 @@ module cvp_hdmi_top #(
     uisetvbuf u_uisetvbuf (
         .ui_clk(fdma_clk ),
         .bufn_i(W_sync_cnt),
-        .bufn_o(R_buf    )
+        .bufn_o(rbuf_next)
     );
+
+    /* CVP修(撕裂根因): R_buf 原为 uisetvbuf 组合透传, W_sync_cnt 每逢写帧起始
+     * (30fps 自由跑)即变化, 读地址在显示扫描中途当场跳到新缓冲 —— 新旧两帧
+     * 在同一场内拼接 = 撕裂, 跳变行位置随 30fps 与 60Hz 两个自由时钟的相位
+     * 滑动而漂移。修复: 切换锁存到显示场头(vid_vs), 同帧内不再变化;
+     * 相位拍打最多造成同缓冲重复显示一场(静止画面不可见)。 */
+    reg [7:0] rbuf_m = 8'd2;
+    always @(posedge pclkx1) rbuf_m <= rbuf_next;
+    always @(posedge pclkx1) begin
+        if (!hdmi_pll_lock)
+            R_buf <= 8'd2;
+        else if (vid_vs)
+            R_buf <= rbuf_m;
+    end
 
     app_fdma u_app_fdma (
         .fdma_clk        (fdma_clk        ),
