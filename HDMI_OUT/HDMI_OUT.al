@@ -26,6 +26,22 @@
                     <Attr Name="CompileOrder" Val="4"/>
                 </FileInfo>
             </File>
+            <File Path="uisrc/01_rtl/osd_anlogic_logo.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="4"/>
+                </FileInfo>
+            </File>
+            <File Path="uisrc/01_rtl/anlogic_logo_rom.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="4"/>
+                </FileInfo>
+            </File>
             <File Path="uisrc/01_rtl/rgmii_cdc.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
