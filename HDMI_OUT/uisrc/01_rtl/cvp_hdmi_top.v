@@ -473,12 +473,29 @@ module cvp_hdmi_top #(
         endcase
     end
 
+    /* CVP: 右上角安路 logo OSD 叠加(uidbuf 读出口与 RGB 寄存之间) */
+    wire [23:0] osd_rgb;
+    wire        osd_de;
+
+    osd_anlogic_logo #(
+        .IMG_WIDTH(1280), .LOGO_W(160), .LOGO_H(160),
+        .X_POS(1096), .Y_POS(24)
+    ) u_osd_logo (
+        .I_clk  (pclkx1),
+        .I_rst_n(vid_rst),
+        .I_vs   (vid_vs),
+        .I_de   (vid_de),
+        .I_rgb  (R_data[23:0]),
+        .O_rgb  (osd_rgb),
+        .O_de   (osd_de)
+    );
+
     always @(posedge pclkx1) begin
-        vid_de_r <= vid_de;
-        if (vid_de) begin
-            rgb_r <= GEN_TESTPAT ? w_bar_rgb[23:16] : R_data[23:16];
-            rgb_g <= GEN_TESTPAT ? w_bar_rgb[15:8]  : R_data[15:8];
-            rgb_b <= GEN_TESTPAT ? w_bar_rgb[7:0]   : R_data[7:0];
+        vid_de_r <= osd_de;
+        if (osd_de) begin
+            rgb_r <= GEN_TESTPAT ? w_bar_rgb[23:16] : osd_rgb[23:16];
+            rgb_g <= GEN_TESTPAT ? w_bar_rgb[15:8]  : osd_rgb[15:8];
+            rgb_b <= GEN_TESTPAT ? w_bar_rgb[7:0]   : osd_rgb[7:0];
         end
     end
 
