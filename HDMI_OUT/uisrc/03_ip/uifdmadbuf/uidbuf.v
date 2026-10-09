@@ -430,7 +430,10 @@ EG_LOGIC_FIFO #(
 	.E(0),
 	.F(RFIFO_DEPTH),
 	.ASYNC_RESET_RELEASE("SYNC"),
-	.AE(511))
+	/* CVP修: AE 511→1023 —— 预取触发水位翻倍, 抗 DDR 刷新/写方向仲裁抖动,
+	 * 显示扫描中途 d2f 读空会导致横向撕裂带(板上实测); 深度 2048, 预取后
+	 * 水位 ~1535 仍有余量。 */
+	.AE(1023))
 d2f_fifo_inst(
 	.rst(d2f_fifo_rst),
 	.di(fdma_rdata),
