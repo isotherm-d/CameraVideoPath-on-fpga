@@ -390,6 +390,15 @@
                     <Attr Name="CompileOrder" Val="52"/>
                 </FileInfo>
             </File>
+            <File Path="uisrc/01_rtl/osd_anlogic_logo.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="53"/>
+                </FileInfo>
+            </File>
         </Verilog>
         <VHDL>
             <File Path="uisrc/03_ip/al_ui_hdmi_tx/TMDSEncoder.vhd">
