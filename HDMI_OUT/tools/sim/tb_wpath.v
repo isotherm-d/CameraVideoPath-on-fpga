@@ -19,7 +19,7 @@ module tb_wpath;
     localparam integer PX_PER_FRAME = 921600;           // 1280*720
     localparam integer BURST       = 512;               // 假想写控制器突发长度
     localparam integer NFRAMES     = 30;
-    localparam integer FR_CYC      = PX_PER_FRAME + 6000; // 帧周期(写侧周期), 略留空隙
+    localparam integer FR_CYC      = 4_160_000;    // 帧周期 33.3ms@8ns(真机 30fps), 与 60Hz 场 2:1
 
     reg clk150 = 0;
     reg clk125 = 0;
@@ -57,7 +57,7 @@ module tb_wpath;
             /* 921600 像素 @1字/拍 */
             for (px = 0; px < PX_PER_FRAME; px = px + 1) begin
                 src_de  <= 1'b1;
-                src_rgb <= (px*7) + (fi*29)*256;        // 可识别图案
+                src_rgb <= {4'b0, fi[3:0], px[15:8], px[7:0]}; // R=帧号标签, G/B=位置递增
                 @(posedge clk125);
             end
             src_de <= 1'b0;
@@ -93,6 +93,8 @@ module tb_wpath;
     wire        fdma_rareq_w, fdma_rbusy_w, fdma_rvalid_w;
     wire [15:0] fdma_rsize_w;
     wire [31:0] fdma_rdata_w;
+    reg         R_FS_i = 0;
+    reg         rden75 = 0;
 
     uidbuf #(
         .VIDEO_ENABLE(1), .ENABLE_WRITE(1), .ENABLE_READ(1),
@@ -106,7 +108,7 @@ module tb_wpath;
         .W_wclk_i (clk125), .W_FS_i  (src_fs), .W_wren_i (src_de),
         .W_data_i ({8'h00, src_rgb}),
         .W_sync_cnt_o (W_sync_cnt), .W_buf_i (W_sync_cnt), .W_full (),
-        .R_rclk_i (clk75),  .R_FS_i  (1'b0),   .R_rden_i (1'b0),
+        .R_rclk_i (clk75),  .R_FS_i  (R_FS_i),  .R_rden_i (rden75),
         .R_data_o (R_data_w), .R_sync_cnt_o (R_sync_w), .R_buf_i (R_sync_w),
         .R_empty  (R_empty_w),
         .fdma_waddr (fdma_waddr_w), .fdma_wareq (fdma_wareq_w),
@@ -143,6 +145,83 @@ module tb_wpath;
     assign fdma_wbusy_w  = wbusy;
     assign fdma_wvalid_w = wv;
 
+    /* ---------------- 假想 DDR 内存(W 写入 / R 读出, 端到端一致性) ---------- */
+    reg [31:0] vram [0:3_000_000];                  // 12MB = 3 缓冲
+    integer wbase = 0, wcnt = 0, rbase = 0, rcnt = 0, rlat = 0;
+    reg       rv = 0;
+    /* W: wareq 锁存突发基址, wvalid 逐字写入 */
+    always @(posedge clk150) begin
+        if (!rstn) begin wbase <= 0; wcnt <= 0; end
+        else if (fdma_wareq_w) begin wbase <= fdma_waddr_w[23:2]; wcnt <= 0; end
+        else if (fdma_wvalid_w) begin
+            vram[wbase + wcnt] <= fdma_wdata_w;
+            wcnt <= wcnt + 1;
+        end
+    end
+    /* R: rareq → 延迟 → rvalid × rsize, 从 vram 读回 */
+    always @(posedge clk150) begin
+        if (!rstn) begin rv <= 0; rcnt <= 0; rlat <= 0; end
+        else if (fdma_rareq_w && !rv && !fdma_rbusy_w) begin
+            rbase <= fdma_raddr_w[23:2]; rlat <= 16; rv <= 1; rcnt <= 0;
+        end else if (rv) begin
+            if (rlat > 0) rlat <= rlat - 1;
+            else begin
+                fdma_rdata_w <= vram[rbase + rcnt];
+                fdma_rvalid_w <= 1'b1;
+                rcnt <= rcnt + 1;
+                if (rcnt >= fdma_rsize_w - 1) begin rv <= 1'b0; fdma_rvalid_w <= 1'b0; end
+            end
+        end else begin
+            fdma_rvalid_w <= 1'b0;
+        end
+    end
+
+    /* 显示消费模型: 75M 域连续读 d2f(R_rden=1), 监视撕裂(标签突变)/读空(停增) */
+    reg [23:0] pv = 24'hxx, ppv = 24'hxx;
+    integer    field_px = 0, tears = 0, underruns = 0, field_tag = 9, last_full_field = 0;
+    reg        tag_err = 0;
+    /* R_FS: 每 1_250_000 clk75(16.7ms 场头), 脉宽 64 拍 */
+    integer vfs_cnt = 0;
+    always @(posedge clk75) begin
+        if (!rstn) begin
+            vfs_cnt <= 0; R_FS_i <= 1'b0;
+        end else begin
+            vfs_cnt <= vfs_cnt + 1;
+            if (vfs_cnt >= 1_250_000) begin vfs_cnt <= 0; R_FS_i <= 1'b1; end
+            else if (vfs_cnt == 63) R_FS_i <= 1'b0;
+        end
+    end
+    always @(posedge clk75) rden75 <= rstn;
+    always @(posedge clk75) begin
+        if (!rstn) begin
+            field_px <= 0;
+        end else begin
+            if (R_FS_i) begin
+                if (field_px != 0 && field_px != PX_PER_FRAME)
+                    $display("[TEAR] t=%0t 场内像素数=%0d (期望 %0d)", $time/1000, field_px, PX_PER_FRAME);
+                field_px <= 0;
+            end
+            if (R_rden_i && !R_empty_w) begin
+                pv <= R_data_w;
+                field_px <= field_px + 1;
+            end else if (R_rden_i) begin
+                underruns = underruns + 1;
+                if (underruns <= 5) $display("[MON] t=%0t d2f 读空(显示供给不足)", $time/1000);
+            end
+        end
+    end
+    always @(posedge clk75) begin
+        if (rstn && R_rden_i && R_FS_i == 1'b0) begin
+            /* 标签突变 = 新旧帧在同一场内拼接(撕裂) */
+            if (field_px > 1 && pv[19:16] != R_data_w[23:20] && R_data_w[23:20] < 10) begin
+                tears = tears + 1;
+                if (tears <= 8)
+                    $display("[TEAR] t=%0t 帧标签突变: %0d → %0d (场内第 %0d px)",
+                             $time/1000, pv[19:16], R_data_w[23:20], field_px);
+            end
+        end
+    end
+
     /* ---------------- 监视器 ---------------- */
     integer wvalid_cnt = 0, frames_done = 0, overread = 0, stall_ms = 0;
     integer last_fcnt = 0;
@@ -152,7 +231,7 @@ module tb_wpath;
 
     /* 过读监视: wvalid 期间 empty_flag 拉高 */
     always @(posedge clk150) begin
-        if (rstn && fdma_wvalid_w && R_empty_w) begin
+        if (rstn && fdma_wvalid_w && u_uidbuf.FDMA_WRITE_ENABLE.empty_flag) begin
             overread = overread + 1;
             if (overread <= 5)
                 $display("[MON] t=%0t OVER-READ: empty_flag 在写突发中拉高 (第%0d次)", $time, overread);

@@ -62,9 +62,12 @@ PH1P35 主板(摄像头) ──ETHA──> PC(控制+预览)          【已工�
 - 命令行编译：`build_check.tcl`（open_project→launch_runs syn_1 phy_1），GUI 开着时 CLI 静默不跑
 - PH1P35 主板工程要用 TD6.2.1（TD5.6 报 Unknown device）；EG4D 副板两个版本都行，用户用 5.6
 
-**PC 测试环境（当前状态）**
-- 网卡"以太网"(ifIndex 17) IP 已改 **192.168.1.66/24**（原 192.168.1.100 是接主板 ETHA 控制用的，**测完要改回**：`netsh interface ipv4 set address name="以太网" source=static address=192.168.1.100 mask=255.255.255.0`，需管理员）
-- ARP 静态绑定 `192.168.1.100 = 02-1A-2B-3C-4D-5F`（副板协议栈本地 MAC；**必须单播 MAC**，Windows 拒绝向广播 MAC 静态表项发单播；曾残留 Incomplete 表项需 Remove-NetNeighbor 清掉）
+**PC 测试环境（已恢复, 2026-10-09）**
+- 网卡"以太网"(ifIndex 17) 已改回 **192.168.1.100/24**（主板 ETHA 收图配置 ✓），
+  HDMI_OUT 联调期的 .66 与静态 ARP(`.100 → 02-1A-2B-3C-4D-5F`) 均已清除——
+  注意该静态 ARP 不清会劫持主板链路（PC→主板帧错发副板 MAC）。
+- 收图启动脚本 `08_csi.../tools/打开收图窗口.bat` 已加自动检测/修正:
+  启动时查 192.168.1.x 网段网卡, 非 .100 则 UAC 提权改回 + 清 ARP, 再启动 GUI。
 - 发包脚本 `tools/eth_bar_tx.py --fps 2 --gap 8` 后台运行中（2fps 彩条流，8µs 包间隔）
 - 时序现状：12 setup 违例 = 9 条 ARP 死逻辑（arp_tx→mac_cache，无功能，false_path 语法已修待重编）+ DDR/uiphyrst/uidbuf 例程固有（**UDP 例程官方编译自身就带 9 setup+6 hold 同款路径**，带病工作）
 
