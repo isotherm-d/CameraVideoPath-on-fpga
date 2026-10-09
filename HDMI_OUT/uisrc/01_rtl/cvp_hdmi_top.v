@@ -544,9 +544,12 @@ module cvp_hdmi_top #(
         if (!fdma_rstn) r_fdma_cnt <= 25'd0;
         else            r_fdma_cnt <= r_fdma_cnt + fdma_wvalid;
     end
-    assign O_led = { r_fdma_cnt[22],              // LED3: FDMA 写 DDR 活动
-                     rx_frame_cnt[3],             // LED2: 重组器完成帧(bit3, 30fps 下 ~3.7Hz)
-                     r_cdc_cnt[24],               // LED1
-                     r_led_cnt[23] };             // LED0 心跳
+    /* CVP: 诊断期读数 —— LED3 = crc_ok 闪(好帧在过 MAC) / LED2 = crc_bad 闪(坏帧)
+     * 判读: 3闪2灭 = CRC 通过, 问题在 IP/UDP/重组器; 2闪3灭 = 采样相位又错(重扫 CPHASE);
+     *       全灭但 LED1 闪 = MAC 地址/类型过滤丢帧(查 DA/TYPE) */
+    assign O_led = { w_crc_ok[10],        // LED3: CRC 通过帧计数(闪=好帧在流过)
+                     w_crc_bad[10],       // LED2: CRC 失败帧计数(闪=坏帧, 采样相位问题)
+                     r_cdc_cnt[24],       // LED1
+                     r_led_cnt[23] };     // LED0 心跳
 
 endmodule
