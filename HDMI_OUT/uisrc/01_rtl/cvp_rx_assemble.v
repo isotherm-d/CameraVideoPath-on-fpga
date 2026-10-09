@@ -221,6 +221,7 @@ module cvp_rx_assemble #(
     reg [8:0]        r_wcnt;           // DATA 相内已出像素 0..479
     reg [1:0]        r_psel;           // 字节相位 0..2
     reg [23:0]       r_pxl;
+    reg [23:0]  r_last_px;   /* CVP: 洞填=冻结延展(最后像素), 替代补黑 */
     reg [9:0]        r_fscnt;          // FS 拉宽计数
     reg [9:0]        r_blankcnt;       // 消隐计数
 
@@ -239,6 +240,7 @@ module cvp_rx_assemble #(
             r_wcnt      <= 9'd0;
             r_psel      <= 2'd0;
             r_pxl       <= 24'd0;
+            r_last_px   <= 24'd0;
             r_desc_rd   <= 3'd0;
             r_fscnt     <= 10'd0;
             r_blankcnt  <= 10'd0;
@@ -260,10 +262,10 @@ S_out    <= w_desc_head[DESC_W-1] ? S_FS : S_FILL;
                 end
 
                 S_FILL: begin
-                    /* 补黑像素 1/拍, 直到 pushed == target */
+                    /* 洞填像素 1/拍(冻结延展), 直到 pushed == target */
                     if (r_pushed < r_target) begin
                         o_w_de  <= 1'b1;
-                        o_w_rgb <= 24'h000000;
+                        o_w_rgb <= r_last_px;
                         r_pushed <= r_pushed + 3;
                         if (r_pushed + 3 == r_target)
                             S_out <= S_DATA;
@@ -281,6 +283,7 @@ S_out    <= w_desc_head[DESC_W-1] ? S_FS : S_FILL;
                         if (r_psel == 2'd2) begin
                             o_w_de  <= 1'b1;
                             o_w_rgb <= {r_pxl[15:0], w_st_dout};
+                            r_last_px <= {r_pxl[15:0], w_st_dout};
                             r_pushed <= r_pushed + 3;
                             r_psel   <= 2'd0;
                             if (r_wcnt == 9'd479)
@@ -298,7 +301,7 @@ S_out    <= w_desc_head[DESC_W-1] ? S_FS : S_FILL;
                     /* 帧尾描述符: 从 pushed 补黑到 FRAME_BYTES, 然后进入 FS 拉宽 */
                     if (r_pushed < FRAME_BYTES) begin
                         o_w_de  <= 1'b1;
-                        o_w_rgb <= 24'h000000;
+                        o_w_rgb <= r_last_px;
                         r_pushed <= r_pushed + 3;
                     end else begin
                         r_pushed <= {BYTE_W{1'b0}};

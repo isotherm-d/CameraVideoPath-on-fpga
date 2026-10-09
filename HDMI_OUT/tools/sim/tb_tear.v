@@ -54,16 +54,16 @@ module tb_tear;
             fs_start = $time / 1.0;
             /* 空闲 512 拍(uidbuf 复位窗) */
             repeat (512) @(posedge clk125);
-            /* 921600 像素 @1字/拍 */
+            /* 921600 像素, 每字 1 拍推 + 3 拍歇(行节奏 28% 占空) */
             for (px = 0; px < PX_PER_FRAME; px = px + 1) begin
                 src_de  <= 1'b1;
                 src_rgb <= {4'b0, fi[3:0], px[15:8], px[7:0]}; // R=帧号标签, G/B=位置递增
                 @(posedge clk125);
+                src_de <= 1'b0;
+                repeat (3) @(posedge clk125);
             end
-            src_de <= 1'b0;
-            @(posedge clk125);
             /* 帧尾空隙 */
-            gap = FR_CYC - PX_PER_FRAME - 512 - 64 - 1;
+            gap = FR_CYC - PX_PER_FRAME*4 - 512 - 64 - 1;
             if (gap < 1) gap = 1;
             repeat (gap) @(posedge clk125);
             fi = fi + 1;
@@ -128,6 +128,8 @@ module tb_tear;
 parameter integer WRITE_FIRST = 1;
 parameter integer REF_CYC     = 0;   // 每 N 拍允许一次刷新窗口, 0=关
 parameter integer FREEZE_LEN  = 0;   // 刷新窗口冻结拍数
+parameter integer BOMB_AT     = 0;   // 一次性总线冻结起点(ns), 0=关
+parameter integer BOMB_LEN    = 0;   // 冻结时长(ns)
 
 reg        wbusy = 0, rbusy = 0, wv = 0, rv = 0;
 reg        wpend = 0, rpend = 0;
@@ -135,10 +137,12 @@ integer    acnt = 0, rlat = 0;
 integer    ref_cnt = 0;
 reg        freezing = 0;
 integer    freeze_left = 0;
+reg bombing = 0;
+initial if (BOMB_AT > 0) begin #(BOMB_AT); bombing = 1; #(BOMB_LEN); bombing = 0; end
 wire       wstart, rstart;
-assign wstart = !wbusy && !rbusy && !freezing &&
+assign wstart = !wbusy && !rbusy && !freezing && !bombing &&
                 (WRITE_FIRST ? wpend : (wpend && !rpend));
-assign rstart = !wbusy && !rbusy && !freezing &&
+assign rstart = !wbusy && !rbusy && !freezing && !bombing &&
                 (WRITE_FIRST ? (!wpend && rpend) : rpend);
 
 always @(posedge clk150) begin
@@ -269,6 +273,50 @@ always @(posedge clk150)
                     $display("[TEAR] t=%0t 帧标签突变: %0d → %0d (场内第 %0d px)",
                              $time/1000, pv[19:16], R_data_w[23:20], field_px);
             end
+        end
+    end
+
+    /* -------- oracle A: 显示读到的缓冲必须已完成写 pass -------- */
+    time wr_done [0:3];
+    reg [1:0] w_ms_d = 0, r_ms_d = 0;
+    integer collide = 0;
+    integer first_tag_prev = -1;
+    always @(posedge clk150) begin
+        w_ms_d <= u_uidbuf.FDMA_WRITE_ENABLE.W_MS;
+        r_ms_d <= u_uidbuf.FDMA_READ.R_MS;
+        // W pass 完成(进入 S_IDLE)
+        if (rstn && w_ms_d == 2'd2 && u_uidbuf.FDMA_WRITE_ENABLE.W_MS == 2'd0)
+            wr_done[fmda_wbuf_w] = $time;
+        // 读 pass 在跑 且 与写 pass 同缓冲 → 碰撞
+        if (rstn && $time > 50_000_000 &&
+            u_uidbuf.FDMA_READ.R_MS >= 2'd2 &&
+            u_uidbuf.FDMA_WRITE_ENABLE.W_MS >= 2'd2 &&
+            fmda_rbuf_w == fmda_wbuf_w) begin
+            collide = collide + 1;
+            if (collide <= 5)
+                $display("[COLLIDE] t=%0t 读/写同在缓冲 %0d", $time/1000000, fmda_rbuf_w);
+        end
+    end
+
+    /* -------- oracle B: 每场首像素标签序列(旧帧/跳帧=闪烁) -------- */
+    integer field_no = 0, last_tag = -1, stale_fields = 0;
+    reg seen_px = 0;
+    always @(posedge clk75) begin
+        if (rstn && R_FS_i) begin seen_px <= 1'b0; end
+        else if (rstn && rden75 && !R_empty_w && !seen_px) begin
+            seen_px <= 1'b1;
+            if (field_no >= 2) begin
+                // 30fps→60Hz: 合法序列 N,N,N+1,N+1; 重复>2 或回退 = 旧帧
+                if (R_data_w[23:20] == last_tag && field_no >= 2 &&
+                    first_tag_prev == last_tag) begin
+                    stale_fields = stale_fields + 1;
+                    $display("[STALE] t=%0t 第%0d场仍显示帧%0d (连续第3场同帧)",
+                              $time/1000000, field_no, R_data_w[23:20]);
+                end
+            end
+            first_tag_prev = last_tag;
+            last_tag = R_data_w[23:20];
+            field_no = field_no + 1;
         end
     end
 
