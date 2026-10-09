@@ -238,7 +238,7 @@ assign fdma_wareq = fdma_wareq_r;
  * 异步且无同步器 —— 偶发错采使突发请求错拍, 该拍陈旧数据写入 DDR(板上表现为
  * 跳动行)。两级同步后再用; afull 阈值距满溢余量充足, 2 拍延迟无害。 */
 wire w_afull_raw;
-reg  [1:0] w_req_sync = 2'b00;
+(* ASYNC_REG = "TRUE" *) reg  [1:0] w_req_sync = 2'b00;
 always @(posedge ui_clk) w_req_sync <= {w_req_sync[0], w_afull_raw};
 assign W_REQ = w_req_sync[1];
  
@@ -415,7 +415,7 @@ reg d2f_fifo_rst ;
  * 延迟/提前, 显示段读空取到陈旧数据(板上表现为撕裂)。两级同步; aempty 距真空
  * 余量充足且 2 拍远小于 DMA 仲裁延迟, 无害。 */
 wire r_aempty_raw;
-reg  [1:0] r_req_sync = 2'b00;
+(* ASYNC_REG = "TRUE" *) reg  [1:0] r_req_sync = 2'b00;
 always @(posedge ui_clk) r_req_sync <= {r_req_sync[0], r_aempty_raw};
 assign R_REQ = r_req_sync[1];
 
