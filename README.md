@@ -2,7 +2,7 @@
 
 安路 FPGA 双板实时视频系统。主板把相机图像编码为 UDP 千兆以太网流，子板接收后在本地重组、缓存并输出 HDMI 显示；上位机 Python GUI 同时完成收图与曝光/白平衡控制。
 
-当前版本：**v28**（新增子板 HDMI_OUT 实时回显工程）。主板相机工程维持 **v27** 验收状态。
+当前版本：**v28**（子板 HDMI_OUT 实时回显工程）+ **v29**（主板相机工程资源优化版，功能与接口不变）。
 
 ## 系统拓扑
 
@@ -63,21 +63,22 @@
 - 偶发丢包根因为 RGMII 采样相位随电源状态漂移（CRC 偶发全错），诊断 LED：LED2=crc_bad、LED3=crc_ok；可用 `tools/sim/sweep_cphase.sh` 配合盲扫 CPHASE 求稳定采样点。
 - 详细调试交接见 `HDMI_OUT/doc/`。
 
-## 主板相机工程（v27，维持原验收）
+## 主板相机工程（v29，资源优化版）
 
 基于 MLKPAI-F02 / PH1P35 和 SC500CS 的 1280×720@30fps 相机图像处理工程。
 
-- [v27 比特流](releases/v27/camera_to_dsi_display_v27.bit)
-- [发布记录、资源与验证范围](releases/v27/README.md)
+- [v29 比特流](releases/v29/camera_to_dsi_display_v29.bit)
+- [发布记录、资源与优化明细](releases/v29/README.md)
 - [阈值操作、白平衡与 I2C 说明](08_csi_dsi_cs500_7cun/V27优化与阈值说明.md)
 - [统一像素流与分类接口](08_csi_dsi_cs500_7cun/V26开发与接口说明.md)
 - [队友挂接示例](08_csi_dsi_cs500_7cun/V26队友挂接示例.md)
 
-TD 选择 PROGRAM_SRAM 加载 v27，比特流断电后丢失。电脑网卡为 192.168.1.100/24，连接板端网口后双击工程 `tools/打开收图窗口.bat`（脚本自动检测并修正本机 IP）。收图 UDP6000、控制 UDP6001、状态 UDP6002，只打开一个收图程序。
+TD 选择 PROGRAM_SRAM 加载 v29，比特流断电后丢失。电脑网卡为 192.168.1.100/24，连接板端网口后双击工程 `tools/打开收图窗口.bat`（脚本自动检测并修正本机 IP）。收图 UDP6000、控制 UDP6001、状态 UDP6002，只打开一个收图程序。
 
-v27 验收摘要：28 项 RTL、35 项 Python 测试通过；七模式轮换、AE/AWB 开启运行 5 分钟，平均 29.965fps、完整率 100%；布线 setup WNS 0.107ns、hold WNS 0.020ns、TNS 0。详见 [releases/v27/README.md](releases/v27/README.md)。
+v29 验收摘要：22 项 RTL 回归全部通过（含 4 项新旧实现逐位差分对照）；资源优化后 Slice 15006/21216（**70.7%**，v27 为 81.8%）、FF -23%、ERAM 65、布线 setup WNS 0.102ns、hold WNS 0.020ns、TNS 0。功能与接口不变，唯一变化是串口诊断行取消（由 UDP 状态包覆盖）；300s 压力轮换与两光源/Flash 冷启动专项未重跑，状态同 v27。详见 [releases/v29/README.md](releases/v29/README.md)。
 
 ## 版本历史
 
+- **v29**：主板相机工程资源优化：直方图 LUTRAM 化、状态跨域链 3×1536bit 寄存器改 ERAM 快照桥、元数据 FIFO 寄存器化、数据通路摘异步复位、移除 UART 诊断链（UDP 状态包覆盖）；Slice 81.8%→70.7%、FF -23%，功能与接口不变。
 - **v28**：新增子板 HDMI_OUT 实时回显工程（本仓库第二块板卡）；帧重组器多项修复（缺口白名单、跟踪-丢弃、描述符队列、位宽截断）；全分辨率逐字节仿真回归体系（真机工况 11 帧 + DDR 仲裁压力扫描 + OSD 落点账本）。
 - **v27**：边缘/素描独立阈值、AWB 优化、摄像头启动重试与分类 I2C 诊断。
