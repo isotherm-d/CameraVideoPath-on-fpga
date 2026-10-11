@@ -1,0 +1,32 @@
+# V29 RTL 回归结果(2026-10-11, ModelSim SE-64 2020.4)
+
+全部 22 项测试通过(18 项既有官方回归 + 4 项本次新增差分测试)。
+既有回归 = v26 套件 12 项 + v27 套件 6 项(与 v27/v28 发布所用同一套, 未修改断言;
+其中 tb_v26_stats/tb_v26_advanced/tb_v27_awb 各加一行复位后 400ns 稳定期,
+对应 LUTRAM 直方图上电清扫约定, 实机由摄像头启动门控保证)。
+新增差分测试 = 新旧 RTL 同激励逐位对照(gold 基准取自 tools/sim/gold_a/)。
+
+PASS tb_v26_advanced
+PASS tb_v26_ae
+PASS tb_v26_bayer
+PASS tb_v26_commands
+PASS tb_v26_config
+PASS tb_v26_keys
+PASS tb_v26_network
+PASS tb_v26_patch
+PASS tb_v26_sensor
+PASS tb_v26_stats
+PASS tb_v26_style
+PASS tb_v26_window
+PASS tb_v27_awb        (SAFE_AWB=1 路径)
+PASS tb_v27_camera
+PASS tb_v27_config
+PASS tb_v27_contour
+PASS tb_v27_network    (1536bit 状态载荷字节序/CRC 校验)
+PASS tb_v27_startup
+PASS tb_a_diff_stats   (cvp_frame_stats 新旧对照: 17 帧随机场景全输出逐位一致,
+                        覆盖首帧黑/白点、valid 断流、AWB 冻结/恢复、X 检查)
+PASS tb_a_diff_style   (cvp_style/cvp_contour 新旧对照: 14 帧 128k 采样点全输出一致)
+PASS tb_a_status_bridge(cvp_status_bridge 字节序/ping-pong/握手 8 快照 192 字节×8)
+PASS tb_a_status_wire  (桥+mac_tx 全链路: 2 个完整 UDP 状态包线上重建,
+                        前导/IP/UDP 头+192 字节载荷+校验和逐位一致)
