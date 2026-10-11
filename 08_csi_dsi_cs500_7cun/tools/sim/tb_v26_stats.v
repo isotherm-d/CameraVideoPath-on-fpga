@@ -18,7 +18,7 @@ module tb_v26_stats;
   if(samples!=128||overrun)errors=errors+1;
  end endtask
  initial begin
-  #31;rst=1;
+  #31;rst=1;#400;// LUTRAM直方图上电旋转清扫需>=32拍, 复位后须空等再驱帧
   frame({8'd75,8'd100,8'd57},{8'd101,8'd100,8'd100});
   if(mean!=100||neutrals!=128||awb!=1||g!=256||r<338||r>345||b<445||b>453)errors=errors+1;
   frame({8'd90,8'd100,8'd45},{8'd121,8'd100,8'd79});

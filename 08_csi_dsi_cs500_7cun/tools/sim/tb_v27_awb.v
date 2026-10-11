@@ -16,7 +16,7 @@ module tb_v27_awb;
   if(fault)errors=errors+1;
  end endtask
  initial begin
-  #31;rst=1;
+  #31;rst=1;#400;// LUTRAM直方图上电旋转清扫需>=32拍, 复位后须空等再驱帧
   frame({8'd90,8'd100,8'd45},24'h79644f,0);
   if(neutral!=0||state!=2||r!=344||b!=451)errors=errors+1;
   for(n=0;n<25;n=n+1)frame({8'd75,8'd105,8'd57},24'h656964,0);

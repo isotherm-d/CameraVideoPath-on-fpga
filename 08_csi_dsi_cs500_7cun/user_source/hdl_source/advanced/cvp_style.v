@@ -16,13 +16,21 @@ module cvp_style #(parameter W=1280,H=720)(
  .i_valid(luminance_valid),.i_data(luminance_pixel),.i_sof(luminance_sof),.o_valid(wv),.o_sof(ws),.o_eol(wl),.o_eof(we),
  .o_x(wx),.o_y(wy),.p00(a),.p01(b),.p02(c),.p10(d),.p11(e),.p12(f),
  .p20(g),.p21(h),.p22(j),.o_overflow(overflow));
- wire mv,mready;wire [89:0] meta;
- cvp_sync_fifo #(.DW(90),.AW(4)) metas(.clk(clk),.rst_n(rst_n),
- .i_valid(i_valid&&i_sof),.i_data({i_osd_en,i_ae_en,i_wb_mode,i_frame_id,i_cfg_id,i_mode,i_binary_th,i_edge_low,i_edge_high}),
- .o_ready(mready),.o_valid(mv),.o_data(meta),.i_ready(wv&&ws),.o_level());
- assign o_overflow=overflow || (i_valid&&i_sof&&!mready) || (wv&&ws&&!mv);
+ /* A3: 元数据 FIFO(16 深, 被综合成 2 块 ERAM20K)改为单 pend 寄存器。
+  * 帧原子字段只需跨过窗口流水的 2~3 拍, 帧间消隐远大于前帧排空深度,
+  * 队列永不积压; pend_v 复现原 FIFO 的满/空溢出检查语义。 */
+ reg [89:0] pend;reg pend_v;
+ wire meta_sof=i_valid&&i_sof;
+ assign o_overflow=overflow||(meta_sof&&pend_v)||((wv&&ws)&&!pend_v);
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin pend<=0;pend_v<=1'b0;end
+  else begin
+   if(wv&&ws)pend_v<=1'b0;
+   if(meta_sof)begin pend<={i_osd_en,i_ae_en,i_wb_mode,i_frame_id,i_cfg_id,i_mode,i_binary_th,i_edge_low,i_edge_high};pend_v<=1'b1;end
+  end
+ end
  reg [89:0] active;
- wire [89:0] current=ws?meta:active;
+ wire [89:0] current=ws?pend:active;
  wire medv,medfs,sobv,sobfs;wire [23:0] medrgb,sobrgb;wire [10:0] magnitude;
  cvp_fx_median med(.i_clk(clk),.i_rst_n(rst_n),.i_valid(wv),.i_frame_start(ws),
  .i_p00(a[23:0]),.i_p01(b[23:0]),.i_p02(c[23:0]),.i_p10(d[23:0]),.i_p11(e[23:0]),.i_p12(f[23:0]),
@@ -50,29 +58,33 @@ module cvp_style #(parameter W=1280,H=720)(
                        {medrgb[15:13],medrgb[15:13],medrgb[15:14]},
                        {medrgb[7:5],medrgb[7:5],medrgb[7:6]}};
  integer k;
+ /* B1: 有效/帧标志保留异步复位; 纯数据延迟链与输出数据摘除复位——
+  * 首帧首个有效像素到达前各级延迟链刚好随流水写满, 摘复位不改变
+  * 有效期内行为, 只为统一 FF 控制集、提升 slice 打包率。 */
  always @(posedge clk or negedge rst_n)begin
   if(!rst_n)begin
-   vp<=0;sp<=0;lp<=0;ep<=0;edge_delay<=0;active<=0;
-   o_valid<=0;o_sof<=0;o_eol<=0;o_eof<=0;o_rgb<=0;o_x<=0;o_y<=0;
-   o_frame_id<=0;o_cfg_id<=0;o_mode<=0;o_osd_en<=0;o_ae_en<=0;o_wb_mode<=0;
-   for(k=0;k<4;k=k+1)begin fp[k]<=0;bypass[k]<=0;sepia[k]<=0;xy[k]<=0;mp[k]<=0;yp[k]<=0;end
+   vp<=0;sp<=0;lp<=0;ep<=0;
+   o_valid<=0;o_sof<=0;o_eol<=0;o_eof<=0;
   end else begin
-   if(wv&&ws)active<=meta;
    vp<={vp[2:0],wv};sp<={sp[2:0],ws};lp<={lp[2:0],wl};ep<={ep[2:0],we};
-   edge_delay<=|sobrgb;
-   bypass[0]<=e;sepia[1]<={sat(sr),sat(sg),sat(sb)};xy[0]<={wx,wy};mp[0]<=current[85:22];fp[0]<=current[89:86];yp[0]<=e[31:24];
-   for(k=1;k<4;k=k+1)begin fp[k]<=fp[k-1];bypass[k]<=bypass[k-1];if(k>1)sepia[k]<=sepia[k-1];xy[k]<=xy[k-1];mp[k]<=mp[k-1];yp[k]<=yp[k-1];end
-   {o_osd_en,o_ae_en,o_wb_mode}<=fp[3];o_valid<=vp[3];o_sof<=vp[3]&&sp[3];o_eol<=vp[3]&&lp[3];o_eof<=vp[3]&&ep[3];
-   o_x<=xy[3][23:12];o_y<=xy[3][11:0];o_frame_id<=mp[3][63:32];o_cfg_id<=mp[3][31:16];o_mode<=mp[3][15:8];
-   case(mp[3][15:8])
-    1:o_rgb<={3{yp[3]}};
-    2:o_rgb<=yp[3]>=mp[3][7:0]?24'hffffff:24'd0;
-    3:o_rgb<=edge_delay?24'hffffff:24'd0;
-    4:o_rgb<=edge_delay?24'd0:quantized;
-    5:o_rgb<=edge_delay?24'd0:24'hffffff;
-    6:o_rgb<=sepia[3];
-    default:o_rgb<=bypass[3];
-   endcase
+   o_valid<=vp[3];o_sof<=vp[3]&&sp[3];o_eol<=vp[3]&&lp[3];o_eof<=vp[3]&&ep[3];
   end
+ end
+ always @(posedge clk)begin
+  if(wv&&ws)active<=pend;
+  edge_delay<=|sobrgb;
+  bypass[0]<=e;sepia[1]<={sat(sr),sat(sg),sat(sb)};xy[0]<={wx,wy};mp[0]<=current[85:22];fp[0]<=current[89:86];yp[0]<=e[31:24];
+  for(k=1;k<4;k=k+1)begin fp[k]<=fp[k-1];bypass[k]<=bypass[k-1];if(k>1)sepia[k]<=sepia[k-1];xy[k]<=xy[k-1];mp[k]<=mp[k-1];yp[k]<=yp[k-1];end
+  {o_osd_en,o_ae_en,o_wb_mode}<=fp[3];
+  o_x<=xy[3][23:12];o_y<=xy[3][11:0];o_frame_id<=mp[3][63:32];o_cfg_id<=mp[3][31:16];o_mode<=mp[3][15:8];
+  case(mp[3][15:8])
+   1:o_rgb<={3{yp[3]}};
+   2:o_rgb<=yp[3]>=mp[3][7:0]?24'hffffff:24'd0;
+   3:o_rgb<=edge_delay?24'hffffff:24'd0;
+   4:o_rgb<=edge_delay?24'd0:quantized;
+   5:o_rgb<=edge_delay?24'd0:24'hffffff;
+   6:o_rgb<=sepia[3];
+   default:o_rgb<=bypass[3];
+  endcase
  end
 endmodule

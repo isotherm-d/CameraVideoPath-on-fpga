@@ -53,13 +53,11 @@ module cvp_window3x3 #(parameter W=1280,H=720,DW=24,BAYER_PAD=0,FIFO_AW=11)(
   if(!rst_n)begin
    state<=NORMAL;nx<=0;ny<=0;flush_x<=0;o_overflow<=0;
    v1<=0;v2<=0;d1<=0;d2<=0;x1<=0;y1<=0;x2<=0;y2<=0;
-   c1<=0;c2<=0;prev2<=0;a0<=0;b0<=0;a1<=0;b1<=0;a2<=0;b2<=0;
   end else begin
    o_overflow<=i_valid&&!q_ready;
    v1<=token;v2<=v1;
-   if(token)begin x1<=tx;y1<=ty;d1<=drain;c1<=q[DW-1:0];end
-   if(v1)begin x2<=x1;y2<=y1;d2<=d1;c2<=c1;prev2<=rd1;end
-   if(v2)begin a0<=top;b0<=a0;a1<=mid;b1<=a1;a2<=bottom;b2<=a2;end
+   if(token)begin x1<=tx;y1<=ty;d1<=drain;end
+   if(v1)begin x2<=x1;y2<=y1;d2<=d1;end
    if(consume)begin
     if(tx==W-1)begin nx<=0;ny<=ty+1'b1;end else begin nx<=tx+1'b1;ny<=ty;end
     if(tx==W-1 && ty==H-1)begin state<=DRAIN;flush_x<=0;end
@@ -68,5 +66,13 @@ module cvp_window3x3 #(parameter W=1280,H=720,DW=24,BAYER_PAD=0,FIFO_AW=11)(
    end else if(state==TAIL)state<=WAIT_LAST;
    else if(state==WAIT_LAST && o_eof)begin state<=NORMAL;nx<=0;ny<=0;end
   end
+ end
+ /* B1: 行窗口数据寄存器摘复位——行缓存 RAM(rd1/rd2)本就无复位, 首帧头部
+  * 窗口内容两类实现同为 X/旧数据, 有效期内行为不变; 统一控制集提升打包率。
+  * 数据更新与上面状态块的时序条件逐拍一致(单驱动已分离)。 */
+ always @(posedge clk)begin
+  if(token)c1<=q[DW-1:0];
+  if(v1)begin c2<=c1;prev2<=rd1;end
+  if(v2)begin a0<=top;b0<=a0;a1<=mid;b1<=a1;a2<=bottom;b2<=a2;end
  end
 endmodule

@@ -21,3 +21,8 @@ __pycache__/
 08_csi_dsi_cs500_7cun/tools/captures/
 08_csi_dsi_cs500_7cun/td_*.log
 08_csi_dsi_cs500_7cun/td_*.logw
+
+# 资源优化回归的本地仿真工作目录(可由 tools/run_v26_regression.ps1 + tb_a_* 重建)
+08_csi_dsi_cs500_7cun/td_project/a_opt_regression/
+08_csi_dsi_cs500_7cun/td_project/v26_regression_base/
+08_csi_dsi_cs500_7cun/td_project/syntax_check/

@@ -43,7 +43,9 @@ module cvp_gmii_mac_tx #(
     parameter [15:0]  UDP_DPORT = 16'd6000
 ) (
     input  wire        i_clk,        // 125MHz GMII
-    input wire [STATUS_BITS-1:0] i_status_data,input wire i_status_valid,output reg o_status_pop,
+    /* A2: 状态载荷改为 cvp_status_bridge ERAM 流式读(原为 STATUS_BITS 并行寄存) */
+    input wire i_status_valid,output reg o_status_pop,
+    input wire [15:0] i_status_rdata,input wire i_status_bank,output wire [7:0] o_status_raddr,
     input wire i_frame_valid,input wire [31:0] i_frame_id,output reg o_frame_pop,
     output reg o_frame_done,output reg [31:0] o_frame_done_id,
     input  wire        i_rst,        // 高有效（顶层已按域同步）
@@ -177,7 +179,8 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
     wire [6:0] w_cred_avail = w_cred_bin - r_cred_pop;   // 模 128 差值
 
     /* ---------------- 发送主状态机 ---------------- */
-    reg [STATUS_BITS-1:0] status_packet;reg [31:0] active_frame_id;
+    reg [31:0] active_frame_id;
+    reg        r_status_bank;   // A2: pop(发送起始)拍锁存快照 bank, 整包读同一 bank
     reg [11:0] r_idx;
     reg        r_sending;
     reg [4:0]  r_ifg;
@@ -220,18 +223,21 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
         (r_idx[0])           ? i_scan_word[15:8] :
                                i_scan_word[7:0];
 
-    reg [7:0] status_index;reg [7:0] status_octet;
-    generate if(STATUS_BITS>1024)begin:extended_status
-     always @(posedge i_clk)begin
-      status_index<=r_idx[7:0]+8'd2-PAY_BEG[7:0];
-      status_octet<=status_index[7]?status_packet[1024+{~status_index[5:0],3'b000}+:8]:status_packet[{~status_index[6:0],3'b000}+:8];
-     end
-    end else begin:base_status
-     always @(posedge i_clk)begin
-      status_index<=r_idx[6:0]+7'd2-PAY_BEG[6:0];
-      status_octet<=status_packet[{~status_index[6:0],3'b000}+:8];
-     end
-    end endgenerate
+    /* A2: 状态载荷从 status_bridge ERAM 逐字读出, 两拍流水对齐与原
+     * status_index/status_octet 相同: 消费拍(r_idx=k)的 status_octet =
+     * 线上第 (k-PAY_BEG) 字节 = 快照向量 MSB 起第 p 字节 = RAM 字 p[7:1]
+     * 的高 8 位(p 偶)/低 8 位(p 奇)。地址在消费前 2 拍由 r_idx+2 组合给出。 */
+    wire [11:0] w_spos = r_idx + 12'd2 - PAY_BEG[11:0];
+    assign o_status_raddr = {r_status_bank, w_spos[7:1]};
+    reg r_ssel;reg [7:0] status_octet;
+    always @(posedge i_clk or posedge i_rst) begin
+        if (i_rst) begin
+            r_ssel <= 1'b0;status_octet <= 8'd0;
+        end else begin
+            r_ssel      <= w_spos[0];
+            status_octet<= r_ssel ? i_status_rdata[7:0] : i_status_rdata[15:8];
+        end
+    end
     wire [7:0] w_next_byte =
         (r_idx <  PRE_LEN) ? ((r_idx == PRE_LEN - 1) ? 8'hD5 : 8'h55) :
         (r_idx < APP_BEG) ? (ENABLE_STATUS&&r_hb_mode&&r_idx==44?8'h17:
@@ -268,7 +274,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
             r_app_hdr   <= 48'h01_00_00_00_00_00;
             r_cred_pop  <= 7'd0;
             r_hb_cnt    <= 26'd0;
-            r_hb_mode   <= 1'b0;status_packet<=0;active_frame_id<=0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;o_frame_done_id<=0;
+            r_hb_mode   <= 1'b0;r_status_bank<=0;active_frame_id<=0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;o_frame_done_id<=0;
         end else begin
             o_tx_pkt  <= 1'b0;
             o_hb_pkt  <= 1'b0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;
@@ -282,7 +288,7 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                     r_ifg <= r_ifg + 5'd1;
                 end else if(ENABLE_STATUS && i_status_valid)begin
                     r_sending<=1;r_idx<=0;r_crc<=32'hffffffff;o_tx_pkt<=1;
-                    r_hb_mode<=1;status_packet<=i_status_data;o_status_pop<=1;
+                    r_hb_mode<=1;r_status_bank<=i_status_bank;o_status_pop<=1;
                     r_app_hdr<={8'd0,8'h26,32'd0};
                 end else if (w_cred_avail >= 7'd1 && (!ENABLE_STATUS||r_pkt_seq!=0||i_frame_valid)) begin
                     /* 开新包：锁存应用头，取一块信用，推进包/帧序

@@ -32,7 +32,7 @@ module tb_v26_advanced;
   end
  end
  initial begin
-  #31;rst=1;
+  #31;rst=1;#400;// LUTRAM直方图上电旋转清扫需>=32拍, 复位后须空等再驱帧
   for(f=0;f<3;f=f+1)begin
    for(p=0;p<128;p=p+1)begin
     @(negedge clk);v=1;sof=p==0;group_valid=p%4==0;

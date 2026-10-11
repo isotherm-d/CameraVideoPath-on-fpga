@@ -19,18 +19,27 @@ module cvp_contour #(parameter W=1280,H=720)(
  wire bv,bs,bf;wire [7:0] ba,bb,bc,bd,be,bf0,bg,bh,bj;
  cvp_window3x3 #(.W(W),.H(H),.DW(8)) gradient_window(.clk(clk),.rst_n(rst_n),.i_valid(vp[2]),.i_sof(sp[2]),.i_data(smooth),
  .o_valid(bv),.o_sof(bs),.o_eol(),.o_eof(),.o_x(),.o_y(),.p00(ba),.p01(bb),.p02(bc),.p10(bd),.p11(be),.p12(bf0),.p20(bg),.p21(bh),.p22(bj),.o_overflow(bf));
- wire mv,mready;wire [89:0] meta;reg [89:0] active;
- cvp_sync_fifo #(.DW(90),.AW(1)) metadata(.clk(clk),.rst_n(rst_n),.i_valid(i_valid&&i_pixel[104]),
- .i_data({i_pixel[111:48],i_width,i_low,i_high,2'd0}),.o_ready(mready),.o_valid(mv),.o_data(meta),.i_ready(bv&&bs),.o_level());
- wire [89:0] current=bs?meta:active;
+ /* A3: 两个元数据 FIFO(2 深)改为单 pend 寄存器 + pend_v 满/空检查,
+  * 帧原子字段只需跨过 4 级窗口流水的固定延迟, 队列无积压可能。 */
+ reg [89:0] pend;reg pend_v;reg [89:0] active;
+ wire meta_sof=i_valid&&i_pixel[104];
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin pend<=0;pend_v<=1'b0;end
+  else begin
+   if(bv&&bs)pend_v<=1'b0;
+   if(meta_sof)begin pend<={i_pixel[111:48],i_width,i_low,i_high,2'd0};pend_v<=1'b1;end
+  end
+ end
+ wire [89:0] current=bs?pend:active;
  wire gv,gs;wire [10:0] mag;wire [23:0] unused;
  cvp_fx_sobel gradient(.i_clk(clk),.i_rst_n(rst_n),.i_valid(bv),.i_frame_start(bs),.i_th_low(current[23:13]),.i_th_high(current[12:2]),
  .i_p00({ba,24'd0}),.i_p01({bb,24'd0}),.i_p02({bc,24'd0}),.i_p10({bd,24'd0}),.i_p11({be,24'd0}),.i_p12({bf0,24'd0}),
  .i_p20({bg,24'd0}),.i_p21({bh,24'd0}),.i_p22({bj,24'd0}),.o_valid(gv),.o_frame_start(gs),.o_rgb(unused),.o_mag(mag));
  reg [89:0] mp[0:2];integer k;
- always @(posedge clk or negedge rst_n)begin
-  if(!rst_n)begin active<=0;for(k=0;k<3;k=k+1)mp[k]<=0;end
-  else begin if(bv&&bs)active<=meta;mp[0]<=current;mp[1]<=mp[0];mp[2]<=mp[1];end
+ /* B1: 数据链摘复位(同 cvp_style), valid 类寄存器保留复位 */
+ always @(posedge clk)begin
+  if(bv&&bs)active<=pend;
+  mp[0]<=current;mp[1]<=mp[0];mp[2]<=mp[1];
  end
  wire [1:0] category={mag>=mp[2][12:2],mag>=mp[2][23:13]};
  wire cv,cs,cf;wire [1:0] ca,cb,cc,cd,ce,cf0,cg,ch,cj;
@@ -42,19 +51,26 @@ module cvp_contour #(parameter W=1280,H=720)(
  wire dv,ds,de,dl,df;wire [11:0] dx,dy;wire [1:0] da,db,dc,dd,dd0,df0,dg,dh,dj;
  cvp_window3x3 #(.W(W),.H(H),.DW(2)) width_window(.clk(clk),.rst_n(rst_n),.i_valid(cv),.i_sof(cs),.i_data(connected),
  .o_valid(dv),.o_sof(ds),.o_eol(dl),.o_eof(de),.o_x(dx),.o_y(dy),.p00(da),.p01(db),.p02(dc),.p10(dd),.p11(dd0),.p12(df0),.p20(dg),.p21(dh),.p22(dj),.o_overflow(df));
- wire fm,fready;wire [61:0] final_meta;reg [61:0] final_active;
- cvp_sync_fifo #(.DW(62),.AW(1)) frame_metadata(.clk(clk),.rst_n(rst_n),.i_valid(i_valid&&i_pixel[104]),.i_data({i_pixel[111:108],i_pixel[79:48],i_pixel[95:80],i_pixel[103:96],i_width}),
- .o_ready(fready),.o_valid(fm),.o_data(final_meta),.i_ready(dv&&ds),.o_level());
- wire [61:0] frame=ds?final_meta:final_active;
+ reg [61:0] fpend;reg fpend_v;reg [61:0] final_active;
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin fpend<=0;fpend_v<=1'b0;end
+  else begin
+   if(dv&&ds)fpend_v<=1'b0;
+   if(meta_sof)begin fpend<={i_pixel[111:108],i_pixel[79:48],i_pixel[95:80],i_pixel[103:96],i_width};fpend_v<=1'b1;end
+  end
+ end
+ wire [61:0] frame=ds?fpend:final_active;
  wire strong=da==2||db==2||dc==2||dd==2||dd0==2||df0==2||dg==2||dh==2||dj==2;
  wire weak=|da||(|db)||(|dc)||(|dd)||(|dd0)||(|df0)||(|dg)||(|dh)||(|dj);
  wire [1:0] selected=frame[1:0]==2?(strong?2'd2:weak?2'd1:2'd0):dd0;
  wire [7:0] shade=frame[9:2]==5?(selected==2?8'd0:selected==1?8'd96:8'd255):(selected!=0?8'd255:8'd0);
  // Register the complete token before branch selection/OSD glyph decoding.
+ // B1: o_valid 保留复位; o_pixel 为纯数据令牌, 摘复位
  always @(posedge clk or negedge rst_n)begin
-  if(!rst_n)begin o_valid<=0;o_pixel<=0;end
-  else begin o_valid<=dv;o_pixel<={16'd0,frame[61:58],i_pixel[107],de,dl,ds,frame[9:2],frame[25:10],frame[57:26],dy,dx,{3{shade}}};end
+  if(!rst_n)o_valid<=0;else o_valid<=dv;
  end
- assign o_overflow=af||bf||cf||df||(i_valid&&i_pixel[104]&&(!mready||!fready))||(bv&&bs&&!mv)||(dv&&ds&&!fm);
- always @(posedge clk or negedge rst_n)if(!rst_n)final_active<=0;else if(dv&&ds)final_active<=final_meta;
+ always @(posedge clk)o_pixel<={16'd0,frame[61:58],i_pixel[107],de,dl,ds,frame[9:2],frame[25:10],frame[57:26],dy,dx,{3{shade}}};
+ assign o_overflow=af||bf||cf||df||(meta_sof&&(pend_v||fpend_v))||((bv&&bs)&&!pend_v)||((dv&&ds)&&!fpend_v);
+ // B1: final_active 为帧元数据数据寄存器, 摘复位
+ always @(posedge clk)if(dv&&ds)final_active<=fpend;
 endmodule

@@ -39,15 +39,42 @@ module cvp_frame_stats #(parameter W=1280,H=720,SAFE_AWB=0)(
  wire [2:0] region_total={2'd0,regions_snap[0]}+{2'd0,regions_snap[1]}+{2'd0,regions_snap[2]}+{2'd0,regions_snap[3]};
  wire enough_regions=!SAFE_AWB||region_total>=2;
  reg [31:0] cnt,sum,nc,rs,gs,bs,clip;
- reg [19:0] hist[0:31],snap[0:31];
+ reg [3:0] state;reg [5:0] idx;reg low_set,high_set;
+ reg start;reg [31:0] num,den;wire done;wire [31:0] quotient;
  reg [31:0] total,sum_snap,n_snap,r_snap,g_snap,b_snap,cdf;
+ /* 亮度直方图: 32bin x 20bit 分布式 RAM(单端口, 异步读/同步写), 替代原
+  * 32x20 触发器阵列 + EOF 快照阵列(snap)。读口时间复用: 走查(state==1)用
+  * idx, 像素自增用 bin, 消隐清扫用 clr。RAM 无法靠复位清零, 改由消隐期
+  * 旋转清扫(hclr)保证每帧帧首全零: 状态 2/3/4(除法等待, ~120 拍)扫完全部
+  * 32 bin; 上电后 state==0 且未 arm 时也扫(仿真 TB 需在复位后空等 >=40 拍,
+  * 实机由摄像头门控保证上电到首帧远大于 32 拍)。帧尾到走查开始的 1 拍间隙
+  * (ends[1] 拍, state 仍为 0)靠 r_armed 屏蔽清扫, 防止清掉走查未读的 bin。 */
+ reg [19:0] hist [0:31];
+ reg [4:0]  clr;
+ reg        r_blank,r_armed;
+ wire       walking=(state==4'd1);
+ wire [4:0] haddr=walking?idx[4:0]:(stat_valid?bin:clr);
+ wire [19:0] hrd=hist[haddr];
+ wire hclr=!stat_valid&&!walking&&((state==4'd2)||(state==4'd3)||(state==4'd4)||(r_blank&&!r_armed));
+ /* clr 的复位与自增必须同块(单驱动): RAM 写块只读 clr 做地址, 不再赋值。 */
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin clr<=5'd0;r_blank<=1'b1;r_armed<=1'b0;end
+  else begin
+   if(hclr)clr<=clr+5'd1;
+   if(state==4'd4&&done)r_armed<=1'b0;
+   if(stat_valid&&stat_sof)r_blank<=1'b0;
+   else if(ends[1])begin r_blank<=1'b1;r_armed<=1'b1;end
+  end
+ end
+ always @(posedge clk)begin
+  if(stat_valid&&!walking)hist[bin]<=hrd+20'd1;
+  else if(hclr)hist[clr]<=20'd0;
+ end
  wire [31:0] cnt_next=stat_sof?1:cnt+1'b1,sum_next=(stat_sof?0:sum)+y;
  wire [31:0] n_next=(stat_sof?0:nc)+neutral;
  wire [31:0] rn=(stat_sof?0:rs)+(neutral?raw2[23:16]:0),
              gn=(stat_sof?0:gs)+(neutral?raw2[15:8]:0),
              bn=(stat_sof?0:bs)+(neutral?raw2[7:0]:0);
- reg [3:0] state;reg [5:0] idx;reg low_set,high_set;
- reg start;reg [31:0] num,den;wire done;wire [31:0] quotient;
  cvp_divider div(.clk(clk),.rst_n(rst_n),.start(start),.numerator(num),.denominator(den),.done(done),.quotient(quotient));
  function [10:0] gain_limit;input [31:0] q;begin gain_limit=q<128?128:q>1024?1024:q[10:0];end endfunction
  reg [10:0] candidate_r;
@@ -68,7 +95,6 @@ module cvp_frame_stats #(parameter W=1280,H=720,SAFE_AWB=0)(
    o_awb_state<=0;o_samples<=0;o_neutral<=0;o_clipped<=0;o_stat_overrun<=0;candidate_r<=344;
    sx<=0;sy<=0;regions_snap<=0;o_awb_regions<=0;o_awb_reason<=0;
    for(k=0;k<4;k=k+1)region_count[k]<=0;
-   for(k=0;k<32;k=k+1)begin hist[k]<=0;snap[k]<=0;end
   end else begin
    start<=0;o_done<=0;o_stat_overrun<=0;
    if(stat_valid)begin
@@ -79,25 +105,20 @@ module cvp_frame_stats #(parameter W=1280,H=720,SAFE_AWB=0)(
     end
     cnt<=cnt_next;sum<=sum_next;nc<=n_next;rs<=rn;gs<=gn;bs<=bn;
     clip<=(stat_sof?0:clip)+(y>=245);
-    for(k=0;k<32;k=k+1)begin
-     if(stat_sof)hist[k]<=k==bin?1:0;
-     else if(k==bin)hist[k]<=hist[k]+1'b1;
-    end
     if(ends[1])begin
      if(state==0)begin
       total<=cnt_next;sum_snap<=sum_next;n_snap<=n_next;r_snap<=rn;g_snap<=gn;b_snap<=bn;
       for(k=0;k<4;k=k+1)regions_snap[k]<=((stat_sof?0:region_count[k])+(neutral&&region==k))>=REGION_MIN;
       o_samples<=cnt_next;o_neutral<=n_next;o_clipped<=(stat_sof?0:clip)+(y>=245);
-      for(k=0;k<32;k=k+1)snap[k]<=(stat_sof?0:hist[k])+(k==bin);
       cdf<=0;idx<=0;low_set<=0;high_set<=0;state<=1;
      end else o_stat_overrun<=1;
     end
    end
    case(state)
     1:begin
-     cdf<=cdf+snap[idx];
-     if(!low_set && cdf+snap[idx]>=LOW_COUNT)begin o_black<={idx[4:0],3'b000};low_set<=1;end
-     if(!high_set && cdf+snap[idx]>=HIGH_COUNT)begin o_white<={idx[4:0],3'b111};high_set<=1;end
+     cdf<=cdf+hrd;
+     if(!low_set && cdf+hrd>=LOW_COUNT)begin o_black<={idx[4:0],3'b000};low_set<=1;end
+     if(!high_set && cdf+hrd>=HIGH_COUNT)begin o_white<={idx[4:0],3'b111};high_set<=1;end
      if(idx==31)begin num<=sum_snap;den<=total;start<=1;state<=2;end else idx<=idx+1'b1;
     end
     2:if(done)begin

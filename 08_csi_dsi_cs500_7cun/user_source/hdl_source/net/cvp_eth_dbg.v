@@ -359,10 +359,13 @@ module cvp_eth_dbg #(
       .i_valid(w_sof&&w_cap_now&&ENABLE_STATUS),
       .i_data(w_load?w_pxf_data[128:97]:beat_frame_id),
       .o_ready(desc_ready),.o_valid(desc_valid),.o_data(desc_id),.i_ready(desc_pop),.o_level());
-    wire status_valid,status_pop;wire [STATUS_BITS-1:0] status_data;
-    cvp_mailbox #(.DW(STATUS_BITS)) status_bridge(
+    /* A2: 状态快照改为 cvp_status_bridge(ERAM ping-pong) + mac 流式读,
+     * 线上字节序与原 cvp_mailbox+status_packet 完全一致 */
+    wire status_valid,status_pop;wire [15:0] status_rdata;wire [7:0] status_raddr;wire status_bank;
+    cvp_status_bridge #(.DW(STATUS_BITS)) status_bridge(
       .s_clk(i_clk_100m),.s_rst_n(i_rst_100m_n),.s_valid(i_status_valid),.s_data(i_status_data),.s_ready(o_status_ready),
-      .m_clk(i_clk_gmii),.m_rst_n(i_rst_gmii_n),.m_valid(status_valid),.m_data(status_data),.m_ready(status_pop));
+      .m_clk(i_clk_gmii),.m_rst_n(i_rst_gmii_n),.m_valid(status_valid),.m_ready(status_pop),
+      .i_raddr(status_raddr),.o_rdata(status_rdata),.o_bank(status_bank));
     cvp_gmii_mac_tx #(
         .ENABLE_STATUS(ENABLE_STATUS),.STATUS_BITS(STATUS_BITS),
         .DATA_BYTES     (DATA_BYTES),
@@ -374,7 +377,8 @@ module cvp_eth_dbg #(
         .UDP_SPORT      (UDP_SPORT),
         .UDP_DPORT      (UDP_DPORT)
     ) u_mac (
-        .i_status_valid(status_valid),.i_status_data(status_data),.o_status_pop(status_pop),
+        .i_status_valid(status_valid),.o_status_pop(status_pop),
+        .i_status_rdata(status_rdata),.i_status_bank(status_bank),.o_status_raddr(status_raddr),
         .i_frame_valid(desc_valid),.i_frame_id(desc_id),.o_frame_pop(desc_pop),
         .o_frame_done(o_frame_tx_done),.o_frame_done_id(o_frame_tx_id),
 
@@ -431,4 +435,79 @@ module cvp_eth_dbg #(
     assign o_ext_dly = w_ext_a001[8];   // Rxc_dly_en 最终状态 → LED3
     assign o_scan_rotate = w_hb_pkt;    // 每个心跳包推进一页扫描窗（顶层 100M 域同步）
 
+endmodule
+
+/* ============================================================================
+ * cvp_status_bridge —— 原独立文件 net/cvp_status_bridge.v 并入本文件。
+ * 原因: TD 工程对该新增文件的 AutoExcluded 状态反复翻转, 独立文件被排除
+ * 时 cvp_eth_dbg 例化报 black box。并入后随本文件必然参与编译, 与工程
+ * 文件列表状态解耦。待工程稳定后如需拆回, 须在 GUI 里 Add Source 导入。
+ * ============================================================================ */
+module cvp_status_bridge #(parameter DW=1536)(
+    input  wire         s_clk, s_rst_n, s_valid,
+    input  wire [DW-1:0] s_data,
+    output wire         s_ready,
+    input  wire         m_clk, m_rst_n,
+    output wire         m_valid,
+    input  wire         m_ready,
+    input  wire [7:0]   i_raddr,        // {bank, word[6:0]} —— 读侧(mac)全权驱动
+    output reg  [15:0]  o_rdata,
+    output wire         o_bank          // 当前待发快照所在 bank(pop 前稳定)
+);
+    localparam WORDS  = DW/16;                       // 96
+    /* 写地址 {cap_bank, ser_cnt} 与读地址 {bank, word[6:0]} 必须同一映射
+     * (bank*128+word), 因此 ser_cnt 固定 7 位(与读侧 word 位宽一致),
+     * 不能按 $clog2(WORDS) 缩短 —— 否则 DW=1024 时写读错位读出 X。 */
+    reg [15:0] ram [0:255];                          /* 按 {bank, word[6:0]} 全空间寻址(2*128);
+                                                        bank*128+word 映射, 实际仅用每 bank 前 WORDS 字 */
+    reg [DW-1:0] held;
+    reg request, ack, a1, a2;
+    reg ser_busy;                                    // 源域序列化进行中
+    reg [6:0] ser_cnt;
+    reg cap_bank;                                    // 本次捕获写入的 bank(捕获拍翻转)
+    reg r1, r2, b1, b2, received;
+
+    assign s_ready = (request == a2) && !ser_busy;
+    assign m_valid = (received != ack);
+    assign o_bank  = b2;
+
+    /* 源域: 捕获 -> 96 拍序列化入 RAM(bank 翻转与捕获同拍)。request 在
+     * 序列化完成拍才翻转, 保证 mac 读到的 bank 一定已写满(读侧最早在
+     * pop 后 ~15 拍就开始取数, 早于 96 拍写完会造成前 ~100 字节读旧值)。 */
+    always @(posedge s_clk or negedge s_rst_n) begin
+        if (!s_rst_n) begin
+            held <= 0; request <= 0; a1 <= 0; a2 <= 0;
+            ser_busy <= 0; ser_cnt <= 0; cap_bank <= 0;
+        end else begin
+            a1 <= ack; a2 <= a1;
+            if (s_valid && s_ready) begin
+                held      <= s_data;
+                cap_bank  <= ~cap_bank;
+                ser_busy  <= 1'b1;
+                ser_cnt   <= 0;
+            end else if (ser_busy) begin
+                ram[{cap_bank, ser_cnt}] <=
+                    held[((ser_cnt>=64?DW-1:1023)-16*ser_cnt[5:0]) -: 16];
+                ser_cnt <= ser_cnt + 1'b1;
+                if (ser_cnt == WORDS-1) begin
+                    ser_busy <= 1'b0;
+                    request  <= ~request;
+                end
+            end
+        end
+    end
+
+    /* 目的域: request/bank 各两级同步; pop 翻转 ack(发送起始) */
+    always @(posedge m_clk or negedge m_rst_n) begin
+        if (!m_rst_n) begin
+            r1 <= 0; r2 <= 0; b1 <= 0; b2 <= 0;
+            received <= 0; ack <= 0; o_rdata <= 16'd0;
+        end else begin
+            r1 <= request; r2 <= r1;
+            b1 <= cap_bank; b2 <= b1;
+            if (r2 != received && received == ack) received <= r2;
+            if (m_valid && m_ready) ack <= received;
+            o_rdata <= ram[i_raddr];
+        end
+    end
 endmodule

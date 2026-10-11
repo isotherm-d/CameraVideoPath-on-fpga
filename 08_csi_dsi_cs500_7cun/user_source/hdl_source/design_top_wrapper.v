@@ -202,14 +202,9 @@ module design_top_wrapper (
     wire        S_mixer_de;
     wire[23:0]  S_mixer_data;
 
-    // ---- CAM CHECK: 摄像头链路体检统计快照(详见 04_cam_check/INTEGRATE.md) ----
-    wire        S_snap_valid;
-    wire [31:0] S_snap_frames, S_snap_pix, S_snap_nonzero;
-    wire [39:0] S_snap_sum;
-
-    wire        S_isp_snap_valid;
-    wire [31:0] S_isp_snap_frames, S_isp_snap_pix, S_isp_snap_nonzero;
-    wire [39:0] S_isp_snap_sum;
+    // 方案C(2026-10-11): UART 诊断链(双 cam_stats + cam_report_uart, 原 206-212 行快照线
+    // 与 819-878 行三个实例)已移除, 省 ~1337 FF; 链路诊断由 eth_dbg 的 UDP 状态包覆盖。
+    // O_uart_tx 保持常高(UART 空闲电平), 顶层端口与 .adc 引脚约束不变。
 
     // ---- CAM CHECK/NET: 以太网调试通路内部信号 ----
     wire [95:0] S_awb_tdata;            // ISP AWB 后 96bit 像素观测口
@@ -816,66 +811,8 @@ data_96bit_to_128bit u_data_96bit_to_128bit(
     );
 
 
-    // ---- CAM CHECK: 摄像头链路体检,每秒从串口打印两行统计(115200-8-N-1) ----
-    // 第一行 CAM = RAW10 解包层; 第二行 ISP = AWB 观测口(96bit 拍, 4像素/拍)
-    cam_stats #(
-        .PIX_W      ( 40           ),
-        .LUMA_SHIFT ( 2            ),
-        .CLK_SYS_HZ ( 100_000_000  )
-    ) u_cam_stats (
-        .I_clk_pix ( S_csi_rx_clk       ),
-        .I_rst_pix ( ~S_rst_n           ),
-        .I_vsync   ( S_raw10_frame_start),
-        .I_de      ( S_raw10_valid      ),
-        .I_pix     ( S_raw10_data       ),
-
-        .I_clk_sys     ( S_100m_clk     ),
-        .I_rst_sys     ( ~S_rst_n       ),
-        .O_snap_valid  ( S_snap_valid   ),
-        .O_snap_frames ( S_snap_frames  ),
-        .O_snap_pix    ( S_snap_pix     ),
-        .O_snap_nonzero( S_snap_nonzero ),
-        .O_snap_sum    ( S_snap_sum     )
-    );
-
-    cam_stats #(
-        .PIX_W      ( 96           ),   // v13: cvp ISP 输出(pack_4 后 96bit 组)
-        .LUMA_SHIFT ( 16           ),
-        .CLK_SYS_HZ ( 100_000_000  )
-    ) u_cam_stats_isp (
-        .I_clk_pix ( S_100m_clk         ),
-        .I_rst_pix ( ~S_rst_n           ),
-        .I_vsync   ( S_awb_tuser        ),
-        .I_de      ( S_awb_tvalid       ),
-        .I_pix     ( S_awb_tdata        ),
-
-        .I_clk_sys     ( S_100m_clk     ),
-        .I_rst_sys     ( ~S_rst_n       ),
-        .O_snap_valid  ( S_isp_snap_valid   ),
-        .O_snap_frames ( S_isp_snap_frames  ),
-        .O_snap_pix    ( S_isp_snap_pix     ),
-        .O_snap_nonzero( S_isp_snap_nonzero ),
-        .O_snap_sum    ( S_isp_snap_sum     )
-    );
-
-    cam_report_uart #(
-        .CLK_HZ ( 100_000_000 ),
-        .BAUD   ( 115200      )
-    ) u_cam_report (
-        .I_clk         ( S_100m_clk     ),
-        .I_rst_n       ( S_rst_n        ),
-        .I_snap_valid  ( S_snap_valid   ),
-        .I_snap_frames ( S_snap_frames  ),
-        .I_snap_pix    ( S_snap_pix     ),
-        .I_snap_nonzero( S_snap_nonzero ),
-        .I_snap_sum    ( S_snap_sum     ),
-        .I_isp_valid   ( S_isp_snap_valid   ),
-        .I_isp_frames  ( S_isp_snap_frames  ),
-        .I_isp_pix     ( S_isp_snap_pix     ),
-        .I_isp_nonzero ( S_isp_snap_nonzero ),
-        .I_isp_sum     ( S_isp_snap_sum     ),
-        .O_uart_tx     ( O_uart_tx      )
-    );
+    // ---- 方案C: 原 CAM CHECK 三个实例(u_cam_stats/u_cam_stats_isp/u_cam_report)已移除 ----
+    assign O_uart_tx = 1'b1;   // UART 空闲电平, 引脚约束保持不变
 
 
     // ---- CAM CHECK/NET: 以太网调试通路(把 ISP 后像素流经 ETHA 网口 UDP 发给电脑) ----
