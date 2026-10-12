@@ -21,3 +21,11 @@ Passed6newRTL+12v26RTL+10baselineRTL,35Python tests, bothpacketCRC/IP/UDP checks
 Two warm SRAM reloads without SW1: initializationerrors0,retries0. AE/AWB enabled and7modesrotated for300.2s,8996frames,29.965fps,complete100%,no reportedstream/I2Cerrors. One-sceneautoWB344/256/451. Release:releases/v27; seeV27优化与阈值说明.md.
 
 NoFlashwrite orcoldFlashbootvalidation. Physicalmodekeys, two-illuminantprecision, DSI/HDMI andrealLeNet remainunverified. Largerresourceusage requiresfreshmodelintegration/timingassessment. v26retained; noGitHubpush.
+
+## V29 resource optimization update
+
+Pure resource optimization on the v27 functional baseline; all seven modes, AE/AWB, UDP6000/6001/6002, keys, OSD, calibrated R344/G256/B451 and classification hooks retained. Only functional change: per-second UART CAM/ISP diagnostic lines removed (superseded by the UDP status packet; O_uart_tx tied idle-high, pin constraints unchanged).
+
+Changes: frame-statistics histogram 32x20 register array -> distributed RAM with blanking rotate-clear (sim TBs must idle >=40 cycles after reset before the first frame); 3x1536-bit status registers -> cvp_status_bridge dual-bank ERAM snapshot with streamed MAC readout (wire byte order bit-exact; module merged into cvp_eth_dbg.v because TD keeps flipping AutoExcluded on externally added files); frame-atomic metadata FIFOs -> single pend register; async reset stripped from pure data-path registers (~1700 FF, measured only -47 slices - packing is CE-bound, noted for future work); UART diagnostic chain removed (-1337 FF).
+
+Validation: 22/22 regression (12 v26 + 6 v27 + 4 new differential tests against gold RTL in tools/sim/gold_a/, bit-exact across 17 stats frames and 128k style/contour samples); four real bugs caught and fixed during bring-up (bridge request timing, RAM address map at DW=1024, status byte-order split, clr multi-driver). Routed: Slice15006/21216(70.73%), LUT12744, reg15462, ERAM65, DSP10; setup0.102ns/hold0.020ns, TNS0. Board: A/B-stage bitstream function-checked; v29 bit (incl. UART removal) routed clean, board re-check of UDP streaming to be appended. 300s rotation, two-illuminant AWB, Flash cold boot and physical keys not re-run, status unchanged from v27. Release: releases/v29; see V29优化说明.md.
