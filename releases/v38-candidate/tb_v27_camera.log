@@ -1,0 +1,38 @@
+# vsim -batch -novopt -suppress 12110 -l tb_v27_camera.log work.tb_v27_camera work.PH1P_PHY_GSR -do "run -all; quit -f" 
+# Start time: 14:16:52 on Oct 13,2026
+# ** Warning: (vsim-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# //  ModelSim SE-64 2020.4 Oct 13 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim SE-64 and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v38_final_regression_20261013/work.tb_v27_camera
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.tb_v27_camera
+# Loading work.uicfgcs500
+# Loading work.uii2c
+# Loading work.uics500reg
+# Loading work.SC500GainTbl
+# Loading work.uics500regAE
+# Loading work.PH1P_PHY_GSR
+# ** Warning: (vsim-3015) [PCDPC] - Port size (32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500reg.v(38).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_v27_camera/dut/uics500reg_inst File: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v Line: 86
+# ** Warning: (vsim-3015) [PCDPC] - Port size (7) does not match connection size (32) for port 'I'. The port definition is at: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/SC500GainTbl.v(19).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_v27_camera/dut/gain_tbl File: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v Line: 87
+# ** Warning: (vsim-3015) [PCDPC] - Port size (32) does not match connection size (24) for port 'REG_DATA'. The port definition is at: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500regAE.v(36).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_v27_camera/dut/uics500regAE_inst File: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v Line: 88
+# 
+# run -all
+# TEST_RESULT PASS v27_camera_retry_nack_timeout_and_fatal
+# ** Note: $finish    : C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v27_camera.v(37)
+#    Time: 541255 ns  Iteration: 2  Instance: /tb_v27_camera
+# End time: 14:16:54 on Oct 13,2026, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 4

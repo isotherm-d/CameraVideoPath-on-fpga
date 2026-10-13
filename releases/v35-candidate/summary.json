@@ -1,0 +1,31 @@
+{
+  "tool": "Anlogic TD 6.2.168116",
+  "device": "PH1P35MDG324",
+  "speed": 3,
+  "mode": "read_only_routed_db_sta",
+  "rebuilt": false,
+  "constraints_changed": false,
+  "database_hashes_unchanged": true,
+  "databases": {
+    "v34": {"path": "C:/Users/cqm87/Desktop/2026/tmp/v35_before_timing_main_runs_20261013/phy_1/camera_to_dsi_display_pr.db", "sha256": "4406E8F0E8E432E61D56AE466457AC0E045DF5F26832AB297E2A6F90F9CB54AF"},
+    "v35": {"path": "C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display_Runs/phy_1/camera_to_dsi_display_pr.db", "sha256": "0C080A3F95D1F320C7E066B02BEA11679257B1AAF83421FCB7AD2530362EEEAA"}
+  },
+  "ae_dsp_data_enable_endpoint_comparison": {
+    "selector": "get_pins {advanced/ae/mult*.y* advanced/ae/mult*.ce*}",
+    "command": "report_timing_path -ep_num 10 -path_num 1 -to $dsp_pins",
+    "pins_each_version": 80,
+    "v34": {"setup_slack_ns": 0.015, "begin": "advanced/ae/window_mean_reg[4]_syn_2.clk", "end": "advanced/ae/mult1_syn_57.y[8]", "logic_levels": 12, "data_path_delay_ns": 9.667, "report": "v34/ae_dsp_endpoints.timing"},
+    "v35": {"setup_slack_ns": 3.596, "begin": "advanced/control/pending_reg_syn_8.clk", "end": "advanced/ae/mult1_syn_57.ce[0]", "logic_levels": 5, "data_path_delay_ns": 5.582, "report": "v35/ae_dsp_endpoints.timing"},
+    "improvement_ns": 3.581,
+    "scope_note": "Same selected AE DSP registered data/enable endpoints, not the complete PID module or FPGA timing bound."
+  },
+  "ae_get_regs_reference": {
+    "selector": "get_regs {advanced/ae/*}",
+    "command": "report_timing_path -ep_num 10 -path_num 1 -from $ae_regs -to $ae_regs",
+    "v34": {"setup_slack_ns": 0.026, "begin": "advanced/ae/window_mean_reg[4]_syn_2.clk", "end": "advanced/ae/previous_error_reg[7]_syn_2.ceb", "report": "v34/ae_internal.timing"},
+    "v35": {"setup_slack_ns": 3.187, "begin": "u_eth_dbg/status_bridge/held_reg[1282]_syn_2.clk", "end": "advanced/ae/held_integral_reg[2]_syn_2.ceb", "report": "v35/ae_internal.timing"},
+    "scope_note": "get_regs includes aliases of physically shared registers and excludes the former worst DSP endpoint. Reference only, not a complete internal-module bound."
+  },
+  "official_document": "C:/Anlogic/TD_6.2.1_Engineer_6.2.168.116/doc/SWUG/SWUG105_TCL_Command_User_Guide.pdf",
+  "official_printed_pages": {"import_db": "28-29", "get_regs_matching": "35-36", "report_timing_path": 75, "update_timing": 78}
+}

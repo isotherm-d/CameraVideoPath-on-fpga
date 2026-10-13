@@ -1,0 +1,31 @@
+# vsim -batch -novopt -suppress 12110 -l tb_opt_median.log work.tb_opt_median work.PH1P_PHY_GSR -do "run -all; quit -f" 
+# Start time: 11:28:15 on Oct 13,2026
+# ** Warning: (vsim-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# //  ModelSim SE-64 2020.4 Oct 13 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim SE-64 and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v35_pid_verified_regression_20261013/work.tb_opt_median
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.tb_opt_median
+# Loading work.cvp_fx_median
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v35_pid_verified_regression_20261013/work.cvp_fx_median_v30_gold
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_fx_median_v30_gold
+# Loading work.PH1P_PHY_GSR
+# 
+# run -all
+# TEST_RESULT PASS median_v30_quantized_equivalence samples=87455
+# ** Note: $finish    : C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_opt_median.v(50)
+#    Time: 1000140 ns  Iteration: 1  Instance: /tb_opt_median
+# End time: 11:28:21 on Oct 13,2026, Elapsed time: 0:00:06
+# Errors: 0, Warnings: 1

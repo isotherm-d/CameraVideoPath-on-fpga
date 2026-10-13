@@ -1,0 +1,1487 @@
+Created by          : Tang Dynasty v6.2.168116
+                    : Copyright (c) 2012-2025 Anlogic Inc.
+Generated           : Tue Oct 13 11:33:01 2026
+
+Top Model           : design_top_wrapper
+Device              : PH1P35MDG324
+Speed               : 3
+STA coverage        : 90.96%
+
+----------------------------------------------------------------------------------------------------
+Path Group     :     pll_clk_100m -> pll_clk_100m
+Type           :     Self
+From Clock     :     pll_clk_100m
+To Clock       :     pll_clk_100m
+Min Period     :     6.404ns
+Fmax           :     156.152MHz
+
+Statistics:
+Max            : SWNS      3.596ns, STNS      0.000ns,         0 Viol Endpoints,        10 Total Endpoints,        10 Paths Analyzed
+Min            : HWNS      0.364ns, HTNS      0.000ns,         0 Viol Endpoints,        10 Total Endpoints,        10 Paths Analyzed
+----------------------------------------------------------------------------------------------------
+
+Max Paths
+----------------------------------------------------------------------------------------------------
+Slack               : 3.596ns
+Begin Point         : advanced/control/pending_reg_syn_8.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.ce[0] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 5.582ns (cell 1.523ns (27%), net 4.059ns (73%))
+Clock Skew          : 0.059ns
+Logic Level         : 5 ( LUT3=4  LUT4=1 )
+Max Fanout          : 52
+Clock Uncertainty   : 0.121ns (sdc uncertainty: 0.000ns, default uncertainty: 0.121ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.375          1.194          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_l_bk1.clkin
+SCLK                x023y019z0          0.079          1.273          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_l_bk1.clkout
+net (fo=2209)                           0.633          1.906          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_l_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/control/pending_reg_syn_8.clk
+launch edge                             0.000    r     1.906               
+--------------------------------------------------------------------  ---------------
+clk2q               x022y037z2          0.126    f     2.032          pin: advanced/control/pending_reg_syn_8.oqa
+net (fo=20)                             0.688          2.720          net: advanced/control/pending,  ../../../user_source/hdl_source/advanced/cvp_cfg_ctrl.v(50)
+                                                                      pin: u_cvp_proc/o_pix_valid_reg_syn_10.id
+LUT3                x020y029z5          0.266    f     2.986       1  pin: u_cvp_proc/o_pix_valid_reg_syn_10.ofa
+net (fo=48)                             0.236          3.222          net: advanced/control/a_ae_en_n3_dup_8,  NOFILE(0)
+                                                                      pin: u_eth_dbg/status_bridge/held_reg[960]_syn_2.id
+LUT3                x021y029z4          0.266    f     3.488       2  pin: u_eth_dbg/status_bridge/held_reg[960]_syn_2.ofa
+net (fo=1)                              0.174          3.662          net: advanced/control/a_ae_en_n,  NOFILE(0)
+                                                                      pin: u_cmd_rx/extended2_reg[32]_syn_2.id
+LUT4                x022y029z4          0.266    f     3.928       3  pin: u_cmd_rx/extended2_reg[32]_syn_2.ofa
+net (fo=19)                             0.849          4.777          net: advanced/ae/highlight_reg_syn_7,  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/highlight_reg_syn_102.ie
+LUT3                x031y030z5          0.189    r     4.966       4  pin: advanced/ae/highlight_reg_syn_102.ofb
+net (fo=21)                             0.319          5.285          net: advanced/ae/highlight_reg_syn_10,  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/limited_flag_i_syn_21.ic
+LUT3                x032y029z3          0.410    f     5.695       5  pin: advanced/ae/limited_flag_i_syn_21.ofa
+net (fo=52)                             1.793          7.488          net: advanced/ae/integral_limit_flag_i_syn_dup_7,  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(91)
+                                                                      pin: advanced/ae/mult1_syn_57.ce[0]
+DSPSIOU (reg)       x027y020            0.000    f     7.488               
+--------------------------------------------------------------------  ---------------
+Arrival                                                7.488               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.617          1.802          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                           10.000    r    11.802               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.642         11.160               
+clock uncertainty                      -0.121         11.039               
+clock pessimism                         0.045         11.084               
+--------------------------------------------------------------------  ---------------
+Required                                              11.084               
+--------------------------------------------------------------------  ---------------
+Slack                                                  3.596               
+
+Slack               : 4.109ns
+Begin Point         : advanced/ae/state_reg[13]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[4] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 5.407ns (cell 1.615ns (29%), net 3.792ns (71%))
+Clock Skew          : 0.013ns
+Logic Level         : 4 ( LUT6=1  LUT5=1  LUT4=1  LUT2=1 )
+Max Fanout          : 39
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.637          1.909          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/state_reg[13]_syn_2.clk
+launch edge                             0.000    r     1.909               
+--------------------------------------------------------------------  ---------------
+clk2q               x035y028z0          0.126    f     2.035          pin: advanced/ae/state_reg[13]_syn_2.oqa
+net (fo=39)                             0.530          2.565          net: advanced/ae/state_reg_syn_1[13],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/target_dgain_reg[8]_syn_2.ia
+LUT4                x036y028z3          0.399    f     2.964       1  pin: advanced/ae/target_dgain_reg[8]_syn_2.ofb
+net (fo=1)                              0.079          3.043          net: advanced/ae/correction_limited_n5_syn_2,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_limited_n5_syn_66.ic
+LUT5                x036y028z0          0.283    r     3.326       2  pin: advanced/ae/correction_limited_n5_syn_66.ofb
+net (fo=7)                              0.922          4.248          net: advanced/ae/correction_limited_n5_syn_4,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[7]_syn_2.ia
+LUT6                x031y028z0          0.408    f     4.656       3  pin: advanced/digital_gain_reg[7]_syn_2.ofb
+net (fo=35)                             1.757          6.413          net: advanced/ae/correction_limited_n5_syn_dup_35,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[11]_syn_2.ia
+LUT2                x029y022z6          0.399    f     6.812       4  pin: advanced/ae/current_total_reg[11]_syn_2.ofb
+net (fo=1)                              0.504          7.316          net: advanced/ae/magnitude_b5[4],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[4]
+DSPSIOU (reg)       x027y020            0.000    f     7.316               
+--------------------------------------------------------------------  ---------------
+Arrival                                                7.316               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.617          1.802          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                           10.000    r    11.802               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.375         11.427               
+clock uncertainty                      -0.096         11.331               
+clock pessimism                         0.094         11.425               
+--------------------------------------------------------------------  ---------------
+Required                                              11.425               
+--------------------------------------------------------------------  ---------------
+Slack                                                  4.109               
+
+Slack               : 4.616ns
+Begin Point         : advanced/ae/state_reg[13]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[5] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.927ns (cell 1.615ns (32%), net 3.312ns (68%))
+Clock Skew          : 0.013ns
+Logic Level         : 4 ( LUT6=1  LUT5=1  LUT4=1  LUT3=1 )
+Max Fanout          : 39
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.637          1.909          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/state_reg[13]_syn_2.clk
+launch edge                             0.000    r     1.909               
+--------------------------------------------------------------------  ---------------
+clk2q               x035y028z0          0.126    f     2.035          pin: advanced/ae/state_reg[13]_syn_2.oqa
+net (fo=39)                             0.530          2.565          net: advanced/ae/state_reg_syn_1[13],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/target_dgain_reg[8]_syn_2.ia
+LUT4                x036y028z3          0.399    f     2.964       1  pin: advanced/ae/target_dgain_reg[8]_syn_2.ofb
+net (fo=1)                              0.079          3.043          net: advanced/ae/correction_limited_n5_syn_2,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_limited_n5_syn_66.ic
+LUT5                x036y028z0          0.283    r     3.326       2  pin: advanced/ae/correction_limited_n5_syn_66.ofb
+net (fo=7)                              0.922          4.248          net: advanced/ae/correction_limited_n5_syn_4,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[7]_syn_2.ia
+LUT6                x031y028z0          0.408    f     4.656       3  pin: advanced/digital_gain_reg[7]_syn_2.ofb
+net (fo=35)                             1.127          5.783          net: advanced/ae/correction_limited_n5_syn_dup_35,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[3]_syn_2.ia
+LUT3                x031y023z7          0.399    f     6.182       4  pin: advanced/ae/current_total_reg[3]_syn_2.ofb
+net (fo=1)                              0.654          6.836          net: advanced/ae/magnitude_b5[5],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[5]
+DSPSIOU (reg)       x027y020            0.000    f     6.836               
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.836               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.617          1.802          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                           10.000    r    11.802               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.348         11.454               
+clock uncertainty                      -0.096         11.358               
+clock pessimism                         0.094         11.452               
+--------------------------------------------------------------------  ---------------
+Required                                              11.452               
+--------------------------------------------------------------------  ---------------
+Slack                                                  4.616               
+
+Slack               : 4.770ns
+Begin Point         : advanced/ae/state_reg[13]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[1] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.867ns (cell 1.703ns (34%), net 3.164ns (66%))
+Clock Skew          : 0.013ns
+Logic Level         : 4 ( LUT4=2  LUT6=1  LUT5=1 )
+Max Fanout          : 39
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.637          1.909          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/state_reg[13]_syn_2.clk
+launch edge                             0.000    r     1.909               
+--------------------------------------------------------------------  ---------------
+clk2q               x035y028z0          0.126    f     2.035          pin: advanced/ae/state_reg[13]_syn_2.oqa
+net (fo=39)                             0.530          2.565          net: advanced/ae/state_reg_syn_1[13],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/target_dgain_reg[8]_syn_2.ia
+LUT4                x036y028z3          0.399    f     2.964       1  pin: advanced/ae/target_dgain_reg[8]_syn_2.ofb
+net (fo=1)                              0.079          3.043          net: advanced/ae/correction_limited_n5_syn_2,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_limited_n5_syn_66.ic
+LUT5                x036y028z0          0.283    r     3.326       2  pin: advanced/ae/correction_limited_n5_syn_66.ofb
+net (fo=7)                              0.922          4.248          net: advanced/ae/correction_limited_n5_syn_4,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[7]_syn_2.ia
+LUT6                x031y028z0          0.408    f     4.656       3  pin: advanced/digital_gain_reg[7]_syn_2.ofb
+net (fo=35)                             1.027          5.683          net: advanced/ae/correction_limited_n5_syn_dup_35,  NOFILE(0)
+                                                                      pin: advanced/ae/magnitude_b5[0]_syn_2.ib
+LUT4                x031y023z5          0.487    r     6.170       4  pin: advanced/ae/magnitude_b5[0]_syn_2.ofa
+net (fo=1)                              0.606          6.776          net: advanced/ae/magnitude_b5[1],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[1]
+DSPSIOU (reg)       x027y020            0.000    f     6.776               
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.776               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.617          1.802          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                           10.000    r    11.802               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.254         11.548               
+clock uncertainty                      -0.096         11.452               
+clock pessimism                         0.094         11.546               
+--------------------------------------------------------------------  ---------------
+Required                                              11.546               
+--------------------------------------------------------------------  ---------------
+Slack                                                  4.770               
+
+Slack               : 4.801ns
+Begin Point         : advanced/ae/state_reg[13]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[0] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.772ns (cell 1.624ns (34%), net 3.148ns (66%))
+Clock Skew          : 0.013ns
+Logic Level         : 4 ( LUT6=1  LUT5=1  LUT4=1  LUT2=1 )
+Max Fanout          : 39
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.637          1.909          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/state_reg[13]_syn_2.clk
+launch edge                             0.000    r     1.909               
+--------------------------------------------------------------------  ---------------
+clk2q               x035y028z0          0.126    f     2.035          pin: advanced/ae/state_reg[13]_syn_2.oqa
+net (fo=39)                             0.530          2.565          net: advanced/ae/state_reg_syn_1[13],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/target_dgain_reg[8]_syn_2.ia
+LUT4                x036y028z3          0.399    f     2.964       1  pin: advanced/ae/target_dgain_reg[8]_syn_2.ofb
+net (fo=1)                              0.079          3.043          net: advanced/ae/correction_limited_n5_syn_2,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_limited_n5_syn_66.ic
+LUT5                x036y028z0          0.283    r     3.326       2  pin: advanced/ae/correction_limited_n5_syn_66.ofb
+net (fo=7)                              0.922          4.248          net: advanced/ae/correction_limited_n5_syn_4,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[7]_syn_2.ia
+LUT6                x031y028z0          0.408    f     4.656       3  pin: advanced/digital_gain_reg[7]_syn_2.ofb
+net (fo=35)                             1.027          5.683          net: advanced/ae/correction_limited_n5_syn_dup_35,  NOFILE(0)
+                                                                      pin: advanced/ae/magnitude_b5[0]_syn_2.ib
+LUT2                x031y023z5          0.408    f     6.091       4  pin: advanced/ae/magnitude_b5[0]_syn_2.ofb
+net (fo=1)                              0.590          6.681          net: advanced/ae/magnitude_b5[0],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[0]
+DSPSIOU (reg)       x027y020            0.000    f     6.681               
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.681               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.617          1.802          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                           10.000    r    11.802               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.318         11.484               
+clock uncertainty                      -0.096         11.388               
+clock pessimism                         0.094         11.482               
+--------------------------------------------------------------------  ---------------
+Required                                              11.482               
+--------------------------------------------------------------------  ---------------
+Slack                                                  4.801               
+
+Slack               : 5.562ns
+Begin Point         : advanced/digital_gain_reg[2]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[8]_syn_2.imf (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.203ns (cell 2.225ns (52%), net 1.978ns (48%))
+Clock Skew          : 0.075ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.635          1.907          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[2]_syn_2.clk
+launch edge                             0.000    r     1.907               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z0          0.126    f     2.033          pin: advanced/digital_gain_reg[2]_syn_2.oqa
+net (fo=7)                              1.607          3.640          net: advanced/ae/i_dgain[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[2]
+DSPSIOU             x027y024            0.497    r     4.137          pin: advanced/ae/mult0_syn_57.mult_y[2]
+net (fo=1)                              0.000          4.137          net: advanced/ae/mult0_syn_86[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[2]
+DSPMULT             x027y024            0.863    r     5.000       1  pin: advanced/ae/mult0_syn_58.p[8]
+net (fo=1)                              0.000          5.000          net: advanced/ae/mult0_syn_105[8],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[8]
+DSPSIOU             x027y024            0.522    f     5.522          pin: advanced/ae/mult0_syn_57.p[8]
+net (fo=1)                              0.371          5.893          net: advanced/ae/mult0_syn_3[8],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[8]_syn_2.imf
+LUT2 (reg)          x029y022z4          0.217    f     6.110       2  net: advanced/ae/current_total[8],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.110               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.553          1.738          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[8]_syn_2.clk
+capture edge                           10.000    r    11.738               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.064         11.674               
+clock uncertainty                      -0.096         11.578               
+clock pessimism                         0.094         11.672               
+--------------------------------------------------------------------  ---------------
+Required                                              11.672               
+--------------------------------------------------------------------  ---------------
+Slack                                                  5.562               
+
+Slack               : 5.038ns
+Begin Point         : advanced/digital_gain_reg[2]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[12]_syn_2.imf (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.727ns (cell 2.413ns (51%), net 2.314ns (49%))
+Clock Skew          : 0.075ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.635          1.907          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[2]_syn_2.clk
+launch edge                             0.000    r     1.907               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z0          0.126    f     2.033          pin: advanced/digital_gain_reg[2]_syn_2.oqa
+net (fo=7)                              1.607          3.640          net: advanced/ae/i_dgain[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[2]
+DSPSIOU             x027y024            0.497    r     4.137          pin: advanced/ae/mult0_syn_57.mult_y[2]
+net (fo=1)                              0.000          4.137          net: advanced/ae/mult0_syn_86[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[2]
+DSPMULT             x027y024            1.087    r     5.224       1  pin: advanced/ae/mult0_syn_58.p[12]
+net (fo=1)                              0.000          5.224          net: advanced/ae/mult0_syn_105[12],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[12]
+DSPSIOU             x027y024            0.486    f     5.710          pin: advanced/ae/mult0_syn_57.p[12]
+net (fo=1)                              0.707          6.417          net: advanced/ae/mult0_syn_3[12],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[12]_syn_2.imf
+LUT2 (reg)          x029y022z5          0.217    f     6.634       2  net: advanced/ae/current_total[12],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.634               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.553          1.738          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[12]_syn_2.clk
+capture edge                           10.000    r    11.738               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.064         11.674               
+clock uncertainty                      -0.096         11.578               
+clock pessimism                         0.094         11.672               
+--------------------------------------------------------------------  ---------------
+Required                                              11.672               
+--------------------------------------------------------------------  ---------------
+Slack                                                  5.038               
+
+Slack               : 4.824ns
+Begin Point         : advanced/ae/state_reg[13]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[11]_syn_2.ia (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.939ns (cell 1.651ns (33%), net 3.288ns (67%))
+Clock Skew          : 0.077ns
+Logic Level         : 4 ( LUT6=1  LUT5=1  LUT4=1  LUT2=1 )
+Max Fanout          : 39
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.637          1.909          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/state_reg[13]_syn_2.clk
+launch edge                             0.000    r     1.909               
+--------------------------------------------------------------------  ---------------
+clk2q               x035y028z0          0.126    f     2.035          pin: advanced/ae/state_reg[13]_syn_2.oqa
+net (fo=39)                             0.530          2.565          net: advanced/ae/state_reg_syn_1[13],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(73)
+                                                                      pin: advanced/ae/target_dgain_reg[8]_syn_2.ia
+LUT4                x036y028z3          0.399    f     2.964       1  pin: advanced/ae/target_dgain_reg[8]_syn_2.ofb
+net (fo=1)                              0.079          3.043          net: advanced/ae/correction_limited_n5_syn_2,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_limited_n5_syn_66.ic
+LUT5                x036y028z0          0.283    r     3.326       2  pin: advanced/ae/correction_limited_n5_syn_66.ofb
+net (fo=7)                              0.922          4.248          net: advanced/ae/correction_limited_n5_syn_4,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[7]_syn_2.ia
+LUT6                x031y028z0          0.408    f     4.656       3  pin: advanced/digital_gain_reg[7]_syn_2.ofb
+net (fo=35)                             1.757          6.413          net: advanced/ae/correction_limited_n5_syn_dup_35,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[11]_syn_2.ia
+LUT2 (reg)          x029y022z6          0.435    r     6.848       4  net: advanced/ae/current_total[11],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.848               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.553          1.738          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[11]_syn_2.clk
+capture edge                           10.000    r    11.738               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.064         11.674               
+clock uncertainty                      -0.096         11.578               
+clock pessimism                         0.094         11.672               
+--------------------------------------------------------------------  ---------------
+Required                                              11.672               
+--------------------------------------------------------------------  ---------------
+Slack                                                  4.824               
+
+Slack               : 5.427ns
+Begin Point         : advanced/digital_gain_reg[2]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[8]_syn_2.ie (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.338ns (cell 2.290ns (52%), net 2.048ns (48%))
+Clock Skew          : 0.075ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.635          1.907          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[2]_syn_2.clk
+launch edge                             0.000    r     1.907               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z0          0.126    f     2.033          pin: advanced/digital_gain_reg[2]_syn_2.oqa
+net (fo=7)                              1.607          3.640          net: advanced/ae/i_dgain[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[2]
+DSPSIOU             x027y024            0.497    r     4.137          pin: advanced/ae/mult0_syn_57.mult_y[2]
+net (fo=1)                              0.000          4.137          net: advanced/ae/mult0_syn_86[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[2]
+DSPMULT             x027y024            0.928    r     5.065       1  pin: advanced/ae/mult0_syn_58.p[5]
+net (fo=1)                              0.000          5.065          net: advanced/ae/mult0_syn_105[5],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[5]
+DSPSIOU             x027y024            0.585    f     5.650          pin: advanced/ae/mult0_syn_57.p[5]
+net (fo=1)                              0.441          6.091          net: advanced/ae/mult0_syn_3[5],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[8]_syn_2.ie
+LUT2 (reg)          x029y022z4          0.154    r     6.245       2  net: advanced/ae/current_total[5],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.245               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.553          1.738          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[8]_syn_2.clk
+capture edge                           10.000    r    11.738               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.064         11.674               
+clock uncertainty                      -0.096         11.578               
+clock pessimism                         0.094         11.672               
+--------------------------------------------------------------------  ---------------
+Required                                              11.672               
+--------------------------------------------------------------------  ---------------
+Slack                                                  5.427               
+
+Slack               : 5.254ns
+Begin Point         : advanced/digital_gain_reg[2]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[12]_syn_2.ie (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : setup
+Process             : slow_m40c
+Budget              : 10.000ns { pll_clk_100m rising@10.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 4.511ns (cell 2.392ns (53%), net 2.119ns (47%))
+Clock Skew          : 0.075ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.096ns (sdc uncertainty: 0.000ns, default uncertainty: 0.096ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.684          1.494          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.115          1.609          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.607          0.002          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.801          0.803          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.016          0.819          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.374          1.193          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.079          1.272          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.635          1.907          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[2]_syn_2.clk
+launch edge                             0.000    r     1.907               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z0          0.126    f     2.033          pin: advanced/digital_gain_reg[2]_syn_2.oqa
+net (fo=7)                              1.607          3.640          net: advanced/ae/i_dgain[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[2]
+DSPSIOU             x027y024            0.497    r     4.137          pin: advanced/ae/mult0_syn_57.mult_y[2]
+net (fo=1)                              0.000          4.137          net: advanced/ae/mult0_syn_86[2],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[2]
+DSPMULT             x027y024            1.144    r     5.281       1  pin: advanced/ae/mult0_syn_58.p[15]
+net (fo=1)                              0.000          5.281          net: advanced/ae/mult0_syn_105[15],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[15]
+DSPSIOU             x027y024            0.471    f     5.752          pin: advanced/ae/mult0_syn_57.p[15]
+net (fo=1)                              0.512          6.264          net: advanced/ae/mult0_syn_3[15],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[12]_syn_2.ie
+LUT2 (reg)          x029y022z5          0.154    r     6.418       2  net: advanced/ae/current_total[15],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                6.418               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.745          0.745          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.629          1.374          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.099          1.473          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -1.378          0.095          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.687          0.782          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.014          0.796          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.321          1.117          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.068          1.185          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.553          1.738          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[12]_syn_2.clk
+capture edge                           10.000    r    11.738               
+--------------------------------------------------------------------  ---------------
+setup                                  -0.064         11.674               
+clock uncertainty                      -0.096         11.578               
+clock pessimism                         0.094         11.672               
+--------------------------------------------------------------------  ---------------
+Required                                              11.672               
+--------------------------------------------------------------------  ---------------
+Slack                                                  5.254               
+
+
+
+Min Paths
+----------------------------------------------------------------------------------------------------
+Slack               : 0.364ns
+Begin Point         : advanced/ae/correction_reg[8]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[8] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.495ns (cell 0.114ns (23%), net 0.381ns (77%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT6=1 )
+Max Fanout          : 2
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[8]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x032y030z5          0.062    f     1.253          pin: advanced/ae/correction_reg[8]_syn_2.oqa
+net (fo=2)                              0.207          1.460          net: advanced/ae/correction[8],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/ae/magnitude_b5[8]_syn_3.ie
+LUT6                x030y023z7          0.052    f     1.512       1  pin: advanced/ae/magnitude_b5[8]_syn_3.ofb
+net (fo=1)                              0.174          1.686          net: advanced/ae/magnitude_b5[8],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[8]
+DSPSIOU (reg)       x027y020            0.000    f     1.686               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.686               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.036          1.404               
+clock uncertainty                       0.050          1.454               
+clock pessimism                        -0.132          1.322               
+--------------------------------------------------------------------  ---------------
+Required                                               1.322               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.364               
+
+Slack               : 0.388ns
+Begin Point         : advanced/ae/correction_reg[7]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[7] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.515ns (cell 0.114ns (22%), net 0.401ns (78%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT5=1 )
+Max Fanout          : 3
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[7]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x032y030z6          0.062    f     1.253          pin: advanced/ae/correction_reg[7]_syn_2.oqa
+net (fo=3)                              0.262          1.515          net: advanced/ae/correction[7],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/sensor/gain1_reg[3]_syn_2.ie
+LUT5                x030y023z4          0.052    f     1.567       1  pin: advanced/sensor/gain1_reg[3]_syn_2.ofb
+net (fo=1)                              0.139          1.706          net: advanced/ae/magnitude_b5[7],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[7]
+DSPSIOU (reg)       x027y020            0.000    f     1.706               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.706               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.032          1.400               
+clock uncertainty                       0.050          1.450               
+clock pessimism                        -0.132          1.318               
+--------------------------------------------------------------------  ---------------
+Required                                               1.318               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.388               
+
+Slack               : 0.417ns
+Begin Point         : advanced/ae/correction_reg[0]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[0] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.525ns (cell 0.172ns (32%), net 0.353ns (68%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT2=1 )
+Max Fanout          : 6
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[0]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x033y029z2          0.062    f     1.253          pin: advanced/ae/correction_reg[0]_syn_2.oqa
+net (fo=6)                              0.182          1.435          net: advanced/ae/correction[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/ae/magnitude_b5[0]_syn_2.ia
+LUT2                x031y023z5          0.110    f     1.545       1  pin: advanced/ae/magnitude_b5[0]_syn_2.ofb
+net (fo=1)                              0.171          1.716          net: advanced/ae/magnitude_b5[0],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[0]
+DSPSIOU (reg)       x027y020            0.000    f     1.716               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.716               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.013          1.381               
+clock uncertainty                       0.050          1.431               
+clock pessimism                        -0.132          1.299               
+--------------------------------------------------------------------  ---------------
+Required                                               1.299               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.417               
+
+Slack               : 0.840ns
+Begin Point         : advanced/digital_gain_reg[6]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[18]_syn_2.imf (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.925ns (cell 0.578ns (62%), net 0.347ns (38%))
+Clock Skew          : 0.023ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[6]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z2          0.065    r     1.256          pin: advanced/digital_gain_reg[6]_syn_2.oqb
+net (fo=7)                              0.169          1.425          net: advanced/ae/i_dgain[3],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[3]
+DSPSIOU             x027y024            0.121    f     1.546          pin: advanced/ae/mult0_syn_57.mult_y[3]
+net (fo=1)                              0.000          1.546          net: advanced/ae/mult0_syn_86[3],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[3]
+DSPMULT             x027y024            0.192    f     1.738       1  pin: advanced/ae/mult0_syn_58.p[18]
+net (fo=1)                              0.000          1.738          net: advanced/ae/mult0_syn_105[18],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[18]
+DSPSIOU             x027y024            0.137    r     1.875          pin: advanced/ae/mult0_syn_57.p[18]
+net (fo=1)                              0.178          2.053          net: advanced/ae/mult0_syn_3[18],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[18]_syn_2.imf
+LUT2 (reg)          x029y023z5          0.063    f     2.116       2  net: advanced/ae/current_total[18],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                2.116               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.244          1.346          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[18]_syn_2.clk
+capture edge                            0.000    r     1.346               
+--------------------------------------------------------------------  ---------------
+hold                                    0.012          1.358               
+clock uncertainty                       0.050          1.408               
+clock pessimism                        -0.132          1.276               
+--------------------------------------------------------------------  ---------------
+Required                                               1.276               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.840               
+
+Slack               : 0.426ns
+Begin Point         : advanced/ae/correction_reg[0]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[1] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.557ns (cell 0.200ns (35%), net 0.357ns (65%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT4=1 )
+Max Fanout          : 6
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[0]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x033y029z2          0.062    f     1.253          pin: advanced/ae/correction_reg[0]_syn_2.oqa
+net (fo=6)                              0.182          1.435          net: advanced/ae/correction[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/ae/magnitude_b5[0]_syn_2.ia
+LUT4                x031y023z5          0.138    f     1.573       1  pin: advanced/ae/magnitude_b5[0]_syn_2.ofa
+net (fo=1)                              0.175          1.748          net: advanced/ae/magnitude_b5[1],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[1]
+DSPSIOU (reg)       x027y020            0.000    f     1.748               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.748               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.036          1.404               
+clock uncertainty                       0.050          1.454               
+clock pessimism                        -0.132          1.322               
+--------------------------------------------------------------------  ---------------
+Required                                               1.322               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.426               
+
+Slack               : 0.438ns
+Begin Point         : advanced/ae/correction_reg[3]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[3] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.569ns (cell 0.147ns (25%), net 0.422ns (75%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT6=1 )
+Max Fanout          : 6
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[3]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x033y029z1          0.065    r     1.256          pin: advanced/ae/correction_reg[3]_syn_2.oqb
+net (fo=6)                              0.229          1.485          net: advanced/ae/correction[1],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/ae/magnitude_b5[3]_syn_2.ic
+LUT6                x031y024z1          0.082    f     1.567       1  pin: advanced/ae/magnitude_b5[3]_syn_2.ofb
+net (fo=1)                              0.193          1.760          net: advanced/ae/magnitude_b5[3],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[3]
+DSPSIOU (reg)       x027y020            0.000    f     1.760               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.760               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.036          1.404               
+clock uncertainty                       0.050          1.454               
+clock pessimism                        -0.132          1.322               
+--------------------------------------------------------------------  ---------------
+Required                                               1.322               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.438               
+
+Slack               : 0.454ns
+Begin Point         : advanced/ae/correction_reg[6]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[6] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.582ns (cell 0.203ns (34%), net 0.379ns (66%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT4=1 )
+Max Fanout          : 3
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[6]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x032y030z7          0.062    f     1.253          pin: advanced/ae/correction_reg[6]_syn_2.oqa
+net (fo=3)                              0.203          1.456          net: advanced/ae/correction[6],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/sensor/gain1_reg[3]_syn_2.ib
+LUT4                x030y023z4          0.141    f     1.597       1  pin: advanced/sensor/gain1_reg[3]_syn_2.ofa
+net (fo=1)                              0.176          1.773          net: advanced/ae/magnitude_b5[6],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[6]
+DSPSIOU (reg)       x027y020            0.000    f     1.773               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.773               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                    0.033          1.401               
+clock uncertainty                       0.050          1.451               
+clock pessimism                        -0.132          1.319               
+--------------------------------------------------------------------  ---------------
+Required                                               1.319               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.454               
+
+Slack               : 0.724ns
+Begin Point         : advanced/digital_gain_reg[10]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[21]_syn_2.ie (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.809ns (cell 0.416ns (51%), net 0.393ns (49%))
+Clock Skew          : 0.023ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[10]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x032y029z5          0.065    r     1.256          pin: advanced/digital_gain_reg[10]_syn_2.oqb
+net (fo=7)                              0.229          1.485          net: advanced/ae/i_dgain[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[0]
+DSPSIOU             x027y024            0.119    r     1.604          pin: advanced/ae/mult0_syn_57.mult_y[0]
+net (fo=1)                              0.000          1.604          net: advanced/ae/mult0_syn_86[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[0]
+DSPMULT             x027y024            0.067    f     1.671       1  pin: advanced/ae/mult0_syn_58.p[0]
+net (fo=1)                              0.000          1.671          net: advanced/ae/mult0_syn_105[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[0]
+DSPSIOU             x027y024            0.121    r     1.792          pin: advanced/ae/mult0_syn_57.p[0]
+net (fo=1)                              0.164          1.956          net: advanced/ae/mult0_syn_3[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[21]_syn_2.ie
+LUT2 (reg)          x029y023z2          0.044    f     2.000       2  net: advanced/ae/current_total[0],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                2.000               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.244          1.346          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[21]_syn_2.clk
+capture edge                            0.000    r     1.346               
+--------------------------------------------------------------------  ---------------
+hold                                    0.012          1.358               
+clock uncertainty                       0.050          1.408               
+clock pessimism                        -0.132          1.276               
+--------------------------------------------------------------------  ---------------
+Required                                               1.276               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.724               
+
+Slack               : 0.796ns
+Begin Point         : advanced/digital_gain_reg[6]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/current_total_reg[1]_syn_2.ie (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.881ns (cell 0.568ns (64%), net 0.313ns (36%))
+Clock Skew          : 0.023ns
+Logic Level         : 2 ( LUT2=1  DSPMULT=1 )
+Max Fanout          : 7
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/digital_gain_reg[6]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x031y029z2          0.065    r     1.256          pin: advanced/digital_gain_reg[6]_syn_2.oqb
+net (fo=7)                              0.169          1.425          net: advanced/ae/i_dgain[3],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(9)
+                                                                      pin: advanced/ae/mult0_syn_57.y[3]
+DSPSIOU             x027y024            0.121    f     1.546          pin: advanced/ae/mult0_syn_57.mult_y[3]
+net (fo=1)                              0.000          1.546          net: advanced/ae/mult0_syn_86[3],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_58.y[3]
+DSPMULT             x027y024            0.206    f     1.752       1  pin: advanced/ae/mult0_syn_58.p[19]
+net (fo=1)                              0.000          1.752          net: advanced/ae/mult0_syn_105[19],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/mult0_syn_57.mult_p[19]
+DSPSIOU             x027y024            0.132    r     1.884          pin: advanced/ae/mult0_syn_57.p[19]
+net (fo=1)                              0.144          2.028          net: advanced/ae/mult0_syn_3[19],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(166)
+                                                                      pin: advanced/ae/current_total_reg[1]_syn_2.ie
+LUT2 (reg)          x029y023z0          0.044    f     2.072       2  net: advanced/ae/current_total[19],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(54)
+--------------------------------------------------------------------  ---------------
+Arrival                                                2.072               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.244          1.346          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/current_total_reg[1]_syn_2.clk
+capture edge                            0.000    r     1.346               
+--------------------------------------------------------------------  ---------------
+hold                                    0.012          1.358               
+clock uncertainty                       0.050          1.408               
+clock pessimism                        -0.132          1.276               
+--------------------------------------------------------------------  ---------------
+Required                                               1.276               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.796               
+
+Slack               : 0.468ns
+Begin Point         : advanced/ae/correction_reg[2]_syn_2.clk (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+End Point           : advanced/ae/mult1_syn_57.y[5] (rising edge triggered by clock pll_clk_100m  { rise@0.000000ns  fall@5.000000ns  period=10.000000 })
+Check Type          : hold
+Process             : fast_m40c
+Budget              : 0.000ns { pll_clk_100m rising@0.000ns - pll_clk_100m rising@0.000ns }
+Data Path Delay     : 0.561ns (cell 0.117ns (20%), net 0.444ns (80%))
+Clock Skew          : 0.045ns
+Logic Level         : 1 ( LUT3=1 )
+Max Fanout          : 2
+Clock Uncertainty   : 0.050ns (sdc uncertainty: 0.000ns, default uncertainty: 0.050ns)
+
+Delay Type          Location             Incr           Path   Level  Netlist Info
+--------------------------------------------------------------------  ---------------
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.810          0.810          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.257          1.067          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.040          1.107          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.601          0.506          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.301          0.807          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.006          0.813          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.133          0.946          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.025          0.971          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.220          1.191          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/correction_reg[2]_syn_2.clk
+launch edge                             0.000    r     1.191               
+--------------------------------------------------------------------  ---------------
+clk2q               x033y029z3          0.065    r     1.256          pin: advanced/ae/correction_reg[2]_syn_2.oqb
+net (fo=2)                              0.253          1.509          net: advanced/ae/correction[5],  ../../../user_source/hdl_source/advanced/cvp_ae_control.v(48)
+                                                                      pin: advanced/ae/current_total_reg[3]_syn_2.ie
+LUT3                x031y023z7          0.052    f     1.561       1  pin: advanced/ae/current_total_reg[3]_syn_2.ofb
+net (fo=1)                              0.191          1.752          net: advanced/ae/magnitude_b5[5],  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.y[5]
+DSPSIOU (reg)       x027y020            0.000    f     1.752               
+--------------------------------------------------------------------  ---------------
+Arrival                                                1.752               
+
+source latency                          0.000          0.000               
+port                C4                  0.000          0.000          pin: I_sys_clk
+hierarchy                               0.000          0.000          pin: I_sys_clk_syn_2.ipad
+HDIO                x033y078            0.915          0.915          pin: I_sys_clk_syn_2.sg09_di
+HDIO                x033y078            0.290          1.205          pin: I_sys_clk_syn_2.di
+net (fo=2)          x043y040            0.043          1.248          net: I_sys_clk_dup_1,  ../../../user_source/hdl_source/design_top_wrapper.v(4)
+                                                                      pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.refclk
+PLL                 x043y040           -0.654          0.594          pin: u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc[0]
+net (fo=1)                              0.326          0.920          net: u_PLL/clk0_buf,  ../../../user_source/ip_source/PLL/PLL.v(32)
+                                                                      pin: u_PLL/bufg_feedback.clkin[0]
+GCLK                x023y039z16         0.007          0.927          pin: u_PLL/bufg_feedback.clkout
+net (fo=4)                              0.145          1.072          net: u_eth_dbg/i_clk_pix,  ../../../user_source/hdl_source/net/cvp_eth_dbg.v(42)
+                                                                      pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkin
+SCLK                x023y019z12         0.030          1.102          pin: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1.clkout
+net (fo=1616)                           0.266          1.368          net: u_PLL/bufg_feedback_auto_created_sclk_s_0_r_bk1_sclk_outnet,  NOFILE(0)
+                                                                      pin: advanced/ae/mult1_syn_57.clk
+capture edge                            0.000    r     1.368               
+--------------------------------------------------------------------  ---------------
+hold                                   -0.002          1.366               
+clock uncertainty                       0.050          1.416               
+clock pessimism                        -0.132          1.284               
+--------------------------------------------------------------------  ---------------
+Required                                               1.284               
+--------------------------------------------------------------------  ---------------
+Slack                                                  0.468               
+
+
+
+

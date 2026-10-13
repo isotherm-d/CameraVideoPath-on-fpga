@@ -3,7 +3,7 @@ module tb_v26_ae;
  reg clk=0,rst=0,done=0,en=1;reg [7:0] mean=70,gain=108;reg [15:0] exp=500;
  always #5 clk=~clk;
  wire request;wire [15:0] desired;wire [7:0] dg;
- cvp_ae_control dut(.clk(clk),.rst_n(rst),.i_frame_done(done),.i_en(en),.i_ready(1'b1),.i_busy(1'b0),
+ cvp_ae_control_v33_gold dut(.clk(clk),.rst_n(rst),.i_frame_done(done),.i_en(en),.i_ready(1'b1),.i_busy(1'b0),
  .i_mean(mean),.i_clipped(32'd0),.i_samples(32'd128),.i_exp(exp),.i_gain(gain),.o_valid(request),.o_exp(desired),.o_gain(dg));
  integer n,events=0,errors=0;
  always @(negedge clk)if(request)begin

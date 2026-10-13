@@ -7,7 +7,7 @@
  *
  * 本模块分三步：
  *   1) 齿轮箱（gearbox）：把 4 像素/拍的 40bit 组展开成 1 像素/拍的 10bit 流。
- *   2) cvp_dpc：v25 启用等延迟旁路。旧 3x3 对角判据把 R/B 异色邻居
+ *   2) RAW 四拍旁路：与 v25 cvp_dpc.BYPASS=1 等效。旧 3x3 对角判据把 R/B 异色邻居
  *      当成同色，误改正常颜色。保留固定 4 拍延迟和原始 RAW 坐标；
  *      后续若重启坏点矫正，需采用相位正确的同色邻域。
  *   3) 彩色重建：交给 cvp_demosaic（3x3 双线性，BGGR），固定 3 拍延迟。
@@ -143,25 +143,28 @@ module cvp_proc #(
     wire w_pix_fs   = w_pix_step && (r_pop_idx == 2'd0) && r_fs_lat;
     wire w_pix_last = w_pix_step && (r_pop_idx == 2'd3) && r_last_lat;
 
-    /* ================= 2. 坏点检测/矫正：RAW 域 3x3 同色 DPC ================= */
-    wire        w_dpc_valid, w_dpc_fs;
-    wire [9:0]  w_dpc_raw;
-
-    cvp_dpc #(
-        .IMG_W (IMG_W),
-        .IMG_H (IMG_H),
-        .BYPASS (1) // v25: preserve RAW pixels and coordinates with a four-cycle delay.
-    ) u_dpc (
-        .i_clk         (i_clk),
-        .i_rst_n       (i_rst_n),
-        .i_valid       (w_pix_step),
-        .i_raw         (w_pix_sel),
-        .i_frame_start (w_pix_fs),
-        .o_valid       (w_dpc_valid),
-        .o_raw         (w_dpc_raw),
-        .o_frame_start (w_dpc_fs)
-    );
-
+    /* ================= 2. RAW four-cycle diagnostic bypass =================
+     * v25 has always selected cvp_dpc.BYPASS=1 here. Keep that exact delay
+     * locally so GUI source-list pruning cannot turn cvp_dpc into a black box.
+     * The standalone detector remains available for legacy regression tests.
+     * RAW advances even on invalid cycles; only frame-start is valid-qualified.
+     */
+    reg [3:0] r_dpc_valid, r_dpc_fs;
+    reg [9:0] r_dpc_d0, r_dpc_d1, r_dpc_d2, r_dpc_d3;
+    always @(posedge i_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            r_dpc_valid <= 0; r_dpc_fs <= 0;
+            r_dpc_d0 <= 0; r_dpc_d1 <= 0; r_dpc_d2 <= 0; r_dpc_d3 <= 0;
+        end else begin
+            r_dpc_valid <= {r_dpc_valid[2:0], w_pix_step};
+            r_dpc_fs <= {r_dpc_fs[2:0], w_pix_step && w_pix_fs};
+            r_dpc_d0 <= w_pix_sel; r_dpc_d1 <= r_dpc_d0;
+            r_dpc_d2 <= r_dpc_d1; r_dpc_d3 <= r_dpc_d2;
+        end
+    end
+    wire w_dpc_valid = r_dpc_valid[3];
+    wire w_dpc_fs = r_dpc_fs[3];
+    wire [9:0] w_dpc_raw = r_dpc_d3;
 
     /* ================= 3. 彩色重建：3x3 双线性（BGGR） ================= */
     wire        w_dem_valid, w_dem_fs;

@@ -1,0 +1,13 @@
+{
+  "baseline": "v30 user-reported board functionality pass",
+  "source_hash_mode": "UTF-8 CRLF-to-LF normalized, original module names restored",
+  "original_source_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_style.v": "116e4955b585c78870d7d2b5a8b4c5a6264c4318555eb539eabd2c98a695bd64",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_fx_median.v": "01dbaba74d2091e59bff04d8a670dae3b1f1fd1fa10842691ba51bcff93f4cc0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_tone.v": "95e1e3de7376fa15b9197845a0d878ef192727d6e5cc71df7944c610341f8f76",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_proc.v": "5787a73fe27a52b89b3bec8a3976fcdca602ec33eadb189298527f3b3434880a"
+  },
+  "reference_dependencies_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v": "0883dedda17b4d2b1a9968f6e9ccfce6b0a5225cb8e2b63afd94429b926ace13"
+  }
+}

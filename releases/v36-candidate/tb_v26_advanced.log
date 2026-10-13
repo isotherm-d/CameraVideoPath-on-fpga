@@ -1,0 +1,97 @@
+# vsim -batch -novopt -suppress 12110 -l tb_v26_advanced.log work.tb_v26_advanced work.PH1P_PHY_GSR -do "run -all; quit -f" 
+# Start time: 13:10:24 on Oct 13,2026
+# ** Warning: (vsim-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# //  ModelSim SE-64 2020.4 Oct 13 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim SE-64 and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.tb_v26_advanced
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.tb_v26_advanced
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_advanced
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_advanced
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_keys
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_keys
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_cfg_ctrl
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_cfg_ctrl
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_stream_tag
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_stream_tag
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_temperature
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_temperature
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_gain11
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_gain11
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_frame_stats
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_frame_stats
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_luma_pack
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_luma_pack
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_divider
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_divider
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_ae_control
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_ae_control
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_sensor_bridge
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_sensor_bridge
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_tone
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_tone
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_style_stream
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_style_stream
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_style
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_style
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_window3x3
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_window3x3
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_sync_fifo
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_sync_fifo
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_fx_median
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_fx_median
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_fx_sobel
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_fx_sobel
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_osd_stream
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_osd_stream
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_stream_health
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_stream_health
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.cvp_mailbox
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.cvp_mailbox
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v36_final_regression_20261013/work.PH1P_PHY_GSR
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.PH1P_PHY_GSR
+# ** Warning: (vsim-2685) [TFMPC] - Too few port connections for 'dut'.  Expected 59, found 58.
+#    Time: 0 ps  Iteration: 0  Instance: /tb_v26_advanced/dut File: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v26_advanced.v Line: 8
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1536) does not match connection size (1024) for port 'status_data'. The port definition is at: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_advanced.v(10).
+#    Time: 0 ps  Iteration: 0  Instance: /tb_v26_advanced/dut File: C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v26_advanced.v Line: 8
+# ** Warning: (vsim-3722) C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v26_advanced.v(8): [TFMPC] - Missing connection for port 'i_sensor_diagnostics'.
+# 
+# run -all
+# TEST_RESULT PASS advanced_clean_and_display_integration
+# ** Note: $finish    : C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v26_advanced.v(45)
+#    Time: 17260 ns  Iteration: 1  Instance: /tb_v26_advanced
+# End time: 13:10:28 on Oct 13,2026, Elapsed time: 0:00:04
+# Errors: 0, Warnings: 4

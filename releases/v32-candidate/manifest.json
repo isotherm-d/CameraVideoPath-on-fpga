@@ -1,0 +1,510 @@
+{
+  "version": "v32-candidate",
+  "status": "hardware_reported_black_screen_superseded_by_v33",
+  "built_at": "2026-10-13T00:16:47.352775+08:00",
+  "device": "PH1P35MDG324",
+  "built_with": "Anlogic TD 6.2.168116",
+  "resolution": [
+    1280,
+    720
+  ],
+  "fps_nominal": 30,
+  "baseline": "v31-candidate, user-reported board functionality pass before AE changes",
+  "optimizations": [
+    "four-frame AE brightness and aggregated highlight statistics",
+    "exposure step reduced from 1/8 to max(1,1/32)",
+    "analogue gain step reduced from 8 to 2 indices",
+    "discard stale statistics and wait two valid frames after sensor write completes"
+  ],
+  "project_fix": "Existing source registration unchanged; rebuilt actual main project Runs with clean templates.",
+  "resources": {
+    "slice": {
+      "used": 9582,
+      "total": 21216
+    },
+    "lut6": 7742,
+    "reg": 9990,
+    "eram20k": {
+      "used": 49,
+      "total": 108
+    },
+    "dsp": {
+      "used": 10,
+      "total": 40
+    },
+    "pll": {
+      "used": 2,
+      "total": 6
+    },
+    "ddr_byte": 0,
+    "mipi_tx": 0,
+    "mipi_rx": 1
+  },
+  "baseline_resources": {
+    "slice": {
+      "used": 9445,
+      "total": 21216
+    },
+    "lut6": 7613,
+    "reg": 9837,
+    "eram20k": {
+      "used": 49,
+      "total": 108
+    },
+    "dsp": {
+      "used": 10,
+      "total": 40
+    },
+    "pll": {
+      "used": 2,
+      "total": 6
+    },
+    "ddr_byte": 0,
+    "mipi_tx": 0,
+    "mipi_rx": 1
+  },
+  "timing": {
+    "SWNS": 0.116,
+    "STNS": 0.0,
+    "HWNS": 0.02,
+    "HTNS": 0.0
+  },
+  "validation": {
+    "rtl_tests_passed": 28,
+    "packet_integrity_checks_passed": 2,
+    "median_valid_samples": 87455,
+    "style_frames": 14,
+    "style_compared_samples": 129184,
+    "tone_black_white_combinations": 65536,
+    "tone_compared_cycles": 3018787,
+    "tone_overlap_reset_stimulus_cycles": 4096,
+    "all_seven_styles_tested": true,
+    "raw_bayer_border_integration_passed": true,
+    "gold_original_hashes_match_v30_manifest": true,
+    "build_snapshot_hdl_files_checked": 187,
+    "board_verified": false,
+    "flash_changed": false,
+    "proc_compared_cycles": 38064,
+    "proc_valid_pixels": 14717,
+    "main_project_default_flow_synthesis_passed": true,
+    "main_project_default_flow_physical_passed": true,
+    "main_build_hdl_hashes_checked": 187,
+    "standalone_dpc_reference_matches_v30": true,
+    "main_build_has_no_dpc_registration": true,
+    "v30_fallback_bitstream_hash_unchanged": true,
+    "ae_directed_checks": 33,
+    "ae_static_gain_plant_frames": 120,
+    "ae_static_gain_plant_old_changes": 30,
+    "ae_static_gain_plant_new_changes": 1,
+    "ae_static_exposure_plant_frames": 120,
+    "ae_static_exposure_plant_old_final": 562,
+    "ae_static_exposure_plant_new_final": 531
+  },
+  "build_directory": "C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun",
+  "simulation_directory": "C:/Users/cqm87/Desktop/2026/tmp/v32_ae_smooth_regression_20261013",
+  "gold_baseline_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_style.v": "116e4955b585c78870d7d2b5a8b4c5a6264c4318555eb539eabd2c98a695bd64",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_fx_median.v": "01dbaba74d2091e59bff04d8a670dae3b1f1fd1fa10842691ba51bcff93f4cc0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_tone.v": "95e1e3de7376fa15b9197845a0d878ef192727d6e5cc71df7944c610341f8f76",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_proc.v": "5787a73fe27a52b89b3bec8a3976fcdca602ec33eadb189298527f3b3434880a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v": "3588a051765a82ac376a986c62a8d87b7ff16d60efbfc18470e5a328596b0c71"
+  },
+  "changed_source_sha256": {
+    "user_source/hdl_source/advanced/cvp_fx_median.v": "321e9915a9b5e618af0a6f6df7c71d183ed7c24b70250b61469081efe70ab9d5",
+    "user_source/hdl_source/advanced/cvp_style.v": "d74798abf278dcc1c0c213cb35520f6f4bd248033ee0771809bffb317f928810",
+    "user_source/hdl_source/advanced/cvp_tone.v": "22130878b10a148751e5afda3b9c2609b2591fd6f99a470dc043d1c2c88796f7",
+    "td_project/camera_to_dsi_display.al": "0b94c8c5b2bb84bdddfb1605caad17310c8534a06a68d62740c7fa7421284309",
+    "td_project/camera_to_dsi_display.sdc": "560410ff3bca7f0a988606a622616b179a2816a8e817617d28b803140b574386",
+    "tools/prepare_v26_build.py": "ebff466b8779bf15e030f12f4238dccefdd098dae45aae10c9cc33f66940743b",
+    "tools/run_v29_regression.ps1": "c7df5dd16429b75756abf53381f1449eb2d7a21967701ad84492cb15e35b2d10",
+    "user_source/hdl_source/isp2/cvp_proc.v": "e899b60af5d9ee8e9001e8d4424f1091119bd674a9ba4f24cc647d522a3f084c",
+    "tools/td_templates/project.prj": "77bea200460b5a357b7f76291693e13123939c38cde536866b2a3dc214b1d474",
+    "tools/sim/tb_opt_proc.v": "85a734863f05bdf128484b9e2d5692f7fc322431f8bb9a68185490a4e056e636",
+    "tools/sim/gold_v30/cvp_proc_v30_gold.v": "7ab017f933d9cc547328f842cc22f394080c10eb9b8c29b58976db1fb04dea5b",
+    "tools/sim/gold_v30/manifest.json": "46340515a4de5a099bfe213dff948150aeca9cbe6f452af681d9bc27964ca08f",
+    "user_source/hdl_source/advanced/cvp_ae_control.v": "3feebf4f2407d0ce3bb17325997f983c471ad6a23b96dd68ef7981a9e4e89741",
+    "tools/sim/tb_v26_ae_smooth.v": "8c0db5e4ccfcbb8e4e33fa395209fad35a6276112b831f29db5bad92871b8ca5",
+    "tools/sim/gold_v31/cvp_ae_v31_gold.v": "ac7f07595afdbd4c336dc6220b0bd6e9c91746e1a44a35b1f347886b51314231",
+    "tools/sim/gold_v31/manifest.json": "789fa6898bc6a0a0bd67b2119e85dbb741366d1d25075c386321c5683f6fb441"
+  },
+  "rtl_sha256_normalized": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/auto_white_balance.v": "32d117f883ec8e2b2940d0916a34518056086041dfd32437694c7971b42b988e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/awb.v": "de0a6cc742784a86710de72ccdf1911bd03c487acec2dc85a04ee0469d32f6e4",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/bypass_demosaic.v": "88103ba8a76b92e92a00accf810235848bcce174cee7fa04dd060e6d61a122f3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/cam_report_uart.v": "7b0fcb32addd48c73d3b66124d1162f23406097883eee7efd425ad345c955cb6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/cam_stats.v": "1e858f4777aaa13f60ea26ee4989ffa89f788ade514efa35b65f92b40a2557a9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/csi_unpacket.v": "5c37c130ff82917e687fad7f0903fc66c760762c522ed5e18261607b89ef4f34",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/data_96bit_to_128bit.v": "6220a9968205ff59e9a5f64525f782a695dfcb44828e999d0fc7809f918f915f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/design_top_wrapper.v": "88bccacbecadbfe467da4391232a39772dd62b33b94463aa288d2cc9bf0ebefc",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/image_correction.v": "9b8f792e50ee15e1408f2c6664911877b61ee52e71dcc63e3d0516f6dff6b01d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/line_retimer.v": "19ee86600efbcd3bff8494eabb408b445f8fcd82347ab2976f3ed78753951b09",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mc_to_user_interface.v": "f9d983a21002b6e8021de4395492f7d52f6b991067f95c62e37688ce0206de10",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_rx_error_detect.v": "43fc90b6737665f93164c828d58ec3eb006792e9f0fc7332414610fe3387ea6a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mixer.v": "3309a5a45a4b82e8171ff8f5d19df06115e74d8d23af042d8c5cfc1fd56d7339",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ps_wrapper.v": "d67fb0f1a77a2917bb835227fe432811668f0e6de0abb2b5213e4122e2fbc8e6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/raw10_unpacket.v": "3a8b68c206a88b1a630fb7bc7befd70babc2b74f071ec5be735c2d29afbbffe6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/raw8_to_rgb888.v": "c39f8931c08a2c56c49e087c2a2be4db01bd9b109e024d490d654b3d32c16187",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/rgb_frame_crop.v": "62876ff9821567969a90dcb62d1e5fa7d897c2640ca015ac8ccb0002d9ecbb28",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/signal_delay.v": "3d8b1fc1faebf25c451b590bfc2435e8ecaf98c58a060cf94fe8f7fa9100851f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uiuart_tx.v": "2deffa2e425de329d9f67eae82f8950036142f8395c435934fb136bad9833ea9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/video_cuttting.v": "9ece031b0fd3bb8c0633176c94e4115b0069279f4d1b822c637ec47cdd94d1c2",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/video_in.v": "403b1b4b25d4444c3da4f2e71217b78c527db28cf9982d816b184623b9f8c881",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/video_out.v": "080fe274e365ca2663fde273f5603426ac622d0ea70c8bb26a48f68ccabdb06e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/video_source.v": "09f6715c7a8d78a4c38c1afcb11c7b461aff5b6725f18938a3be272ca22ad867",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/video_tpg.v": "e8ce81017eefe72de24e3d585a4c6538c8d51edfd30d763fccd18aa83372c19d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_advanced.v": "2c25ff91f872993b21c04ec9cb3cb06f649fa8d345161a447fc38d2150de217c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v": "92657499124e4d748e19bd39d172bcfb0b253a458bc95cf5616b5a3d9ddf8598",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_cfg_ctrl.v": "8e029d334dd4c1b617788b27efacef0b257428d9c2133c33532823ee3de1953e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_contour.v": "963618bbaa4555262fcce314b77fa38e4222603cfc21b2263d016c5fa261c5cf",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_divider.v": "4dbee5961133821c1b606e138bc9917fe9c486774968af2059d671427f4bf6da",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_frame_stats.v": "abd5fd6b5ae28246fcb0b153396993b46c1f5a4e228af2c42ab03f54e901a62f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_fx_median.v": "8b1f139150e4908753f3602ecd28f2a852c7bde0d34a464623d5c96db26464a6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_fx_sobel.v": "ce8012fe258184ca44a7bd7d85f0de5dca4d05fcfc291429cbcb93b97833a37e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_gain11.v": "a168d76963bc7b272eb3ba72ac33d915055f3c30856c9c7ca94c1fd41b38f844",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_osd_stream.v": "3aa78c648b70568a100b4c7ebf474fb7d6b4c2af39a4a9c16a0b33da0fb35f82",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_patch_bridge.v": "a004971722766fd9b0ed8f25282c039be3ff63fdec954c34b7cac8e5f4653483",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_sensor_bridge.v": "af6f1f7fd7fdd20e3d6a66d91ef06f49dc11dcd69a1bacd715210bbcf88422a9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_style.v": "0f1d1f897a0d2af4a62fcf5056de094020c1b4d0968cfcf3b1c0722e8b3aa453",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_style_stream.v": "49bffbe6180ce4abcfbcf35c1f3c1a8cc410986f02c16f6eebea328b0cba1ff5",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_temperature.v": "86fbb0d61b8e182fd14232a9f06ad8cbc60ac604a6b275ded35f9d7f1a61cb3b",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_tone.v": "be2f14399264a0f37c8b319888a8125393a0b009562940420495bd5cbef49ef0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_camera_gate.v": "7255fe8f1fbe906888c2994a6778c9b1e236f53ad854f1c4432ce5b41ad40fcd",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_keys.v": "52776243b6ff0d3c1abea36a82c1b8c5f89d0c3caa157bb612656a313e03f5ac",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_luma_pack.v": "5c6059106009d44301e54d45efb377e29aeff61a5c9906eb17194659d3e259a2",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_mailbox.v": "c7ba0c5128c2d863eac32ed4b9e5bf49d21bc4b95be9aa1a82cf9b81839ea13d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_pixel_defs.vh": "90b7bd0dc2d409c6421eaa57c933db3ddfbd335f586f682cd50ee01900e00ddd",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_pixel_delay.v": "cddbe1ade7ea841034d4914253428a9976bc50570473de075af54d8c43231a16",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_stream_tag.v": "847d5c16c98b3e64a12a34ddc66af78168d74e53edb3cf6d42e7bee42f12b11f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_sync_fifo.v": "43c658c93d30996dd250bfbaf933e9252322f83d7d4d08e7f7fcb9290d477df5",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/common/cvp_window3x3.v": "60dbd8c82be10e2c82c94ee8e48685adf1927a8f99524196ea340dabdd4c8618",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/config_data.mif": "88b5f0f18873f6225f137273cfeb01a3e42d8ed5faab9bad9a2dab718692962a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/config_data.mif.dat": "f20944dc4bf11e610d5624a4f71b453ffed482f98b49769494f1753b8e32648b",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/crc16_8b.enc.v": "fbacb342b9014ca653e2ea9573e2ed7be4c67dfd6d07e6c7b6eb8b9923d75e0e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/display_config_wrapper.v": "5379315380174d2b20fd6dca808a23155c858b064c0f5d4d3ba00642002a2901",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/dsi_video_mode_packet.enc.v": "8fb409d91b84c9aee24b7a01decc71e4f15d0b15d1aad70c77b760adde6158b3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/ecc_gen.enc.v": "2e05396731e25dfcff3fa3993a31f03defb5a77e57cd6958fa1094b0d0c1a5fe",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/instruction_execution.enc.v": "33f8ff5420694b9208fa5e2ac173e38e0f7a4c243fa3ac4176aff20ce87564da",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/instruction_fetch.enc.v": "e6e54c250a319831933c228b10ce5fc66d47bc66e6de04d1d119002e706c1357",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/lp_tx_wrapper.enc.v": "cbbc70a2a6ccfc82438a96cbd9b676e135d2a8602bf6727a8d7dff082b2ac332",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/dsi_tx_packet/rgb_24b_to_32b.enc.v": "94d7e2f36fcad5a609cffeaf62fcf7bbf8212d684ab5387ef82102a01f4eaed3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/csi_unpacket_2lane.v": "56f57a00654b000ed2b136b4b5085a9f0ffbbd5d0c04aefa3cf30cdbdf3d6ca9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/isp_top.v": "6c20b4b6e2cfad13c77207a6b67bfa8d284a66a9ba0ef05dfbc961634c40f5da",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/raw10_unpacket_2lane.v": "62d72b3f9bbeb26fc233307d7a62232806254d2a2f4ae6140fe17f3ef29f076a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/uial2axis.v": "83eaab604fc9c1272d32f9a4df8619569159c4536c3d0aa5be6674a41d46910a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/ae_mux.v": "dc970f14303108f6c0a534ebcd99eba96bc30be06cad2cefdfe45ca03fc8c4df",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/color_correct.v": "1f3cf23aa7c78d914289800d144e21f7be86131a33151c75f7e96ba7f495007d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_ae.v": "6207b684b3424d2f6033b73bdc9cb2a5c9ec98903ae656afcd3fed56a50f4c3a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_awb.v": "205ea82ea8ab720ad75db52d6facf1c2cc3b3ac9a9c99057aff49247d1c8fff0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_demosaic.v": "5418f94daa2c3838d03e8445b33c367fafdf282b86bca94b7727539e8dd5338d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_dpc.v": "0883dedda17b4d2b1a9968f6e9ccfce6b0a5225cb8e2b63afd94429b926ace13",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/cvp_proc.v": "5819b0f42435e7f74e8cff66d3b850de0bb82f6f125d139e2504e727a44d8703",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/group_fifo.v": "d23966c9a0a653b99da7b3d7105d5e462abd37d57d86ea54387bd20043456638",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/imgproc_win3x3.v": "c313b88119d0dcd5939a13e8b56335dc71bc032647a514ac04579dc2e37bfd97",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/pack_4.v": "c4eeb90b23586143f0538aed40223c92db2cf48460baf9d73891fa5fbd5724a1",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp2/wb_kelvin.v": "3a2305e277f03d114b9dbcf5953cd35940007f83048eb45088c67c68795695bb",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/byte_aligner.enc.v": "3c65c483a67e7cd58141fbff456cdc7079377eae8a7210da134a29a4210d49c9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/byte_aligner_wrapper.enc.sv": "887413db0017f638ae11ae00b5467520d529d6c512e87fddbe609cb7de147dfc",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/channel_aligner.enc.v": "e3dbd0d8705b3ad5b605b62dd646399fa71a125812da85283d6b993c359b349c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/channel_aligner_wrapper.enc.sv": "fd94e6aeeb91cae7df0da35983431dec3358a2ac12b3fd2f45b94db3b26050d3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/hs_detect.enc.v": "5c711d41a9739c5b4956c3d0c16eb8e757a787a6b6da0cec873e8cbc8b55d8ed",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/mipi_dphy_rx_ph1p_mipiio_wrapper.sv": "d25bcc9d6a15711633c5249f88ebfbedcf58f9c79069e85fac74e44d388baaf8",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_rx/ph1p_mipiio_rx_wrapper.v": "25629841e1cdc9116993457048142a7b2b101d2e58b59c40b584cf59b17cf939",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_tx/hs_tx_wrapper_merge.enc.v": "2ea74d71bfaaee99c957c709128696b37467044761e756c32621bd0d9b7f7fbc",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_tx/mipi_dphy_tx_over_ph1p_mipiio_wrapper.v": "4beb6f79f72ce587b87cda5dd6eb96832dedd56464ca622b3617da3b03f9dfee",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/mipi_dphy_tx/ph1p_mipiio_tx_wrapper.v": "88e64b0bf5a314e980cc1d5d9719513d020fd827aa79ce977b2772878e7e4401",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_async_fifo.v": "417e3aff7e2e72930270adb81a77e914ee389cf72af9cce87e8e812deeea9fd9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_cmd_rx.v": "efa29395027c18073553dcf2e6d4c4995ea1d9c58f4f63ad36b2ac0beba2cb1e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_eth_dbg.v": "01dc20ce83d159b636223b61bedb01395f8f18e35043ba5223986ee380a5cc19",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_gmii_mac_tx.v": "729a45d5ee0b477cd4ad18cfb57d4c18fad901d294fccf6a200682dc3c66931e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_mdio_ro.v": "8821d206c9d8f6f8fc6707c64482f35327590a62ddbf7fb6e5f924a8b1998c90",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_rgb_stream_pack.v": "e375116a3309b49c2d727aed94869e979c4a691b604b90eafbcd12016f70a678",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/cvp_status_bridge.v": "05ce46d8b769f9d8b607aaae9df1fcf69d1c426e76a92e7c86fd081eb27df1db",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/PH1P_PHY_PLL_WRAPPER_d2616deaaa79.v": "1123edd383cdf74f72bf05acfe3d52547d0fe7e7f855a1a872358595ca718228",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/net/pll_gmii125.v": "2515338ff9dc907ee11bb3925cd0e417497a3f4c5d2ec55ae3c279878e16de19",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ph1p35_324_ddr_wrapper.v": "dd46e1f31ca128dd5fbf70412dca152728dbe305c8ed1d9abdd210eaeaab3dbe",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uial2axis/uial2axis.v": "d661c2d326bc7f08aec708409672b9efb300e3e363342e63b7620c68f93a9c52",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/SC500GainTbl.v": "770a9f4d712cbbc8cec46b983fff8f5d26705d964b62132b6bbdcbbe29fcfee7",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uicfgcs500.v": "7820e800dce91680c3e0073b73485e1b3aa13683473338e1e1dae6f703de1da4",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500reg.v": "1fb7b9b6533bf8c598a85a43ffb8e9403470e96aa630638be7e353b1a2c295f0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uics500regAE.v": "69bc7f3ae191ab101ddd20791de3695f6255bb9062d7529577498c6af31646d2",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uics500_cfg/uii2c.v": "5968fc14b341e47ac48721f1716aa20945354164f459814043e344e73b938f9d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uiisp_beta/ae_set.v": "1246ad77d04dd09cb2dbe4c84bbada5b8646840259769b1d4ce114b292c2453a",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uiisp_beta/csi_unpacket_2lane.v": "56f57a00654b000ed2b136b4b5085a9f0ffbbd5d0c04aefa3cf30cdbdf3d6ca9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/uiisp_beta/raw10_unpacket_2lane.v": "4f96f28c391e3a5a7dd93d530d0a1bf01f54aa2892e3ffaec040773762ff5d7f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/.m_params_ddr2.txt": "f4364725ec21dd41e74b73b8ce88e451e0434668eda8e9f47ca9ffdf03bacb74",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/.params_ddr2.txt": "f5fd956a3fa0cf312ee00ff3fce840195c683eddecae3fda6ebdd67f37dfef32",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/.ports_ddr2.txt": "7269d6547cb9d780c71b098471e6d16bc8f78dc5a0f0479c382353162d776cd3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/ddr2.v": "628ae0d8c51af61b2d3405278be994d23c9443e3e57d541133f8615e81485cc9",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/ddr2.xml": "4b0da3d7d2f312b2f3e5b706ffb84e59bfee5b0ab4805f3bad4395e3484e4c52",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/Design.xml": "0499cebd8d4cc2a58e4fa483e012bce407c938328258171b5ac2e30c927257ff",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/DesignConfiguration.xml": "d4f55c3267caed287b544a3de02b626bdfdabe6337db18545b8a963b29bcdc63",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/ph1p_ddrmc_wrapper_63f4ac254419.v": "1e483cd686787ace35824620d65e11b03739902e637e33ca7afc2636627ecda5",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/adc/ddr2.adc": "eea9740d7f4af795efa4570ca7ae4c710ec10b15dc97458c655f9a2a68628b23",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/sdc/ddr2.sdc": "2c8f27dc2d9a118900c289ca24010b0a77ca605b5de33293fd8a7e6df1ebd20f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/clk/ph1p_ddrphy_clk_top.v": "06f2f6d345ed316c4d925e4650c21820f599e154c3377d728c5dd5cbfe297055",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/clk/ph1p_ddrphy_pll0.v": "2ae8747008a1ce11da2c66a5e3e289729e58b518fc76c7765b6f9e7e4f3581c6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/clk/ph1p_ddrphy_pll1.v": "4f8790d0a57adf12fb5ad4dcef2866fabe182f531e0d889fb56022e670407079",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/include/ph1p_mis_define.vh": "0b968b4d19867b022fc0cfda44a4bba5cd4ef816e41a370396368265727de72d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/init/ph1p_ddrphy_dram_init_ddr2.v": "b4b6c9e5223852750d2a0d3a013447716a08c56055511afa517dce612380649f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/mc/alc_mc_top_all.enc.sv": "c6551bba42a7a6a311b1ddeaecc0ae18354a827c85426d9f86b812c93ab20fa2",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/mc/alc_phy2mc_fifo_ctrl.v": "cf1500a2d491c637a9150fb36fbc6de109e62cca5d8ff3c58dadf5f7f84472c6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/misc/ph1p_ddrphy_sync_rst_gen.v": "8db3d13deec253a2248899de81a7d1a382eacb7683f229732a28272ab9969c55",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/misc/ph1p_ddr_fifo_dram_sync.v": "21795bf78115dbd04d7ec81f4f240832d8e7267fdebeddcb6be50d3cb95ab8b6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ddrphy_cfg_rom.txt": "2f5a00c5a364a4d37891042b4d4956a29b3990b3385512d20ede491c8ccf863b",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy.v": "8f1b84111842fb00643b567e2c87a1496a1439cae89e4990b056a6cc40f987a1",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_apb_bridge.v": "cde632f73a4e58c1cf375f62626b26e144ef553926b5539b5eae08b655fecb12",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_bankref_cfg.v": "1cc72f35dfeef076938f2864d58d9e62ede2ab49f60f4f04b8d496c47879e283",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_byte_wrapper.v": "5786b34dacbabba348dd8e7db28db58270a46bf3ce4f9c3d046ad098716fed8e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_cmd_decode.v": "b3bd00df9d41b792d6f6a18b2be29c8ab363aeb3fb7dc88fe0be61dff8905abd",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_cmd_execution.v": "636289799da5792386ca70405ddc63f0df510ce42c6f9b91fa3ce0be8203ae31",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_cmd_wrapper.v": "8948ae3dce110214c623cf1cf3bb1a2e1894d24d8cba50e429373612621514e1",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_dcu.v": "0f335ebf3607a7823b90a6d6278dd3906fdf0e941c019c83186b2d017e613b49",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_dcu_wrapper.v": "b130b5b93bcc9fb8fb71a0e38a1000c86cb663ac1d72aef0a47215d8154ab32c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_fast_init.v": "c36a5925a09f8dafe5d49144cdc72fa85656602b3d4a944f587bbd0d9fa1d5a3",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_fast_init_wrapper.v": "eceda6711c061dc5e64a334b2fd79e8c240cc6100f8bafbfffd0299ad166b6f5",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_init.v": "fafa767b0a4d1f431dac6ea1461dc16aff2ea1169c8aa45a50a009117a90f5c4",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_mdl_cal.v": "247c8a832efebf5c4733e599d7e2b19abc3687ca48b6317ea1fc882095768d95",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_mdl_cal_wrapper.v": "0b583c987311deeadeeedd19dd51a04e8e14b227873e37f1ec8db8dd18b7c125",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_rphase_ctl.v": "2e26a87b37c99613bc61c52fd2482012a2f5bd8a662636f782418de5d9ce6928",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_top.v": "35b7db2f4b03c0967ae9b8449c92e893c417425b88ec0d097b6b8b9893572716",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_wphase_ctl.v": "0075fb586fde9f56a18111b98aaf38e0d91e50d8b2b3d17a702d2b71adc42da7",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/ph1p_ddrphy_wrapper.v": "fe439d737c139c5007c6aee9df1f4d1a7f924f72d59bbad534c62ab666d1be98",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_1066.vh": "af0e79e19fa66da35b06837ebbb1aa777bb92adf933e805922eb7c1c5ee71681",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_1333.vh": "bef1f5f01a559dd226af430674fb461dcb2ffe84e5f43b610fd2172a3889b61d",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_400.vh": "5b6772ab8ba201abae8136f3d403f119b1503e2585146678ec4c41ea4be27c11",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_533.vh": "b601c300cac1b444deed6e970e68b150d8df419327a50b3ec13e3b1a47deb016",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_667.vh": "4faea16b57d0450ba91be4996586a911b72f3fec0eee11995f11711f30a9773c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_800.vh": "e0bbf8eb74a86db01e5c6656a90eba5dbc040e7ce006611d35886452fc4b24fa",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/timing/ddr2/ddr2_parameter.vh": "89ee7ed31053f46807e8900bc010ddf98f1cbb2a011903f0c44ace086ff39ed2",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/include/ph1p_ddrphy_board_delay.vh": "7e830f19ae5f8e35ef0e1d5646a3588095675ec64d7b0349c2e4fba62dc02c56",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/include/ph1p_ddrphy_bus_matrix.vh": "828cb1decead67b69ccd6540fc7c9b15b8daeb3b5f101f08c92d2a8a228f4acb",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/include/ph1p_ddrphy_ddrio.vh": "8e9bde3255e6a332fc43aae1414a29183b5e1ed650d3ef731fddd2dbbff21863",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/src/rtl/phy/include/ph1p_ddrphy_pad_type.vh": "76439ab49aefb1e41d91d2d4ee12094ef362b1ac69a382b8faa5d3202842b7fb",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/ph1p35_ddr/ddr2/sim/fileset/fileset_mis.f": "1554fc2cc0167e5c4eeae7fc7e50d5810aae7fa05573170a36290cd86f687a53",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/awb.v": "1c1ba61cb996e7a9abd4e6f4a97a268bb8b86d2f2d7899912aa5607d362fac1b",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/signal_delay.v": "11c2cc83e421a8f81143ab1c0ec5a14299ad4dfad34f051dc4617cea36f69f14",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/BLC/BLC.v": "5aa43ca238d46843cc99da4090d0c9673feae18567ae405c58276a0e256db9e1",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/data128_96/data128_96.v": "cc2d537ea84ab8e918e033031caa734538067e7861adf2a551123cdf67dbc17e",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/data96_128/data96_128.v": "70eabab946d684a9747c0f4ba036c2f9306a07b7fd50fae58af43612622e62a0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/bilinear_interpolation.v": "11ff09d716a4df50a62c90d7996f9173570597767630124cf1770f6973a623e0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/demosaic.v": "23f0a53e980f7899f62e3d403be51d9d9a0477e08d7a4c22cd681b1da2653a6f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/line_buffer_demosaic.v": "57d2626ef83f555d027cc442fae0959a916cf1b0939c0115aaa9d414745f94c7",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/mipi_to_raw_converter.v": "81c462365a3f9106a84406db9b31e99f5325798e77bdf0cd561b5d659a5926fe",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/raw_matrix_3x3_buffer.v": "19d76c1f574c750a2973303526d6c0765a6a392737e38da72c4768aba7372fca",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/zhenghe.v": "c2e33ece63207b00c347929b76e636e52684ec459ea2cdf91b563ac842f81c20",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/.m_params_blk_mem_gen_demosaic.txt": "38fd7d2aca8fa464f5eee249f69c4766b925033db5dcfb30beff4783399a4d84",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/.params_blk_mem_gen_demosaic.txt": "cbeb8a1af193f34a227221b08fcf312dcf594806588d2c5301f46c3c049ab9ab",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/.ports_blk_mem_gen_demosaic.txt": "8ca785a0e2583343e787015fb11d86e9a2986786c78101f060c22e899007551c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/blk_mem_gen_demosaic.v": "42e058ba4100c363144bbae4856ecf55b4d3687004cb2e7af05ab9b8cdad1536",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/blk_mem_gen_demosaic.xml": "9488f4f3af1d7cd60574a6a115f6fe78416432810231ee50de51e27c844a0570",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/Design.xml": "6f9eeb7a830099c3ad9024117b7d170fb3e6f20cfa76124afe89182240701689",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/DesignConfiguration.xml": "4b7e95dd9b3ade15e0885e3efdfc142a8ed897440352b19aaa2875062df1b591",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/.m_params_blk_mem_gen_zhenghe.txt": "af0963549eafc9ccbbcb43302fbc7c93046bdddd9276dff6540512c9ab491670",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/.params_blk_mem_gen_zhenghe.txt": "d85585a3946baea40b09916a8220701b19c27da29e50146322dc79f4158b9c6f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/.ports_blk_mem_gen_zhenghe.txt": "8ca785a0e2583343e787015fb11d86e9a2986786c78101f060c22e899007551c",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/blk_mem_gen_zhenghe.v": "6932e98848bfaa5746491fbc23eae7ea7f3974dc4703e9d2608824705b699f1f",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/blk_mem_gen_zhenghe.xml": "48edbc23f5a159c7174d46cfb3f71d57726553d99ee9c7095d3913ecb3b7a6ef",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/Design.xml": "1ac7fdffb938213e508cf14c75021a1a37de81ddc7fedc972f484fee61f4ddc6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/DesignConfiguration.xml": "00747d987f59c1fd2a9e6cfed3f8f9f485b0976b88b72651763cfa78343e2216",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/RTL/ram_d32970204f32.v": "6a06de1aead75b6f73be11b14c1a55df360ab62e90a025eccfb27c964d5129d7",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_zhenghe/RTL/include/define.v": "7c5a3328fd5824d76758cbeb49795626caa176987bcacb0daec8db7701e474d0",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/RTL/ram_c36c2ca3b3a7.v": "5ad4cdc18e946c5e491619405ed9dbcef2fd86df8aeacb0f45ad58e33569bae7",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/demosaic_4x_2_0/blk_mem_gen_demosaic/RTL/include/define.v": "a06949c2636428d2f58760545730e626998561b44e34cac565f66e228f981537",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/divider/divider.ipc": "9999cf173cd5eec48ac008563ba334374536a54bb2310f0b92ee0708dcd34ded",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/divider/divider_gate.v": "5e3eaf94d2676be1703e45e36d78a409d0ef4ab860d8cb1af156373bea8780a1",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/ram/blk_mem_gen_awb_delay_signal.ipc": "8c5708a314eb6754ec78ccfd3b5331047c7602d972f18c67a97dc01d36d1d826",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/ram/blk_mem_gen_awb_delay_signal.v": "fc098c8e4efbf6ed3f90b2f14df67e372213c9543116f8411a438b2610cdc7f6",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/isp/awb/ram/blk_mem_gen_awb_delay_signal.vhd": "87cc317d01d6f7318fc21f792ac2ce406f99f5d70af2ab1f5ac6d1887aee2986"
+  },
+  "artifacts": {
+    "build_source_hashes.json": {
+      "bytes": 24734,
+      "sha256": "0e73e25c9387a515bdd83e2cc1bbffd6afefa7907f247a236122ce2aaa314423"
+    },
+    "camera_network_only_v32_ae_smooth_candidate.bit": {
+      "bytes": 1789539,
+      "sha256": "94b97040fd25327f4d3bdbde1367eba8561267e32273cf01fdee2b5515243032"
+    },
+    "net_packets.hex.verify.log": {
+      "bytes": 72,
+      "sha256": "74da088cfa698c13d2e4928b2658d3fd55607ad955c1dceef927739b50e87bec"
+    },
+    "physical.log": {
+      "bytes": 141492,
+      "sha256": "e5e2072e7e05c5073710d53bdd9e7adb1c9ef9740ae2ed08299c47efca955ed8"
+    },
+    "README.md": {
+      "bytes": 4065,
+      "sha256": "ecfed1a54ee1ba5da978379c1a84d2e5580603fed14a670cf7d56a038488417e"
+    },
+    "resource_report.txt": {
+      "bytes": 23123,
+      "sha256": "b0f7c20a1283b598645889861d4eec00d07e7bcc819d44317d09920cd738b25d"
+    },
+    "rtl-tests.log": {
+      "bytes": 651,
+      "sha256": "ac6dd35bad2f477c4d7f7408557ee137df9a3786b8d17faa572e25a06cc8c8ce"
+    },
+    "synthesis.log": {
+      "bytes": 68442,
+      "sha256": "ea1160b79aed789d9b2d053e6b598ee9593ce2b01f5b909ae40e2b096feeaf65"
+    },
+    "tb_a_diff_stats.log": {
+      "bytes": 2632,
+      "sha256": "1e740884d8db4e672e712956a41ca82df35539967a4844b409c7904981552648"
+    },
+    "tb_a_diff_style.log": {
+      "bytes": 3267,
+      "sha256": "4ecdc5e851aa6f3990f6ca3902abf926d5b1ee201a66862f82e4231fce564d8b"
+    },
+    "tb_a_status_bridge.log": {
+      "bytes": 2078,
+      "sha256": "87c91821dae1d7f63615dc1ee2ac52a29ceab3778e751e0cf4152bf47840066d"
+    },
+    "tb_a_status_wire.log": {
+      "bytes": 2124,
+      "sha256": "8ca540565d92085f00bf263e44955d050fa59f640a314a20ad284dd8400fcb4a"
+    },
+    "tb_cvp_color_path.log": {
+      "bytes": 2695,
+      "sha256": "c26d4d780cd9a4ab79cdbf99012adfddc113d576276a90ac0f625d1119ece655"
+    },
+    "tb_opt_median.log": {
+      "bytes": 2590,
+      "sha256": "7de32c90930b97ec35a07c908690d2e1254c54846900f519ebb86ce3de38c0de"
+    },
+    "tb_opt_proc.log": {
+      "bytes": 3633,
+      "sha256": "da8179a9fa2f9fdc1962ebaa9eb6f16c51b90ff957da8a4f121d95b523d4c597"
+    },
+    "tb_opt_style.log": {
+      "bytes": 2822,
+      "sha256": "31ac7aba9b0bcb006b263cc81c589a732b3ca7cd4f89d77f3a5adf45afb6478d"
+    },
+    "tb_opt_tone.log": {
+      "bytes": 2599,
+      "sha256": "8a8814ccef523c381c74b2cab349d64f6cc7300f833d72b4d472edfbe25a1031"
+    },
+    "tb_v26_advanced.log": {
+      "bytes": 13667,
+      "sha256": "2ea2f7b9d0f59cc4ca0acad2074519b704fec95c8094751a960b33a926ca3604"
+    },
+    "tb_v26_ae.log": {
+      "bytes": 2018,
+      "sha256": "95c4a67ebb572731ae51a9e2501bca72e7021136746e853edf15e073209c0a01"
+    },
+    "tb_v26_ae_smooth.log": {
+      "bytes": 2242,
+      "sha256": "3ccfa482181735c75f67406ab8e2ef21f17130940b07a1e6654133bd49991398"
+    },
+    "tb_v26_bayer.log": {
+      "bytes": 2567,
+      "sha256": "8b1720ea2a0748e63b6b28c72c4ab0fbcde3c550a4ec24e4c2573592d5faf3f0"
+    },
+    "tb_v26_commands.log": {
+      "bytes": 5776,
+      "sha256": "c5266537927ec74c4f867ff2a187000af4fed969d54a9ec058856e8a1780644a"
+    },
+    "tb_v26_config.log": {
+      "bytes": 7179,
+      "sha256": "ecac9b48701a9e2d657038a84f992e1dec8b6d5d725b5bfb8aab3c1fa0a899cf"
+    },
+    "tb_v26_keys.log": {
+      "bytes": 2021,
+      "sha256": "b539b602dbea4eaa5579c63e9eadb4554de8958a41789d88dd921f3c121d1ed7"
+    },
+    "tb_v26_network.log": {
+      "bytes": 5140,
+      "sha256": "2e57ce7208195dfc04c57690b40c8fd6d49e2458dcc5f60a8f35eff4bb11e0a5"
+    },
+    "tb_v26_patch.log": {
+      "bytes": 3538,
+      "sha256": "379bb22edd0b48217fb54e734a28c8a32586f9ece5eb4d54c86ef2862701904b"
+    },
+    "tb_v26_sensor.log": {
+      "bytes": 2040,
+      "sha256": "a76efe7523d975b2da6df00f8f2edd6b613730cc77f4cd2043aa5193701e8694"
+    },
+    "tb_v26_stats.log": {
+      "bytes": 2748,
+      "sha256": "c0f642f8b273b0447ca2430c18955049ef8572aabdf79fc39eaa0d317cd29fcf"
+    },
+    "tb_v26_style.log": {
+      "bytes": 3565,
+      "sha256": "c5f88824bad8ca1afbd5b345ed66b1b0ba11ca05e8e63f132a877188541993c6"
+    },
+    "tb_v26_window.log": {
+      "bytes": 2059,
+      "sha256": "7f7672c352549f52b19b8b44d2429963463619ea1bcd610c98f4523dfc3b91fe"
+    },
+    "tb_v27_awb.log": {
+      "bytes": 3274,
+      "sha256": "c16889e64a026b95b05b3bcd3d66ecff3de6e654c2b83280ff91d783f58f3e94"
+    },
+    "tb_v27_camera.log": {
+      "bytes": 5996,
+      "sha256": "ba8bdf8c5bde04d9c16b5da00d85aead294eb397c94ec6b37ebafd3d59b26b74"
+    },
+    "tb_v27_config.log": {
+      "bytes": 6434,
+      "sha256": "27c0191c708593c089c711b06b54bd4cca4904048e328e1bc620254191974a90"
+    },
+    "tb_v27_contour.log": {
+      "bytes": 2738,
+      "sha256": "2ecfffd05d6dd76a238e24dddc3757247ce5013ac421c5f14c38e4ffbfb4414c"
+    },
+    "tb_v27_network.log": {
+      "bytes": 2249,
+      "sha256": "858a0d1edf783ce4e07c6114b8f652fdfb61612225f571a935325ecc4806bb6b"
+    },
+    "tb_v27_startup.log": {
+      "bytes": 2557,
+      "sha256": "cd60b4a69e6370ec3e27b03b8cb128649a5fdba202b92cf513f97bf87226d8b1"
+    },
+    "timing_report.txt": {
+      "bytes": 826232,
+      "sha256": "0bbbbe20da493dd4e5bac7ee649db9aad714d5adaeba9118bec76eb936040cc1"
+    },
+    "v27_net_packets.hex.verify.log": {
+      "bytes": 72,
+      "sha256": "74da088cfa698c13d2e4928b2658d3fd55607ad955c1dceef927739b50e87bec"
+    }
+  },
+  "build_runs_directory": "C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display_Runs",
+  "ae_parameters": {
+    "average_frames": 4,
+    "post_write_settle_frames": 2,
+    "exposure_step_shift": 5,
+    "exposure_step_min": 1,
+    "gain_step_indices": 2,
+    "exposure_limits": [
+      62,
+      1800
+    ],
+    "gain_limits": [
+      16,
+      143
+    ],
+    "mean_deadband": [
+      104,
+      120
+    ],
+    "highlight_y_min": 245,
+    "highlight_fraction_threshold": 0.05,
+    "flicker_period_constraint": false
+  },
+  "baseline_bitstream_sha256": "e93aca7164c54db7dd6cb6aab774c8bccf43e9ce1cb68f42ab16791944be2744",
+  "hardware_validation": {
+    "source": "user_report_and_screenshot",
+    "result": "normal_frame_rate_but_black_display",
+    "ae_enabled": false,
+    "reported_sensor_exp": 1800,
+    "reported_sensor_gain": 108,
+    "reported_mean": 137,
+    "reported_stream_errors": 2,
+    "reported_sensor_errors": 0,
+    "reported_i2c_init": "completed",
+    "diagnosis": "historical stream fault latched permanently; GUI zeroes frames while fault is set",
+    "original_error_source": "not yet identified; v33 adds source-specific telemetry"
+  }
+}

@@ -1,0 +1,6 @@
+# Keep release artifacts and frozen verification models byte-exact for SHA256.
+releases/** -text
+08_csi_dsi_cs500_7cun/tools/sim/gold_v*/** -text
+
+# This controller is built and hashed with LF line endings on Windows too.
+08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v text eol=lf

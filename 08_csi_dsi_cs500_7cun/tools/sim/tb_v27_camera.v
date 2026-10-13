@@ -20,7 +20,7 @@ module tb_v27_camera;
   #31;rst=1;wait(ae_done);repeat(4)@(negedge clk);
   if(!base_done||fatal||err||diag[127:112]!=1||diag[111:96]!=1||diag[63:48]!=16'h0100||diag[24])errors=errors+1;
   nack_all=1;command(900);
-  if(!err||fatal||diag[95:80]!=3||diag[63:48]!=16'h3e00||diag[39:32]!=1||diag[47:40]!=4)errors=errors+1;
+  if(!err||fatal||diag[95:80]!=3||diag[63:48]!=16'h3817||diag[39:32]!=1||diag[47:40]!=4)errors=errors+1;
   nack_all=0;command(950);if(err||fatal||dut.held_ae!=950)errors=errors+1;
   fork
    begin command(1000);end

@@ -1,4 +1,5 @@
-module cvp_advanced #(parameter W=1280,H=720,V27=0)(
+module cvp_advanced #(parameter W=1280,H=720,V27=0,
+ parameter signed [15:0] AE_KP_Q10=6,AE_KI_Q10=3,AE_KD_Q10=1)(
  input clk,rst_n,input i_capture_valid,input i_capture_event,input [1:0] keys_n,
  input i_valid,i_sof,input [23:0] i_rgb,
  input cmd_valid,input [15:0] cmd_req,cmd_cfg,input [7:0] cmd_op,cmd_addr,input [31:0] cmd_value,
@@ -35,15 +36,15 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  wire [15:0] cfg_id;
  reg [63:0] ticks,capture_mem[0:3];reg [31:0] capture_id;
  assign time_ticks=ticks;
- reg [31:0] source_groups;reg source_started,source_error;
+ reg [31:0] source_groups,source_bad_groups;reg source_started,source_error;
  integer k;
  always @(posedge clk or negedge rst_n)begin
-  if(!rst_n)begin ticks<=0;capture_id<=0;source_groups<=0;source_started<=0;source_error<=0;for(k=0;k<4;k=k+1)capture_mem[k]<=0;end
+  if(!rst_n)begin ticks<=0;capture_id<=0;source_groups<=0;source_bad_groups<=0;source_started<=0;source_error<=0;for(k=0;k<4;k=k+1)capture_mem[k]<=0;end
   else begin
    ticks<=ticks+1'b1;source_error<=0;
    if(i_capture_valid)begin
     if(i_capture_event)begin
-     if(source_started&&source_groups!=W*H/4)source_error<=1;
+     if(source_started&&source_groups!=W*H/4)begin source_error<=1;source_bad_groups<=source_groups;end
      source_groups<=1;source_started<=1;
     end else if(source_started)source_groups<=source_groups+1'b1;
    end
@@ -66,27 +67,41 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  cvp_stream_tag #(.W(W),.H(H)) tag(.clk(clk),.rst_n(rst_n),.i_valid(i_valid),.i_rgb(i_rgb),.i_sof(i_sof),
  .i_cfg_id(cfg_id),.i_mode(cfg_mode),.o_valid(rv),.o_rgb(raw_rgb),.o_sof(rs),.o_eol(rl),.o_eof(re),
  .o_x(rx),.o_y(ry),.o_frame_id(rf),.o_cfg_id(rc),.o_mode(rm),.o_ticks(),.o_capture_tick(),.o_frame_error(frame_error));
- reg fault;
+ wire fault;
+ reg [10:0] digital_gain,digital_pending;
+ reg digital_pending_valid,digital_ready,digital_is_ae;
+ reg [15:0] digital_exp;reg [7:0] digital_ag;
+ reg [15:0] digital_write_id;
+ wire [15:0] sensor_request_id,sensor_done_id;
+ reg ae_applied,ae_apply_error,ae_applied_digital_only,digital_sensor_write;
+ wire [10:0] digital_for_frame=digital_pending_valid&&digital_ready?digital_pending:digital_gain;
+ wire [7:0] pid_flags;
+ wire [7:0] ae_target_mean;
  wire stats_done,stats_overrun;wire [7:0] mean,black,white;wire [10:0] awb_r,awb_g,awb_b;
  wire [1:0] awb_state;wire [31:0] samples,neutrals,clipped;
  wire [10:0] temp_r,temp_b;
  cvp_temperature temperature(.i_kelvin(cfg_kelvin),.o_r(temp_r),.o_b(temp_b));
  reg [10:0] gr_tag,gg_tag,gb_tag;reg swap_tag;reg [3:0] flags_tag;
+ reg [12:0] gr_total,gg_total,gb_total;
  reg [7:0] binary_tag;reg [21:0] edge_tag;reg [1:0] width_tag;
  wire [10:0] selected_r=cfg_wb_mode==3?awb_r:cfg_wb_mode==2?cfg_gain_r:cfg_wb_mode==1?temp_r:11'd344;
  wire [10:0] selected_g=cfg_wb_mode==3?awb_g:cfg_wb_mode==2?cfg_gain_g:11'd256;
  wire [10:0] selected_b=cfg_wb_mode==3?awb_b:cfg_wb_mode==2?cfg_gain_b:cfg_wb_mode==1?temp_b:11'd451;
+ wire [21:0] combined_r=selected_r*digital_for_frame+22'd128;
+ wire [21:0] combined_g=selected_g*digital_for_frame+22'd128;
+ wire [21:0] combined_b=selected_b*digital_for_frame+22'd128;
  always @(posedge clk or negedge rst_n)begin
-  if(!rst_n)begin gr_tag<=344;gg_tag<=256;gb_tag<=451;swap_tag<=0;flags_tag<=4'b1000;binary_tag<=130;edge_tag<={11'd130,11'd190};width_tag<=1;end
+  if(!rst_n)begin gr_tag<=344;gg_tag<=256;gb_tag<=451;gr_total<=344;gg_total<=256;gb_total<=451;swap_tag<=0;flags_tag<=4'b1000;binary_tag<=130;edge_tag<={11'd130,11'd190};width_tag<=1;end
   else if(i_valid&&i_sof)begin
    gr_tag<=selected_r;gg_tag<=selected_g;gb_tag<=selected_b;swap_tag<=cfg_swap;
+   gr_total<=combined_r[20:8];gg_total<=combined_g[20:8];gb_total<=combined_b[20:8];
    flags_tag<={cfg_osd,cfg_ae_en,cfg_wb_mode};binary_tag<=cfg_binary;
    edge_tag<=cfg_mode==5?{cfg_sketch_low,cfg_sketch_high}:{cfg_edge_low,cfg_edge_high};
    width_tag<=cfg_mode==5?cfg_sketch_width:cfg_edge_width;
   end
  end
  cvp_gain11 gain(.clk(clk),.rst_n(rst_n),.i_valid(rv),.i_sof(rs),.i_rgb(raw_rgb),
- .i_r(gr_tag),.i_g(gg_tag),.i_b(gb_tag),.i_swap(swap_tag),.o_valid(clean_valid),.o_sof(clean_sof),.o_rgb(clean_rgb));
+ .i_r(gr_total),.i_g(gg_total),.i_b(gb_total),.i_swap(swap_tag),.o_valid(clean_valid),.o_sof(clean_sof),.o_rgb(clean_rgb));
  reg [79:0] cc_meta;reg [23:0] cc_raw;reg [3:0] cc_flags;reg [7:0] cc_binary;reg [21:0] cc_edges;
  always @(posedge clk)begin cc_meta<={rx,ry,rf,rc,rm};cc_raw<=raw_rgb;cc_flags<=flags_tag;cc_binary<=binary_tag;cc_edges<=edge_tag;end
  assign clean_x=cc_meta[79:68];assign clean_y=cc_meta[67:56];assign clean_frame_id=cc_meta[55:24];
@@ -104,14 +119,53 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
   else begin cam1<=i_cam_done;cam2<=cam1;err1<=i_cfg_error;err2<=err1;end
  end
  wire ae_valid,sensor_busy,sensor_done,sensor_error;wire [15:0] ae_exp,sensor_exp;wire [7:0] ae_gain,sensor_gain;
- cvp_ae_control ae(.clk(clk),.rst_n(rst_n),.i_frame_done(stats_done),.i_en(cfg_ae_en&&!fault),
- .i_ready(cam2),.i_busy(sensor_busy),.i_mean(mean),.i_clipped(clipped),.i_samples(samples),
- .i_exp(sensor_exp),.i_gain(sensor_gain),.o_valid(ae_valid),.o_exp(ae_exp),.o_gain(ae_gain));
- cvp_sensor_bridge sensor(.clk(clk),.rst_n(rst_n),.i_valid(manual_valid||ae_valid),
+ wire [10:0] ae_dgain;
+ wire ae_sensor_write=ae_valid&&ae_exp!=sensor_exp;
+ cvp_ae_control #(.KP_Q10(AE_KP_Q10),.KI_Q10(AE_KI_Q10),.KD_Q10(AE_KD_Q10)) ae(.clk(clk),.rst_n(rst_n),.i_frame_done(stats_done),.i_en(cfg_ae_en&&!fault),
+ .i_ready(cam2),.i_busy(sensor_busy||digital_pending_valid),.i_cancel(manual_valid),
+ .i_applied(ae_applied),.i_apply_error(ae_apply_error),.i_applied_digital_only(ae_applied_digital_only),
+ .i_mean(mean),.i_clipped(clipped),.i_samples(samples),
+ .i_exp(sensor_exp),.i_gain(sensor_gain),.i_dgain(digital_gain),
+ .o_valid(ae_valid),.o_exp(ae_exp),.o_gain(ae_gain),.o_dgain(ae_dgain),.o_pid_flags(pid_flags),.o_target_mean(ae_target_mean));
+ cvp_sensor_bridge sensor(.clk(clk),.rst_n(rst_n),.i_valid(manual_valid||ae_sensor_write),
  .i_exp(manual_valid?manual_exp:ae_exp),.i_gain(manual_valid?manual_gain:ae_gain),.o_busy(sensor_busy),
  .o_exp(sensor_exp),.o_gain(sensor_gain),.o_done(sensor_done),.o_error(sensor_error),
+ .o_request_id(sensor_request_id),.o_done_id(sensor_done_id),
  .cfg_clk(cfg_clk),.cfg_rst_n(rst_n),.i_cfg_done(i_cam_done),.i_ae_done(i_ae_done),.i_iic_error(i_iic_error),
  .o_req(sensor_req),.o_cfg_exp(sensor_exp_cfg),.o_cfg_gain(sensor_gain_cfg));
+ // Only accepted sensor writes can release a pending digital gain. Commit at
+ // raw RGB SOF; the gain/metadata pipeline latency remains exactly one cycle.
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin
+   digital_gain<=256;digital_pending<=256;digital_pending_valid<=0;
+   digital_ready<=0;digital_is_ae<=0;digital_exp<=500;digital_ag<=108;digital_write_id<=0;
+   ae_applied<=0;ae_apply_error<=0;ae_applied_digital_only<=0;digital_sensor_write<=0;
+  end else begin
+   ae_applied<=0;ae_apply_error<=0;ae_applied_digital_only<=0;
+   if(digital_pending_valid&&!digital_ready&&sensor_done&&sensor_done_id==digital_write_id)begin
+    if(sensor_error)begin
+     digital_pending_valid<=0;
+     if(digital_is_ae)ae_apply_error<=1;
+    end else if(sensor_exp==digital_exp&&sensor_gain==digital_ag)digital_ready<=1;
+   end
+   if(i_valid&&i_sof&&digital_pending_valid&&digital_ready)begin
+    digital_gain<=digital_pending;digital_pending_valid<=0;digital_ready<=0;
+    ae_applied<=1; // Manual commits also invalidate the PID's old frame history.
+    ae_applied_digital_only<=digital_is_ae&&!digital_sensor_write;
+   end
+   // Manual requests have priority and reset global digital gain to unity.
+   if(manual_valid)begin
+    digital_pending<=256;digital_pending_valid<=1;digital_ready<=0;digital_is_ae<=0;digital_sensor_write<=1;
+    digital_exp<=manual_exp;digital_ag<=manual_gain;
+    digital_write_id<=sensor_request_id+1'b1;
+   end else if(ae_valid)begin
+    digital_pending<=ae_dgain;digital_pending_valid<=1;
+    digital_ready<=!ae_sensor_write;digital_is_ae<=1;digital_sensor_write<=ae_sensor_write;
+    digital_exp<=ae_exp;digital_ag<=ae_gain;
+    digital_write_id<=sensor_request_id+1'b1;
+   end
+  end
+ end
  wire tv,ts;wire [23:0] trgb;
  cvp_tone tone(.clk(clk),.rst_n(rst_n),.i_valid(clean_valid),.i_sof(clean_sof),.i_rgb(clean_rgb),.i_en(cfg_tone),
  .i_stats_done(stats_done),.i_black(black),.i_white(white),.o_valid(tv),.o_sof(ts),.o_rgb(trgb));
@@ -134,7 +188,16 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  .i_x(fx),.i_y(fy),.i_frame_id(ff),.i_cfg_id(fc),.i_mode(fm),.i_en(fosd),.i_ae(fae),.i_wb(fwb),
  .o_valid(o_valid),.o_sof(o_sof),.o_eol(),.o_eof(o_eof),.o_rgb(o_rgb),.o_frame_id(o_frame_id));
  reg [63:0] process_tick,last_capture,last_process,last_eof,last_tx_tick;
- reg [31:0] last_fid,stream_errors,sensor_errors,last_tx_fid;reg [15:0] last_cfg;reg [7:0] last_mode;
+ reg [31:0] last_fid,sensor_errors,last_tx_fid;reg [15:0] last_cfg;reg [7:0] last_mode;
+ wire [31:0] stream_errors,stream_bad_fid,stream_bad_pixels;
+ wire [5:0] stream_history,stream_last;
+ wire [7:0] stream_recovery;
+ // A historical fault must not hide every later valid frame forever.
+ cvp_stream_health #(.W(W),.H(H)) health(.clk(clk),.rst_n(rst_n),
+  .i_errors({i_net_overflow,stats_overrun,style_overflow,frame_error,source_error}),
+  .i_valid(o_valid),.i_sof(o_sof),.i_eof(o_eof),.i_fid(o_frame_id),
+  .o_fault(fault),.o_errors(stream_errors),.o_history(stream_history),.o_last(stream_last),
+  .o_recovery(stream_recovery),.o_bad_fid(stream_bad_fid),.o_bad_pixels(stream_bad_pixels));
  reg fe_delayed,tx_delayed;reg [23:0] heartbeat;
  wire tx_valid;wire [31:0] tx_fid;
  cvp_mailbox #(.DW(32)) tx_event(.s_clk(net_clk),.s_rst_n(net_rst_n),.s_valid(i_net_tx_done),.s_data(i_net_tx_fid),.s_ready(),
@@ -142,14 +205,13 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  always @(posedge clk or negedge rst_n)begin
   if(!rst_n)begin process_tick<=0;last_capture<=0;last_process<=0;last_eof<=0;last_tx_tick<=0;
    last_fid<=32'hffffffff;last_cfg<=0;last_mode<=0;last_tx_fid<=32'hffffffff;
-   stream_errors<=0;sensor_errors<=0;fault<=0;fe_delayed<=0;tx_delayed<=0;heartbeat<=0;end
+   sensor_errors<=0;fe_delayed<=0;tx_delayed<=0;heartbeat<=0;end
   else begin
    heartbeat<=heartbeat==10000000?0:heartbeat+1'b1;fe_delayed<=fv&&fe;tx_delayed<=tx_valid;
    if(fv&&fs)process_tick<=ticks;
    if(fv&&fe)begin last_fid<=ff;last_cfg<=fc;last_mode<=fm;
     last_capture<=capture_mem[ff[1:0]];last_process<=process_tick;last_eof<=ticks;end
    if(tx_valid)begin last_tx_fid<=tx_fid;last_tx_tick<=ticks;end
-   if(frame_error||style_overflow||stats_overrun||i_net_overflow||source_error)begin stream_errors<=stream_errors+1'b1;fault<=1;end
    if(sensor_done&&sensor_error)sensor_errors<=sensor_errors+1'b1;
   end
  end
@@ -172,8 +234,56 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0)(
  cvp_mailbox #(.DW(128)) diagnostics(.s_clk(cfg_clk),.s_rst_n(rst_n),.s_valid(1'b1),.s_data(i_sensor_diagnostics),.s_ready(),
  .m_clk(clk),.m_rst_n(rst_n),.m_valid(diag_valid),.m_data(diag),.m_ready(1'b1));
  assign status_data[1023:0]={32'h43563236,8'd1,last_mode,{6'd0,cfg_wb_mode},flags,last_fid,cfg_id,reply_req,reply_status,sensor_gain,sensor_exp,{5'd0,gr_tag},{5'd0,gg_tag},{5'd0,gb_tag},16'd1280,16'd720,16'd30,mean,black,white,{6'd0,awb_state},last_capture,process_delta,eof_delta,ticks,sync_rx,sync_id,16'd0,stream_errors,sensor_errors,last_tx_fid,last_tx_tick,res_flags,res_class,res_roi,res_frame,res_bbox,res_score,res_tick,last_cfg,reply_value,16'd0};
- assign status_data[1535:1024]=V27?{32'h56323721,8'd1,8'd0,16'd0,diag,
+ assign status_data[1535:1024]=V27?{32'h56323721,8'd1,8'd1,8'd38,ae_target_mean,diag,
   {5'd0,cfg_edge_low},{5'd0,cfg_edge_high},{5'd0,cfg_sketch_low},{5'd0,cfg_sketch_high},
-  {6'd0,cfg_edge_width},{6'd0,cfg_sketch_width},neutrals,awb_reason,{4'd0,awb_regions},192'd0}:512'd0;
+  {6'd0,cfg_edge_width},{6'd0,cfg_sketch_width},neutrals,awb_reason,{4'd0,awb_regions},
+  32'h5354524d,8'd1,{2'd0,stream_history},{2'd0,stream_last},stream_recovery,
+  source_bad_groups,stream_bad_fid,stream_bad_pixels,{5'd0,digital_gain},pid_flags,8'hae}:512'd0;
  assign status_valid=(reply_valid||fe_delayed||tx_delayed||result_pending||heartbeat==10000000)&&status_ready;
+endmodule
+
+// Keep this module with its registered parent, including in GUI builds.
+// Error counters are historical; o_fault describes the current stream health.
+module cvp_stream_health #(parameter W=1280,H=720)(
+ input clk,rst_n,input [4:0] i_errors,
+ input i_valid,i_sof,i_eof,input [31:0] i_fid,
+ output reg o_fault,output reg [31:0] o_errors,
+ output reg [5:0] o_history,o_last,output [7:0] o_recovery,
+ output reg [31:0] o_bad_fid,o_bad_pixels
+);
+ localparam PIXELS=W*H;
+ localparam CW=$clog2(PIXELS+2);
+ reg [CW-1:0] pixels;
+ reg active,bad_since_eof,one_clean;
+ wire [CW-1:0] next_pixels=i_sof?1:pixels<PIXELS+1?pixels+1'b1:pixels;
+ wire complete=i_valid&&i_eof&&(active||i_sof)&&next_pixels==PIXELS;
+ wire shape_error=i_valid&&((i_sof&&active)||(i_eof&&!complete));
+ wire [5:0] all_errors={shape_error,i_errors};
+ wire event_error=|all_errors;
+ assign o_recovery={6'd0,one_clean,o_fault};
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin
+   pixels<=0;active<=0;bad_since_eof<=0;one_clean<=0;
+   o_fault<=0;o_errors<=0;o_history<=0;o_last<=0;o_bad_fid<=0;o_bad_pixels<=0;
+  end else begin
+   if(i_valid)begin
+    if(i_sof)begin active<=1;pixels<=1;end
+    else if(active)pixels<=next_pixels;
+    if(i_eof)begin
+     active<=0;pixels<=0;bad_since_eof<=0;
+     if(o_fault&&complete&&!bad_since_eof&&!event_error)begin
+      if(one_clean)begin o_fault<=0;one_clean<=0;end
+      else one_clean<=1;
+     end else if(o_fault)one_clean<=0;
+    end
+   end
+   // Error priority includes a collision with the second recovery EOF.
+   if(event_error)begin
+    o_fault<=1;bad_since_eof<=!(i_valid&&i_eof);one_clean<=0;
+    if(o_errors!=32'hffffffff)o_errors<=o_errors+1'b1;
+    o_history<=o_history|all_errors;o_last<=all_errors;
+    o_bad_fid<=i_fid;o_bad_pixels<=i_valid?next_pixels:pixels;
+   end
+  end
+ end
 endmodule

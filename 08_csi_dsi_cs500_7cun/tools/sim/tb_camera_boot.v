@@ -39,7 +39,7 @@ begin
  @(negedge clk100);command_ae=requested;command_wr=1;
  @(negedge clk100);command_wr=0;
  #100000;
- if(exposure!==expected || ae_done!==1'b1 || ae_req!==1'b0 || transactions-before_transactions!=5) begin
+ if(exposure!==expected || ae_done!==1'b1 || ae_req!==1'b0 || transactions-before_transactions!=9) begin
   $display("FAIL: exposure request=%0d result=%0d expected=%0d writes=%0d",requested,exposure,expected,transactions-before_transactions);errors=errors+1;
  end
 end

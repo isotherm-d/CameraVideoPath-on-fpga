@@ -1,0 +1,12 @@
+{
+  "baseline": "v34-candidate PID prior to v35 timing pipeline",
+  "release_manifest": "../../../../releases/v34-candidate/manifest.json",
+  "original_source_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v": "93aa5d5aed9a39e10f1d24140f38d8691a8669eb239b4f4b2b247e3c0f973659"
+  },
+  "frozen_source_sha256": {
+    "cvp_ae_control_v34_gold.v": "1ea0908d21541cbcd03a17a70d40f1fa215294c4c463dee4318707c67e4b2b15"
+  },
+  "transform": "Only module identifier cvp_ae_control renamed cvp_ae_control_v34_gold; all other bytes unchanged.",
+  "v34_release_source_hash_matched": true
+}

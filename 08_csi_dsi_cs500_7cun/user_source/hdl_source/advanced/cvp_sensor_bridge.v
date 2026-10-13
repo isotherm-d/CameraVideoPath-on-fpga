@@ -4,11 +4,13 @@ module cvp_sensor_bridge(
  input clk,rst_n,i_valid,input [15:0] i_exp,input [7:0] i_gain,
  output o_busy,output reg [15:0] o_exp,output reg [7:0] o_gain,
  output reg o_done,output reg o_error,
+ output reg [15:0] o_request_id,o_done_id,
  input cfg_clk,cfg_rst_n,i_cfg_done,i_ae_done,i_iic_error,
  output reg o_req,output reg [15:0] o_cfg_exp,output reg [15:0] o_cfg_gain
 );
  reg pending,outstanding,req_toggle,ack_toggle,ack1,ack2,ack_error;
  reg [15:0] queued_exp,held_exp;reg [7:0] queued_gain,held_gain;
+ reg [15:0] queued_id,held_id;
  reg rq1,rq2,seen;reg [1:0] phase;reg [20:0] timeout;
  reg [15:0] exp1,exp2;reg [7:0] gain1,gain2;
  assign o_busy=pending||outstanding;
@@ -17,15 +19,19 @@ module cvp_sensor_bridge(
    pending<=1;outstanding<=0;req_toggle<=0;ack1<=0;ack2<=0;
    queued_exp<=500;queued_gain<=108;held_exp<=500;held_gain<=108;
    o_exp<=500;o_gain<=108;o_done<=0;o_error<=0;
+   queued_id<=0;held_id<=0;o_request_id<=0;o_done_id<=0;
   end else begin
    ack1<=ack_toggle;ack2<=ack1;o_done<=0;
-   if(!outstanding&&pending)begin held_exp<=queued_exp;held_gain<=queued_gain;
+   if(!outstanding&&pending)begin held_exp<=queued_exp;held_gain<=queued_gain;held_id<=queued_id;
     req_toggle<=~req_toggle;outstanding<=1;pending<=0;end
    if(outstanding&&ack2==req_toggle)begin
-    outstanding<=0;o_done<=1;o_error<=ack_error;
+    outstanding<=0;o_done<=1;o_error<=ack_error;o_done_id<=held_id;
     if(!ack_error)begin o_exp<=held_exp;o_gain<=held_gain;end
    end
-   if(i_valid)begin queued_exp<=i_exp;queued_gain<=i_gain;pending<=1;end
+   if(i_valid)begin
+    queued_exp<=i_exp;queued_gain<=i_gain;pending<=1;
+    queued_id<=o_request_id+1'b1;o_request_id<=o_request_id+1'b1;
+   end
   end
  end
  always @(posedge cfg_clk or negedge cfg_rst_n)begin

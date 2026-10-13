@@ -42,7 +42,7 @@ class App:
         self.ae=tk.BooleanVar(value=False)
         self.toggle(panel,"自动曝光",self.ae,lambda:self.submit({1:int(self.ae.get())}))
         self.exp=self.scale(panel,"手动曝光设定（半行，62～1800）",62,1800,500,lambda:self.manual_exposure())
-        self.sensor_gain=self.scale(panel,"手动增益设定（档位16～143）",16,143,108,lambda:self.manual_gain())
+        self.sensor_gain=self.scale(panel,"手动模拟增益（档位16～143）",16,143,108,lambda:self.manual_gain())
         label("白平衡模式")
         self.wb=ttk.Combobox(panel,values=("标定预设","色温 K","手动 RGB","自动场景"),state="readonly",width=28)
         self.wb.current(0)
@@ -187,7 +187,8 @@ class App:
                     self.delays.append(delay);self.last_measurement=key
                 lat_text+=f" | 平均 {np.mean(self.delays):.2f} / P95 {np.percentile(self.delays,95):.2f} ms"
         if state and state["flags"]&32:
-            lat_text="数据流异常，已停止显示；请复位采集"
+            lat_text=("数据流异常，等待连续完整帧恢复" if state.get('stream_diag_version')==1
+                      else "数据流异常，已停止显示；请复位采集")
 
         if state:
             stale=now-state["received_ns"]>1e9

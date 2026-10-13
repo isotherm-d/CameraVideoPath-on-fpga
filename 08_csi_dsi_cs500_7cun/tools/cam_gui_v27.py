@@ -4,7 +4,7 @@ import time
 from tkinter import ttk
 from cam_gui_v26 import App as BaseApp
 from v27_client import V27Control
-from v27_protocol import profile_fields,DEFAULT_PROFILES
+from v27_protocol import profile_fields,DEFAULT_PROFILES,stream_error_text
 
 class App(BaseApp):
     CONTROL_CLASS=V27Control
@@ -113,9 +113,19 @@ class App(BaseApp):
         failure='无' if state['last_error_code']==0 else (
             f"{'启动' if flags&64 else '运行期'} 0x{state['last_register']:04X}，字节{state['last_byte']}，"
             f"{('NACK' if state['last_error_code']==1 else '超时')}")
+        stream_detail=''
+        if state.get('stream_diag_version')==1:
+            stream_detail=(f"\n流状态：{'恢复等待' if state['flags']&32 else '正常'}；"
+                           f"最近：{stream_error_text(state['stream_error_last'])}")
+            if state['stream_error_history']&1:
+                stream_detail+=f"\n最近异常RAW组数：{state['stream_bad_groups']}（应为230400）"
+        if 'ae_digital_gain_q8' in state:
+            stream_detail+=f"\nAE数字增益：{state['ae_digital_gain_q8']/256:.3f}倍"
+        if 'ae_target_mean' in state:
+            stream_detail+=f"\n硬件 v{state['hardware_build']}；AE目标亮度：{state['ae_target_mean']}"
         self.actual.configure(text=
             f"实际配置 {state['cfg_id']}，图像配置 {state['frame_cfg_id']}\n"
-            f"实际已写曝光 {state['sensor_exp']} 半行；增益档 {state['sensor_gain']}\n"
+            f"实际已写曝光 {state['sensor_exp']} 半行；模拟增益档 {state['sensor_gain']}\n"
             f"实际 R/G/B：{state['gain_r']}/{state['gain_g']}/{state['gain_b']}\n"
             f"平均亮度 {state['mean']}；AWB {reasons.get(state['awb_reason'],'状态未知')}\n"
             f"中性样本 {state['neutral_count']}；区域掩码 {state['awb_regions']:X}\n"
@@ -123,7 +133,7 @@ class App(BaseApp):
             f"当前参数写入：{current}；历史NACK {state['runtime_nacks']} / 超时 {state['runtime_timeouts']}\n"
             f"最近失败：{failure}\n"
             f"边缘低/高：{state['edge_low']}/{state['edge_high']}；素描：{state['sketch_low']}/{state['sketch_high']}\n"
-            f"流错误 {state['stream_errors']}，失败写入请求 {state['sensor_errors']}")
+            f"流错误 {state['stream_errors']}，失败写入请求 {state['sensor_errors']}"+stream_detail)
 
     def quit(self):
         if self.threshold_job:self.root.after_cancel(self.threshold_job);self.threshold_job=None

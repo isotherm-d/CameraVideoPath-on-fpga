@@ -1,0 +1,9 @@
+{
+  "baseline": "v33 prior to PID/digital-gain changes",
+  "original_source_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v": "92657499124e4d748e19bd39d172bcfb0b253a458bc95cf5616b5a3d9ddf8598",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_advanced.v": "47953095ec2d8fb720045a354ddb06b8e3c3a3eec0b0d9dc72a1730ae83da6e5",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_gain11.v": "a168d76963bc7b272eb3ba72ac33d915055f3c30856c9c7ca94c1fd41b38f844",
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_sensor_bridge.v": "af6f1f7fd7fdd20e3d6a66d91ef06f49dc11dcd69a1bacd715210bbcf88422a9"
+  }
+}

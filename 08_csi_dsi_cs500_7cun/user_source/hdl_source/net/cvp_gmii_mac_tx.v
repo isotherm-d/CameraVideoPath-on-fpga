@@ -32,6 +32,7 @@
  */
 module cvp_gmii_mac_tx #(
     parameter integer ENABLE_STATUS=0,
+    parameter integer PACKET_DESCRIPTORS=0,
     parameter integer STATUS_BITS=1024,
     parameter integer DATA_BYTES     = 1440,   // 每包像素字节（须被 3 整除）
     parameter integer PKTS_PER_FRAME = 1920,   // 一帧的包数（IMG_W*IMG_H*3/DATA_BYTES）
@@ -47,6 +48,7 @@ module cvp_gmii_mac_tx #(
     input wire i_status_valid,output reg o_status_pop,
     input wire [15:0] i_status_rdata,input wire i_status_bank,output wire [7:0] o_status_raddr,
     input wire i_frame_valid,input wire [31:0] i_frame_id,output reg o_frame_pop,
+    input wire [31:0] i_packet_offset,input wire [10:0] i_packet_bytes,input wire i_packet_drop,
     output reg o_frame_done,output reg [31:0] o_frame_done_id,
     input  wire        i_rst,        // 高有效（顶层已按域同步）
 
@@ -251,8 +253,10 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
     // FIFO 弹出（组合）：本拍弹、下拍 rd_valid、同拍被 mux 消费的位置对齐
     //   pop 位置区间 [PAY_BEG-1, FCS_BEG-2] → rd_valid 落在 [PAY_BEG, FCS_BEG-1]
     //   心跳包不从 FIFO 取数
-    assign o_rd_en = r_sending && !r_hb_mode &&
-                     (r_idx >= PAY_BEG - 1) && (r_idx < FCS_BEG - 1);
+    reg dropping;reg [10:0] drop_issue,drop_remaining;
+    wire drop_read=dropping&&drop_issue!=0&&!i_rd_empty;
+    assign o_rd_en = drop_read||(r_sending && !r_hb_mode &&
+                     (r_idx >= PAY_BEG - 1) && (r_idx < FCS_BEG - 1));
 
     reg [7:0] r_tx_byte;
     reg       r_tx_en;
@@ -275,22 +279,33 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
             r_cred_pop  <= 7'd0;
             r_hb_cnt    <= 26'd0;
             r_hb_mode   <= 1'b0;r_status_bank<=0;active_frame_id<=0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;o_frame_done_id<=0;
+            dropping<=0;drop_issue<=0;drop_remaining<=0;
         end else begin
             o_tx_pkt  <= 1'b0;
             o_hb_pkt  <= 1'b0;o_status_pop<=0;o_frame_pop<=0;o_frame_done<=0;
 
-            if (!r_sending) begin
+            if(dropping)begin
+                r_tx_en<=0;
+                if(drop_read)drop_issue<=drop_issue-1'b1;
+                if(i_rd_valid)begin
+                    drop_remaining<=drop_remaining-1'b1;
+                    if(drop_remaining==1)dropping<=0;
+                end
+            end else if (!r_sending) begin
                 r_tx_en <= 1'b0;
                 /* 心跳计时：空闲每拍推进；发包（正常/心跳）时清零 */
                 if (r_hb_cnt < HB_CYCLES)
                     r_hb_cnt <= r_hb_cnt + 26'd1;
                 if (r_ifg != IFG_CYC[4:0]) begin
                     r_ifg <= r_ifg + 5'd1;
+                end else if(PACKET_DESCRIPTORS&&i_frame_valid&&i_packet_drop)begin
+                    dropping<=i_packet_bytes!=0;drop_issue<=i_packet_bytes;drop_remaining<=i_packet_bytes;o_frame_pop<=1;
                 end else if(ENABLE_STATUS && i_status_valid)begin
                     r_sending<=1;r_idx<=0;r_crc<=32'hffffffff;o_tx_pkt<=1;
                     r_hb_mode<=1;r_status_bank<=i_status_bank;o_status_pop<=1;
                     r_app_hdr<={8'd0,8'h26,32'd0};
-                end else if (w_cred_avail >= 7'd1 && (!ENABLE_STATUS||r_pkt_seq!=0||i_frame_valid)) begin
+                end else if (w_cred_avail >= 7'd1 &&
+                      (PACKET_DESCRIPTORS?i_frame_valid:(!ENABLE_STATUS||r_pkt_seq!=0||i_frame_valid))) begin
                     /* 开新包：锁存应用头，取一块信用，推进包/帧序
                      * (v11d: 正常发包不再清心跳计时 —— 心跳改为每 0.5s 无条件
                      *  发一包, 否则视频连续时永远静默, 诊断 scan word 无法上报) */
@@ -300,9 +315,13 @@ reg [PKT_SEQ_W-1:0] r_pkt_seq;     // 帧内包序 0..PKTS_PER_FRAME-1
                     o_tx_pkt   <= 1'b1;
                     r_hb_mode  <= 1'b0;
                     r_cred_pop <= r_cred_pop + 7'd1;
-                    if(ENABLE_STATUS&&r_pkt_seq==0)begin active_frame_id<=i_frame_id;o_frame_pop<=1;end
-                    r_app_hdr  <= {(ENABLE_STATUS?(r_pkt_seq==0?i_frame_id[7:0]:active_frame_id[7:0]):r_frame_seq), 8'h01, r_off[31:24], r_off[23:16],
-                                   r_off[15:8], r_off[7:0]};
+                    if(PACKET_DESCRIPTORS)begin
+                        active_frame_id<=i_frame_id;o_frame_pop<=1;
+                        r_app_hdr<={i_frame_id[7:0],8'h01,i_packet_offset};
+                    end else begin
+                        if(ENABLE_STATUS&&r_pkt_seq==0)begin active_frame_id<=i_frame_id;o_frame_pop<=1;end
+                        r_app_hdr<={(ENABLE_STATUS?(r_pkt_seq==0?i_frame_id[7:0]:active_frame_id[7:0]):r_frame_seq),8'h01,r_off};
+                    end
                     if (r_pkt_seq == PKTS_PER_FRAME - 1) begin
                         r_pkt_seq   <= 'd0;
                         r_frame_seq <= r_frame_seq + 8'd1;

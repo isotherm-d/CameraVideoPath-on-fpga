@@ -32,7 +32,7 @@ module cvp_style #(parameter W=1280,H=720)(
  reg [89:0] active;
  wire [89:0] current=ws?pend:active;
  wire medv,medfs,sobv,sobfs;wire [23:0] medrgb,sobrgb;wire [10:0] magnitude;
- cvp_fx_median med(.i_clk(clk),.i_rst_n(rst_n),.i_valid(wv),.i_frame_start(ws),
+ cvp_fx_median #(.CHANNEL_BITS(3)) med(.i_clk(clk),.i_rst_n(rst_n),.i_valid(wv),.i_frame_start(ws),
  .i_p00(a[23:0]),.i_p01(b[23:0]),.i_p02(c[23:0]),.i_p10(d[23:0]),.i_p11(e[23:0]),.i_p12(f[23:0]),
  .i_p20(g[23:0]),.i_p21(h[23:0]),.i_p22(j[23:0]),.o_valid(medv),.o_frame_start(medfs),.o_rgb(medrgb));
  cvp_fx_sobel #(.IMG_W(W),.POST_FILTER(0)) sob(.i_clk(clk),.i_rst_n(rst_n),.i_valid(wv),

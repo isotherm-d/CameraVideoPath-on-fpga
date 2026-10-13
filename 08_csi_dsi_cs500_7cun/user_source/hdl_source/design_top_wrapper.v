@@ -36,34 +36,14 @@ module design_top_wrapper (
     inout wire        IO_rx_clk_pad_n, 
     inout wire        IO_rx_clk_pad_p, 
     inout wire[3:0]   IO_rx_data_pad_n,
-    inout wire[3:0]   IO_rx_data_pad_p,
+    inout wire[3:0]   IO_rx_data_pad_p
 
-    inout wire        IO_tx_clk_pad_n, 
-    inout wire        IO_tx_clk_pad_p, 
-    inout wire[3:0]   IO_tx_data_pad_n,
-    inout wire[3:0]   IO_tx_data_pad_p,
 
-    output wire[12:0] ddr_addr,
-    output wire[ 1:0] ddr_ba,
-    output wire[ 0:0] ddr_cke,
-    output wire[ 0:0] ddr_odt,
-    output wire[ 0:0] ddr_cs_n,
-    output wire       ddr_ras_n,
-    output wire       ddr_cas_n,
-    output wire       ddr_we_n,
-    output wire[ 0:0] ddr_ck_p,
-    output wire[ 0:0] ddr_ck_n,
-    inout wire[1:0]   ddr_dm,
-    inout wire[15:0]  ddr_dq,
-    inout wire[1:0]   ddr_dqs_p,
-    inout wire[1:0]   ddr_dqs_n   
 );
 
 
     wire        	S_100m_clk;
     wire        	S_24m_clk;
-    wire        	S_dpll_ref_clk;
-	wire        	S_10m_clk;
 		
 	wire        	S_pll_lock;
     wire        	S_rst_n;
@@ -113,94 +93,7 @@ module design_top_wrapper (
 	wire			S_raw_tlast ;
 	wire 			S_raw_tvalid;
 	wire 			S_raw_tuser ;
-	
-	wire			S_ISP_O_tready;
-	wire [127:0]	S_ISP_O_tdata ;
-	wire 			S_ISP_O_tlast ;
-	wire 			S_ISP_O_tuser ;
-	wire 			S_ISP_O_tvalid; 
 
-	// ---- 显示通路: 720p 流居中裁 1024x600 给 DSI 屏(rgb_frame_crop) ----
-	wire 			S_crop_tuser;
-	wire 			S_crop_tvalid;
-	wire [127:0]	S_crop_tdata;
-	
-
-    wire        S_ddr_clk;
-    wire        S_dsi_tx_clk;
-
- 
-    reg[31:0]   S_delay_cnt;
-    wire        S_lp_config_start;
-
-
-    wire        S_vi_128b_frame_start;
-    wire        S_vi_128b_valid;      
-    wire[127:0] S_vi_128b_data;    
-    
-    wire        S_video_out_rd_busy;
-    wire        S_video_in_wr_busy; 
-    wire[1:0]   S_video_out_rp;     
-
-    wire        S_ddr_user_wr_en;       
-    wire        S_ddr_user_rd_en;       
-    wire[24:0]  S_ddr_user_addr;        
-    wire[127:0] S_ddr_user_wr_data;     
-    wire        S_ddr_user_ready;       
-    wire        S_ddr_user_rd_valid;    
-    wire[127:0] S_ddr_user_rd_data;     
-
-    wire        S_vi_ddr_wr_en;   
-    wire[24:0]  S_vi_ddr_wr_addr; 
-    wire[127:0] S_vi_ddr_wr_data;
-    wire        S_vi_ddr_wr_ready;
-
-    wire        S_vo_ddr_rd_en;   
-    wire[24:0]  S_vo_ddr_rd_addr; 
-    wire        S_vo_ddr_rd_ready;
-
-    wire        S_init_calib_complete; 
-    wire[24:0]  S_mc_app_addr;          
-    wire[2:0]   S_mc_app_cmd;           
-    wire        S_mc_app_en;            
-    wire[127:0] S_mc_app_wdf_data;      
-    wire        S_mc_app_wdf_end;       
-    wire[15:0]  S_mc_app_wdf_mask;      
-    wire        S_mc_app_wdf_wren;      
-    wire[127:0] S_mc_app_rd_data;       
-    wire        S_mc_app_rd_data_end;   
-    wire        S_mc_app_rd_data_valid; 
-    wire        S_mc_app_rdy;           
-    wire        S_mc_app_wdf_rdy;       
-
-    wire        S_vs_vsync; 
-    wire        S_vs_hsync; 
-    wire        S_vs_de;    
-    wire[23:0]  S_vs_data;  
-    
-    wire        S_32b_vsync; 
-    wire        S_32b_hsync; 
-    wire        S_32b_de;    
-    wire[31:0]  S_32b_data;  
-
-    wire        S_hs_tx_valid; 
-    wire[31:0]  S_hs_tx_data;  
-    wire        S_hs_tx_last;  
-    wire        S_hs_tx_ready; 
-
-    wire        S_lp_config_done;   
-    wire        S_mipi_tx_dpll_locked;
-
-    wire        S_lp_tx_p;
-    wire        S_lp_tx_n;
-
-    wire        S_vdieo_rd_en;  
-    wire[23:0]  S_video_rd_data;
-
-    wire        S_mixer_vsync;
-    wire        S_mixer_hsync;
-    wire        S_mixer_de;
-    wire[23:0]  S_mixer_data;
 
     // 方案C(2026-10-11): UART 诊断链(双 cam_stats + cam_report_uart, 原 206-212 行快照线
     // 与 819-878 行三个实例)已移除, 省 ~1337 FF; 链路诊断由 eth_dbg 的 UDP 状态包覆盖。
@@ -234,22 +127,9 @@ module design_top_wrapper (
     end
 
 
-    assign O_screen_pwm = 1'b1;
+    // Network-only build: the local DSI screen and its DDR buffer are removed.
+    assign O_screen_pwm = 1'b0; // Keep the backlight off.
 
-
-    always @(posedge S_10m_clk or negedge S_mipi_tx_dpll_locked) begin
-        if(!S_mipi_tx_dpll_locked)
-            S_delay_cnt <= 'd0;
-        else
-            if(S_delay_cnt >= 'd10000000)
-                S_delay_cnt <= S_delay_cnt;
-            else
-                S_delay_cnt <= S_delay_cnt + 'd1;
-    end
-
-    assign S_lp_config_start = S_delay_cnt >= 'd200 ? 1'b1 : 1'b0;
-	
-	
     assign S_rst_n 		= S_pll_lock;
 	
 	assign O_cam_rst 	= 1'b1;
@@ -264,8 +144,8 @@ module design_top_wrapper (
         
         .clk0_out    ( S_100m_clk        ),
         .clk1_out    ( S_24m_clk         ),
-        .clk2_out    ( S_dpll_ref_clk    ),
-		.clk3_out    ( S_10m_clk         ),
+        .clk2_out    (                   ),
+		.clk3_out    (                   ),
 
         .lock        ( S_pll_lock        )
 
@@ -409,24 +289,6 @@ line_retimer #(
 );
 
 
-//cwc1 cwc1_Inst
-//  (
-//      .probe0(S_axis_tuser),
-//      .probe1(S_axis_tvalid),
-//      .probe2(S_axis_tlast),
-//      .probe3(S_axis_tdata),
-//      .probe4(S_ISP_O_tuser),
-//      .probe5(S_ISP_O_tvalid),
-//      .probe6(S_ISP_O_tlast),
-//      .probe7(S_ISP_O_tdata),
-//      .probe8 (S_raw_tdata ),
-//      .probe9 (S_raw_tlast ),
-//      .probe10(S_raw_tvalid),
-//      .probe11(S_raw_tuser ),
-//      .clk(S_csi_rx_clk)
-//  );
-
-
 // v13: 自研 ISP(cvp_proc 齿轮箱+DPC+demosaic → cvp_awb → pack_4)替换米联客 isp_top
 // (米联客 demosaic 的 zhenghe 行重整机制存在逐行相位滑移, 图像每行错 4 像素;
 //  cvp 系列为确定性流水, 带自检, 接口: 40bit RAW10 组进 -> 96bit RGB 组出)
@@ -514,302 +376,7 @@ pack_4 u_pack4 (
     .O_tuser       ( S_awb_tuser  )
 );
 
-// DSI/DDR 主通路: 96bit -> 128bit(原 isp_top 内部转换, 顶层直接例化)
-data_96bit_to_128bit u_data_96bit_to_128bit(
-    .I_clk              ( S_100m_clk    ),
-    .I_rst_n            ( S_rst_n       ),
-    .I_96b_frame_start  ( S_awb_tuser   ),
-    .I_96b_valid        ( S_awb_tvalid  ),
-    .I_96b_data         ( S_awb_tdata   ),
-    .O_128b_frame_start ( S_ISP_O_tuser ),
-    .O_128b_valid       ( S_ISP_O_tvalid),
-    .O_128b_data        ( S_ISP_O_tdata )
-);
-
-
-    // 传感器输出 1024x600 = DSI 屏原生分辨率, 裁剪模块为参数化直通(IN==OUT);
-    // 网口走下面的 O_awb 全幅观测口, 不经过本模块
-    rgb_frame_crop #(
-        .IN_W  ( 1280 ),
-        .IN_H  (  720 ),
-        .OUT_W ( 1024 ),
-        .OUT_H (  600 )
-    ) u_rgb_frame_crop (
-        .I_clk    ( S_csi_rx_clk ),
-        .I_rst_n  ( S_rst_n      ),
-
-        .I_tuser  ( S_ISP_O_tuser  ),
-        .I_tvalid ( S_ISP_O_tvalid ),
-        .I_tdata  ( S_ISP_O_tdata  ),
-
-        .O_tuser  ( S_crop_tuser  ),
-        .O_tvalid ( S_crop_tvalid ),
-        .O_tdata  ( S_crop_tdata  )
-    );
-
-
-    video_in u_video_in(
-        .I_rst_n              (  S_rst_n             ),
-
-        .I_camera_clk         ( S_100m_clk           ),
-        .I_camera_frame_start ( S_crop_tuser  ),
-        .I_camera_valid       ( S_crop_tvalid ),
-        .I_camera_data        ( S_crop_tdata  ),
-        .I_mipi_rx_error      ( 1'b0			      ),
-
-        .I_ddr_clk            ( S_ddr_clk             ),
-		.I_display_pause      ( 1'b0                  ),
-        .I_video_out_rd_busy  ( S_video_out_rd_busy   ),
-        .O_video_in_wr_busy   ( S_video_in_wr_busy    ),
-        .O_video_out_rp       ( S_video_out_rp        ),
-
-        .O_ddr_user_wr_en     ( S_vi_ddr_wr_en        ),
-        .O_ddr_user_addr      ( S_vi_ddr_wr_addr      ),
-        .O_ddr_user_wr_data   ( S_vi_ddr_wr_data      ),
-        .I_ddr_user_ready     ( S_ddr_user_ready      )
-    );
-
-
-
-    assign S_ddr_user_wr_en    = S_vi_ddr_wr_en;
-
-    assign S_ddr_user_rd_en    = S_vo_ddr_rd_en;
-
-    assign S_ddr_user_addr     = S_vi_ddr_wr_en ? S_vi_ddr_wr_addr :
-                                 S_vo_ddr_rd_en ? S_vo_ddr_rd_addr : 'd0;
-
-    assign S_ddr_user_wr_data  = S_vi_ddr_wr_data;
-
-
-    video_out u_video_out(
-        .I_rst_n             ( S_rst_n              ),
-        .I_ddr_clk           ( S_ddr_clk            ),
- 
-        .O_video_out_rd_busy ( S_video_out_rd_busy  ),
-        .I_video_in_wr_busy  ( S_video_in_wr_busy   ),
-        .I_video_out_rp      ( S_video_out_rp       ),
- 
-        .O_ddr_user_rd_en    ( S_vo_ddr_rd_en       ),
-        .O_ddr_user_addr     ( S_vo_ddr_rd_addr     ),
-        .I_ddr_user_ready    ( S_ddr_user_ready     ),
-        .I_ddr_user_rd_valid ( S_ddr_user_rd_valid  ),
-        .I_ddr_user_rd_data  ( S_ddr_user_rd_data   ),
-
-        .I_dsi_clk           ( S_dsi_tx_clk         ),
-        .I_video_vsync       ( S_vs_vsync           ),
-        .I_video_rd_en       ( S_vdieo_rd_en        ),
-        .O_vdieo_data        ( S_video_rd_data      )
-    );
-
-
-
-    mc_to_user_interface u_mc_to_user_interface(
-        .I_clk                   ( S_ddr_clk               ),
-        .I_rst_n                 ( S_rst_n                 ),
-
-        .I_ddr_user_wr_en        ( S_ddr_user_wr_en        ),
-        .I_ddr_user_rd_en        ( S_ddr_user_rd_en        ),
-        .I_ddr_user_addr         ( S_ddr_user_addr         ),
-        .I_ddr_user_wr_data      ( S_ddr_user_wr_data      ),
-        .O_ddr_user_ready        ( S_ddr_user_ready        ),
-        .O_ddr_user_rd_valid     ( S_ddr_user_rd_valid     ),
-        .O_ddr_user_rd_data      ( S_ddr_user_rd_data      ),
-            
-        .O_mc_app_en             ( S_mc_app_en             ),
-        .O_mc_app_addr           ( S_mc_app_addr           ),
-        .O_mc_app_cmd            ( S_mc_app_cmd            ),
-        .I_mc_app_rdy            ( S_mc_app_rdy            ),
-        .O_mc_app_wdf_wren       ( S_mc_app_wdf_wren       ),
-        .O_mc_app_wdf_data       ( S_mc_app_wdf_data       ),
-        .O_mc_app_wdf_end        ( S_mc_app_wdf_end        ),
-        .O_mc_app_wdf_mask       ( S_mc_app_wdf_mask       ),
-        .I_mc_app_wdf_rdy        ( S_mc_app_wdf_rdy        ),
-        .I_mc_app_rd_data        ( S_mc_app_rd_data        ),
-        .I_mc_app_rd_data_end    ( S_mc_app_rd_data_end    ),
-        .I_mc_app_rd_data_valid  ( S_mc_app_rd_data_valid  )
-    );
-
-
-
-    ph1p35_324_ddr_wrapper u_ph1p35_324_ddr_wrapper(
-        .I_sys_clk              ( I_sys_clk              ),
-        .I_sys_rst_n            ( S_rst_n                ),
-
-        .O_ddr_clk              ( S_ddr_clk              ),
-        .O_init_calib_complete  ( S_init_calib_complete  ),
-        .I_mc_app_addr          ( S_mc_app_addr          ),
-        .I_mc_app_cmd           ( S_mc_app_cmd           ),
-        .I_mc_app_en            ( S_mc_app_en            ),
-        .I_mc_app_wdf_data      ( S_mc_app_wdf_data      ),
-        .I_mc_app_wdf_end       ( S_mc_app_wdf_end       ),
-        .I_mc_app_wdf_mask      ( S_mc_app_wdf_mask      ),
-        .I_mc_app_wdf_wren      ( S_mc_app_wdf_wren      ),
-        .O_mc_app_rd_data       ( S_mc_app_rd_data       ),
-        .O_mc_app_rd_data_end   ( S_mc_app_rd_data_end   ),
-        .O_mc_app_rd_data_valid ( S_mc_app_rd_data_valid ),
-        .O_mc_app_rdy           ( S_mc_app_rdy           ),
-        .O_mc_app_wdf_rdy       ( S_mc_app_wdf_rdy       ),
-
-        .ddr_addr               ( ddr_addr               ),
-        .ddr_ba                 ( ddr_ba                 ),
-        .ddr_cke                ( ddr_cke                ),
-        .ddr_odt                ( ddr_odt                ),
-        .ddr_cs_n               ( ddr_cs_n               ),
-        .ddr_ras_n              ( ddr_ras_n              ),
-        .ddr_cas_n              ( ddr_cas_n              ),
-        .ddr_we_n               ( ddr_we_n               ),
-        .ddr_ck_p               ( ddr_ck_p               ),
-        .ddr_ck_n               ( ddr_ck_n               ),
-        .ddr_dm                 ( ddr_dm                 ),
-        .ddr_dq                 ( ddr_dq                 ),
-        .ddr_dqs_p              ( ddr_dqs_p              ),
-        .ddr_dqs_n              ( ddr_dqs_n              )
-    );
-
-
-
-    video_source #(
-        .HTOTAL ( 1344  ),
-        .HSA    ( 24    ),
-        .HBP    ( 136   ),
-        .HFP    ( 160   ),
- 
-        .VTOTAL ( 635 ),
-        .VSA    ( 2    ),
-        .VBP    ( 21   ),
-        .VFP    ( 12   )
-    )u_video_source(
-        .I_clk          ( S_dsi_tx_clk     ),
-        .I_rst          ( ~S_rst_n         ),
-
-        .I_config_done  ( S_lp_config_done ),
-
-        .O_rgb24b_vsync ( S_vs_vsync       ),
-        .O_rgb24b_hsync ( S_vs_hsync       ),
-        .O_rgb24b_de    ( S_vs_de          ),
-        .O_rgb24b_data  ( S_vs_data        )
-    );
-
-
-    mixer u_mixer(
-        .I_clk           ( S_dsi_tx_clk    ),
-
-        .I_video_vsync   ( S_vs_vsync      ),
-        .I_video_hsync   ( S_vs_hsync      ),
-        .I_video_de      ( S_vs_de         ),
-
-        .O_vdieo_rd_en   ( S_vdieo_rd_en   ),
-        .I_video_rd_data ( S_video_rd_data ),
-
-        .O_mixer_vsync   ( S_mixer_vsync   ),
-        .O_mixer_hsync   ( S_mixer_hsync   ),
-        .O_mixer_de      ( S_mixer_de      ),
-        .O_mixer_data    ( S_mixer_data    )
-    );
-
-
-
-    rgb_24b_to_32b #(
-       .H_ACTIVE (1024)
-    )u_rgb_24b_to_32b(
-        .I_clk   ( S_dsi_tx_clk      ),
-        .I_rst   ( ~S_rst_n          ),
-
-        .I_vsync ( S_mixer_vsync     ),
-        .I_hsync ( S_mixer_hsync     ),
-        .I_de    ( S_mixer_de        ),
-        .I_data  ( S_mixer_data      ),
-                                               
-        .O_vsync ( S_32b_vsync       ),
-        .O_hsync ( S_32b_hsync       ),
-        .O_de    ( S_32b_de          ),
-        .O_data  ( S_32b_data        )
-    );
-
-
-    dsi_video_mode_packet #(
-       .H_ACTIVE (1024)
-    ) u_dsi_video_mode_packet(
-        .I_clk     ( S_dsi_tx_clk  ),
-        .I_rst     ( ~S_rst_n      ),
-    
-        .I_vsync   ( S_32b_vsync   ),
-        .I_hsync   ( S_32b_hsync   ),
-        .I_de      ( S_32b_de      ),
-        .I_data    ( S_32b_data    ),
-            
-        .O_hs_en   ( S_hs_tx_valid ),
-        .O_hs_data ( S_hs_tx_data  ),
-        .O_hs_last ( S_hs_tx_last  )
-    );
-
-
-
-    display_config_wrapper u_display_config_wrapper(
-        .I_clk          ( S_10m_clk         ),
-        .I_rst          ( ~S_rst_n          ),
-
-        .I_config_start ( S_lp_config_start ),
-        .O_config_done  ( S_lp_config_done  ),
-
-        .O_lp_tx_p      ( S_lp_tx_p         ),
-        .O_lp_tx_n      ( S_lp_tx_n         )
-    );
-
-
-    mipi_dphy_tx_over_ph1p_mipiio_wrapper#(
-        .DPHY_TX_LOCATION        ( "DPHY1"    ),
-        .BYTE_NUM                ( 1          ),
-        .LANE_NUM                ( 4          ),
-
-        .CLK_LANE_MODE           ( "CONTINUE" ),
-        .HS_OUTPUT_VOD           ( "200mV"    ),//"175mV","187.5mV","200mV","212.5mV","225mV","237.5mV","250mV","450mV"
-        .HS_OUTPUT_IMPEDANCE     ( "50ohm"    ),//"70ohm","64ohm","58ohm","54ohm","50ohm","47ohm","44ohm","41ohm"
-        .HS_OUTPUT_DE_EMPHASIS   ( "0dB"      ),//"0dB","1dB","2dB","3dB","4dB","5dB","6dB"
-
-        .CK_OUTPUT_DELAY         ( 0  ),
-        .L0_OUTPUT_DELAY         ( 0  ),
-        .L1_OUTPUT_DELAY         ( 0  ),
-        .L2_OUTPUT_DELAY         ( 0  ),
-        .L3_OUTPUT_DELAY         ( 0  ),
-
-        .DPLL_MULTI_RATIO        ( 20 ), //vco = 100*(20+1)=2100MHz, linerate = 1.05Gbps
-        .DPLL_DIV_RATIO          ( 1  ),
-
-        .T_DATA_LPX              ( 10 ),
-        .T_DATA_HS_PREPARE       ( 10 ),
-        .T_DATA_HS_ZERO          ( 20 ),
-        .T_DATA_HS_TRAIL         ( 10 ),
-        .T_CLK_LPX               ( 10 ),
-        .T_CLK_PREPARE           ( 10 ),
-        .T_CLK_ZERO              ( 10 ),
-        .T_CLK_PRE               ( 10 ),
-        .T_CLK_POST              ( 10 ),
-        .T_CLK_TRAIL             ( 10 )
-    )u_mipi_dphy_tx_over_ph1p_mipiio_wrapper(
-        .I_dphy_pll_ref_clk ( S_dpll_ref_clk        ),
-        .I_rst              ( ~S_rst_n              ),
-        .O_dpll_locked      ( S_mipi_tx_dpll_locked ),
-
-        .O_hs_tx_clk        ( S_dsi_tx_clk          ),
-        .I_hs_tx_valid      ( S_hs_tx_valid         ),
-        .I_hs_tx_data       ( S_hs_tx_data          ),
-        .I_hs_tx_last       ( S_hs_tx_last          ),
-        .O_hs_tx_ready      ( S_hs_tx_ready         ),
-
-        .I_lp_tx_p          ( S_lp_tx_p             ),
-        .I_lp_tx_n          ( S_lp_tx_n             ),
-   
-        .I_lp_rx_en         ( 1'b0                  ),
-        .O_lp_rx_p          (                       ),
-        .O_lp_rx_n          (                       ),
-    
-        .IO_tx_clk_pad_n    ( IO_tx_clk_pad_n       ),
-        .IO_tx_clk_pad_p    ( IO_tx_clk_pad_p       ),
-        .IO_tx_data_pad_n   ( IO_tx_data_pad_n      ),
-        .IO_tx_data_pad_p   ( IO_tx_data_pad_p      )
-    );
-
+// The packed RGB stream feeds Ethernet directly; no DDR/DSI dependency.
 
     // ---- 方案C: 原 CAM CHECK 三个实例(u_cam_stats/u_cam_stats_isp/u_cam_report)已移除 ----
     assign O_uart_tx = 1'b1;   // UART 空闲电平, 引脚约束保持不变

@@ -1,0 +1,33 @@
+# vsim -c -novopt -suppress 12110 -l tb_v27_network.log work.tb_v27_network work.PH1P_PHY_GSR -do "run -all; quit -f" 
+# Start time: 00:11:13 on Oct 13,2026
+# ** Warning: (vsim-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# //  ModelSim SE-64 2020.4 Oct 13 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim SE-64 and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Refreshing C:/Users/cqm87/Desktop/2026/tmp/v32_ae_smooth_regression_20261013/work.tb_v27_network
+# ** Warning: (vlog-8891) All optimizations are disabled because the -novopt option is in effect. This will cause your simulation to run very slowly. If you are using this switch to preserve visibility for Debug or PLI features, please see the User's Manual section on Preserving Object Visibility with vopt. -novopt option is now deprecated and will be removed in future releases.
+# Loading work.tb_v27_network
+# Loading work.cvp_eth_dbg
+# Loading work.cvp_async_fifo
+# Loading work.cvp_sync_fifo
+# Loading work.cvp_status_bridge
+# Loading work.cvp_gmii_mac_tx
+# Loading work.PH1P_LOGIC_HD_ODDR
+# Loading work.cvp_mdio_ro
+# Loading work.PH1P_PHY_GSR
+# run -all
+# TEST_RESULT PASS extended_status_and_explicit_frame_identity
+# ** Note: $finish    : C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/tools/sim/tb_v27_network.v(65)
+#    Time: 89704 ns  Iteration: 1  Instance: /tb_v27_network
+# End time: 00:11:14 on Oct 13,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 1

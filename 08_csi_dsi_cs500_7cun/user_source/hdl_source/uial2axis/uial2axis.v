@@ -47,20 +47,29 @@ module uial2axis #(
 *********************************************************/
   reg [13:0] hcnt;  //synthesis keep  
   reg [13:0] vcnt;  //synthesis keep  
+  reg sof_pending;
 /*********************************************************
 ******************5.combination declaration***************
 *********************************************************/
   assign axis_tdata  = I_data_valid ? I_data : 'b0;
   assign axis_tvalid = I_data_valid ? 1'b1 : 1'b0;
-  assign axis_tlast  = hcnt == IMG_WIDTH_4X - 1 && axis_tvalid ? 1'b1 : 1'b0;
-  assign axis_tuser  = vcnt == 'b0 && hcnt == 'b0 && axis_tvalid ? 1'b1 : 1'b0;
+  // Only native CSI start identifies a frame; pixel-count wrap cannot invent SOF.
+  assign axis_tuser  = axis_tvalid&&(I_data_start||sof_pending);
+  assign axis_tlast  = axis_tvalid&&((axis_tuser?14'd0:hcnt)==IMG_WIDTH_4X-1);
 /*********************************************************
 ******************6.sequential declaration****************
 *********************************************************/
 
   always @(posedge I_native_clk or negedge I_rst_n) begin
-    if (!I_rst_n || I_data_start) begin
+    if (!I_rst_n) begin
       hcnt <= 'b0;
+      sof_pending<=0;
+    end else if(I_data_start)begin
+      sof_pending<=!I_data_valid;
+      hcnt<=I_data_valid&&IMG_WIDTH_4X>1?14'd1:14'd0;
+    end else if(I_data_valid&&sof_pending)begin
+      sof_pending<=0;
+      hcnt<=IMG_WIDTH_4X>1?14'd1:14'd0;
     end else if (I_data_valid & hcnt < IMG_WIDTH_4X - 1) begin
       hcnt <= hcnt + 1'b1;
     end else if (I_data_valid & hcnt == IMG_WIDTH_4X - 1) begin
@@ -69,7 +78,7 @@ module uial2axis #(
   end
 
   always @(posedge I_native_clk or negedge I_rst_n) begin
-    if (!I_rst_n || I_data_start) begin
+    if (!I_rst_n || I_data_start || axis_tuser) begin
       vcnt <= 'b0;
     end else if (axis_tlast & vcnt == IMG_HEIGHT - 1) begin
       vcnt <= 'b0;

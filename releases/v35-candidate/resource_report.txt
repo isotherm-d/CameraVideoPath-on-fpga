@@ -1,0 +1,185 @@
+standard
+***Report Model: design_top_wrapper Device: PH1P35MDG324***
+
+Design Statistics
+#IO                        32   out of    160   20.00%
+  #input                    8
+  #output                  20
+  #inout                    4
+#lut6                    8533   out of  21216   40.22%
+#reg                    10787
+  #slice reg            10787   out of  42432   25.42%
+  #pad reg                  0
+
+Utilization Statistics
+#slice                  10524   out of  21216   49.60%
+  #used ram                40
+    #dram lut              32
+    #shifter lut            8
+  #used logic           10484
+    #with luts           6423
+    #with adder          2070
+    #reg only            1991
+#feedthrough             2186
+#f7mux                     16   out of  10608    0.15%
+#f8mux                      1   out of   5304    0.02%
+#eram                      49   out of    108   45.37%
+  #eram20k                 49
+  #fifo20k                  0
+#dsp                       15   out of     40   37.50%
+#ddr_byte                   0   out of     12    0.00%
+#mipi_tx                    0   out of      2    0.00%
+#mipi_rx                    1   out of      2   50.00%
+#pad                       32   out of    160   20.00%
+#pll                        2   out of      6   33.33%
+#gclk                       6   out of     32   18.75%
+#lclk                       0   out of     12    0.00%
+#sclk                      15   out of     48   31.25%
+#mlclk                      0   out of      6    0.00%
+#ioclk                      0   out of     18    0.00%
+
+
+Detailed IO Report
+
+         Name            Direction    Location    IOStandard    IOType    DriveStrength    PullType       PackReg      
+  I_eth_rgmii_rx_clk       INPUT         N6        LVCMOS33      HDIO          N/A          PULLUP          NONE       
+  I_eth_rgmii_rx_ctl       INPUT         J1        LVCMOS33      HDIO          N/A          PULLUP     DDRX1_OPPOSITE  
+  I_eth_rgmii_rxd[3]       INPUT         L3        LVCMOS33      HDIO          N/A          PULLUP     DDRX1_OPPOSITE  
+  I_eth_rgmii_rxd[2]       INPUT         K2        LVCMOS33      HDIO          N/A          PULLUP     DDRX1_OPPOSITE  
+  I_eth_rgmii_rxd[1]       INPUT         K1        LVCMOS33      HDIO          N/A          PULLUP     DDRX1_OPPOSITE  
+  I_eth_rgmii_rxd[0]       INPUT         H1        LVCMOS33      HDIO          N/A          PULLUP     DDRX1_OPPOSITE  
+        I_rst_n            INPUT        R10        LVCMOS33      HDIO          N/A          PULLUP          NONE       
+       I_sys_clk           INPUT         C4        LVCMOS33      HDIO          N/A          PULLUP          NONE       
+       O_cam_24m          OUTPUT         V9        LVCMOS33      HDIO           8           PULLUP          NONE       
+       O_cam_rst          OUTPUT         V8        LVCMOS33      HDIO           8           PULLUP          NONE       
+       O_cam_scl          OUTPUT         T9        LVCMOS33      HDIO           8           PULLUP          NONE       
+       O_eth_mdc          OUTPUT         M5        LVCMOS33      HDIO           8            NONE           NONE       
+  O_eth_rgmii_tx_ctl      OUTPUT         L2        LVCMOS33      HDIO          16            NONE          DDRX1       
+    O_eth_rgmii_txc       OUTPUT         R3        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_eth_rgmii_txd[3]      OUTPUT         U1        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_eth_rgmii_txd[2]      OUTPUT         R2        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_eth_rgmii_txd[1]      OUTPUT         R1        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_eth_rgmii_txd[0]      OUTPUT         P3        LVCMOS33      HDIO          16            NONE          DDRX1       
+      O_eth_rst_n         OUTPUT         H2        LVCMOS33      HDIO          16            NONE           NONE       
+      O_ethb_mdc          OUTPUT         P6        LVCMOS33      HDIO           8            NONE           NONE       
+  O_ethb_rgmii_tx_ctl     OUTPUT         P1        LVCMOS33      HDIO          16            NONE          DDRX1       
+   O_ethb_rgmii_txc       OUTPUT         U2        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_ethb_rgmii_txd[3]     OUTPUT         T3        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_ethb_rgmii_txd[2]     OUTPUT         T4        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_ethb_rgmii_txd[1]     OUTPUT         P5        LVCMOS33      HDIO          16            NONE          DDRX1       
+  O_ethb_rgmii_txd[0]     OUTPUT         P4        LVCMOS33      HDIO          16            NONE          DDRX1       
+     O_screen_pwm         OUTPUT        R11        LVCMOS33      HDIO           8          PULLDOWN         NONE       
+       O_uart_tx          OUTPUT         J3        LVCMOS33      HDIO           8            NONE           NONE       
+      IO_cam_sda           INOUT         U9        LVCMOS33      HDIO           8           PULLUP          NONE       
+      IO_eth_mdio          INOUT         V1        LVCMOS33      HDIO           8           PULLUP          NONE       
+      I_button[1]          INOUT        J14        LVCMOS33      HRIO           8           PULLUP          NONE       
+      I_button[0]          INOUT         N2        LVCMOS33      HDIO           8           PULLUP          NONE       
+
+Report Clock Domain Luts:
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  Index   |  Name                                                                         |  Frequency   |  LUT As Logic   |  LUT As Shifter   |  LUT As Dram   |  BRAM   |  DSP
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #1      |  MIPI_RX_BYTE_CLK                                                             |  112MHz      |  465            |  0                |  0             |  5      |  0
+  #2      |  pll_clk_100m                                                                 |  100MHz      |  8668           |  14               |  20            |  45     |  14
+  #3      |  pll_clk_24m                                                                  |  23MHz       |  479            |  0                |  0             |  0      |  0
+  #4      |  u_pll_gmii125/PH1P_PHY_PLL_WRAPPER_d2616deaaa79_Inst/u_PH1P_PHY_PLL.clkc[0]  |  125MHz      |  702            |  0                |  32            |  18     |  1
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Clock Resource Statistics
+Index     ClockNet                                                                          Type            DriverType         Driver                                                                                                       ClockFanout        GclkLocation
+#1        u_PLL/clk0_buf                                                                    UserGclk        pll                u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc0                                            5895               x23y39z16
+#2        u_pll_gmii125/clk0_buf                                                            UserGclk        pll                u_pll_gmii125/PH1P_PHY_PLL_WRAPPER_d2616deaaa79_Inst/u_PH1P_PHY_PLL.clkc0                                    466                x23y39z17
+#3        u_mipi_dphy_rx_ph1p_mipiio_wrapper/u_ph1p_mipiio_rx_wrapper/S_mipiio_hs_rx_clk    UserGclk        mipiio             u_mipi_dphy_rx_ph1p_mipiio_wrapper/u_ph1p_mipiio_rx_wrapper/u_PH1P_LOGIC_DPHY_MIPI_RX.o_fabric_div4_8_clk    398                x23y39z1
+#4        O_cam_24m_dup_1                                                                   InferredGclk    pll                u_PLL/ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst/u_PH1P_PHY_PLL.clkc1                                            249                x23y39z18
+#5        I_eth_rgmii_rx_clk_dup_1                                                          InferredGclk    hdio               I_eth_rgmii_rx_clk_syn_2.di                                                                                  140                x23y39z0
+#6        u_uicfgcs500/uii2c_inst/scl_clk                                                   InferredGclk    lslice             u_uicfgcs500/uii2c_inst/scl_clk_reg_syn_8.oqa                                                                18                 x23y39z2
+
+Report Hierarchy Area:
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|Instance                                       |Module                            |logic lut |ripple  |seq     |eram    |dsp     |dram lut |shifter lut |f7mux   |f8mux   |pll     |ddr     |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|top                                            |design_top_wrapper                |6423      |2070    |10787   |49      |15      |32       |8           |16      |1       |2       |0       |
+|  advanced                                     |cvp_advanced                      |4356      |1714    |6931    |22      |14      |16       |8           |14      |0       |0       |0       |
+|    ae                                         |cvp_ae_control                    |521       |226     |648     |0       |2       |0        |0           |0       |0       |0       |0       |
+|    control                                    |cvp_cfg_ctrl                      |339       |16      |394     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    diagnostics                                |cvp_mailbox                       |55        |0       |180     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    gain                                       |cvp_gain11                        |26        |42      |29      |0       |3       |0        |0           |0       |0       |0       |0       |
+|    health                                     |cvp_stream_health                 |94        |52      |128     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    keys                                       |cvp_keys                          |39        |44      |52      |0       |0       |0        |0           |0       |0       |0       |0       |
+|    osd                                        |cvp_osd_stream                    |238       |0       |131     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    sensor                                     |cvp_sensor_bridge                 |51        |21      |184     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    stats                                      |cvp_frame_stats                   |738       |541     |1077    |0       |2       |16       |0           |0       |0       |0       |0       |
+|      div                                      |cvp_divider                       |142       |32      |183     |0       |0       |0        |0           |0       |0       |0       |0       |
+|      luminance                                |cvp_luma_pack                     |89        |0       |73      |0       |0       |0        |0           |0       |0       |0       |0       |
+|    style                                      |cvp_style_stream                  |1720      |379     |2599    |22      |0       |0        |8           |0       |0       |0       |0       |
+|      core                                     |cvp_style                         |966       |110     |1536    |10      |0       |0        |8           |0       |0       |0       |0       |
+|        med                                    |cvp_fx_median                     |216       |0       |184     |0       |0       |0        |0           |0       |0       |0       |0       |
+|        pre                                    |cvp_luma_pack                     |80        |0       |98      |0       |0       |0        |0           |0       |0       |0       |0       |
+|        sob                                    |cvp_fx_sobel                      |67        |29      |65      |0       |0       |0        |0           |0       |0       |0       |0       |
+|        win                                    |cvp_window3x3                     |236       |60      |389     |10      |0       |0        |0           |0       |0       |0       |0       |
+|          queue                                |cvp_sync_fifo                     |71        |0       |103     |4       |0       |0        |0           |0       |0       |0       |0       |
+|      enhanced$contour                         |cvp_contour                       |754       |269     |1063    |12      |0       |0        |0           |0       |0       |0       |0       |
+|        connect_window                         |cvp_window3x3                     |129       |60      |154     |3       |0       |0        |0           |0       |0       |0       |0       |
+|          queue                                |cvp_sync_fifo                     |44        |0       |43      |1       |0       |0        |0           |0       |0       |0       |0       |
+|        gradient                               |cvp_fx_sobel                      |75        |29      |81      |0       |0       |0        |0           |0       |0       |0       |0       |
+|        gradient_window                        |cvp_window3x3                     |150       |60      |220     |3       |0       |0        |0           |0       |0       |0       |0       |
+|          queue                                |cvp_sync_fifo                     |45        |0       |55      |1       |0       |0        |0           |0       |0       |0       |0       |
+|        smooth_window                          |cvp_window3x3                     |163       |60      |221     |3       |0       |0        |0           |0       |0       |0       |0       |
+|          queue                                |cvp_sync_fifo                     |46        |0       |57      |1       |0       |0        |0           |0       |0       |0       |0       |
+|        width_window                           |cvp_window3x3                     |126       |60      |161     |3       |0       |0        |0           |0       |0       |0       |0       |
+|          queue                                |cvp_sync_fifo                     |46        |0       |44      |1       |0       |0        |0           |0       |0       |0       |0       |
+|    tag                                        |cvp_stream_tag                    |35        |56      |104     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    temperature                                |cvp_temperature                   |28        |0       |1       |0       |0       |0        |0           |14      |0       |0       |0       |
+|    tone                                       |cvp_tone                          |102       |63      |108     |0       |4       |0        |0           |0       |0       |0       |0       |
+|    tx_event                                   |cvp_mailbox                       |24        |0       |62      |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_PLL                                        |PLL                               |0         |0       |0       |0       |0       |0        |0           |0       |0       |1       |0       |
+|    ph1p_phy_pll_wrapper_25a56e5ce2f9_Inst     |ph1p_phy_pll_wrapper_25a56e5ce2f9 |0         |0       |0       |0       |0       |0        |0           |0       |0       |1       |0       |
+|  u_cmd_rx                                     |cvp_cmd_rx                        |139       |0       |568     |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_csi_unpacket                               |csi_unpacket_2lane                |18        |33      |92      |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_cvp_proc                                   |cvp_proc                          |294       |103     |359     |4       |0       |0        |0           |0       |0       |0       |0       |
+|    u_demosaic                                 |cvp_demosaic                      |270       |103     |275     |4       |0       |0        |0           |0       |0       |0       |0       |
+|      window                                   |cvp_window3x3                     |178       |60      |247     |4       |0       |0        |0           |0       |0       |0       |0       |
+|        queue                                  |cvp_sync_fifo                     |47        |0       |65      |2       |0       |0        |0           |0       |0       |0       |0       |
+|  u_eth_dbg                                    |cvp_eth_dbg                       |918       |90      |1683    |18      |1       |16       |0           |2       |1       |0       |0       |
+|    frame_descriptors                          |cvp_sync_fifo                     |49        |0       |110     |0       |0       |16       |0           |0       |0       |0       |0       |
+|    status_bridge                              |cvp_status_bridge                 |447       |0       |925     |1       |0       |0        |0           |0       |0       |0       |0       |
+|    u_fifo                                     |cvp_async_fifo                    |44        |42      |116     |4       |0       |0        |0           |0       |0       |0       |0       |
+|    u_mac                                      |cvp_gmii_mac_tx                   |159       |2       |203     |0       |1       |0        |0           |0       |0       |0       |0       |
+|    u_mdio                                     |cvp_mdio_ro                       |48        |0       |51      |0       |0       |0        |0           |2       |1       |0       |0       |
+|    u_px_fifo                                  |cvp_async_fifo                    |30        |24      |91      |13      |0       |0        |0           |0       |0       |0       |0       |
+|  u_group_fifo                                 |group_fifo                        |30        |24      |99      |5       |0       |0        |0           |0       |0       |0       |0       |
+|    u_xfifo                                    |cvp_async_fifo                    |28        |24      |95      |5       |0       |0        |0           |0       |0       |0       |0       |
+|  u_line_retimer                               |line_retimer                      |48        |0       |149     |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_mipi_dphy_rx_ph1p_mipiio_wrapper           |mipi_dphy_rx_ph1p_mipiio_wrapper  |146       |0       |228     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    u_byte_aligner_wrapper                     |byte_aligner_wrapper              |101       |0       |110     |0       |0       |0        |0           |0       |0       |0       |0       |
+|      BYTE_ALIGNER_GEN[0]$u_byte_aligner       |byte_aligner                      |48        |0       |59      |0       |0       |0        |0           |0       |0       |0       |0       |
+|      BYTE_ALIGNER_GEN[1]$u_byte_aligner       |byte_aligner                      |53        |0       |51      |0       |0       |0        |0           |0       |0       |0       |0       |
+|    u_ph1p_mipiio_rx_wrapper                   |ph1p_mipiio_rx_wrapper            |17        |0       |35      |0       |0       |0        |0           |0       |0       |0       |0       |
+|      u_lane0_hs_detect                        |hs_detect                         |5         |0       |12      |0       |0       |0        |0           |0       |0       |0       |0       |
+|    u_channel_aligner_wrapper                  |channel_aligner_wrapper           |28        |0       |83      |0       |0       |0        |0           |0       |0       |0       |0       |
+|      ALIGNER_CHANNEL_GEN[0]$u_channel_aligner |channel_aligner                   |14        |0       |43      |0       |0       |0        |0           |0       |0       |0       |0       |
+|      ALIGNER_CHANNEL_GEN[1]$u_channel_aligner |channel_aligner                   |14        |0       |40      |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_pack4                                      |pack_4                            |158       |0       |253     |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_pll_gmii125                                |pll_gmii125                       |0         |0       |0       |0       |0       |0        |0           |0       |0       |1       |0       |
+|    PH1P_PHY_PLL_WRAPPER_d2616deaaa79_Inst     |PH1P_PHY_PLL_WRAPPER_d2616deaaa79 |0         |0       |0       |0       |0       |0        |0           |0       |0       |1       |0       |
+|  u_raw10_unpacket                             |raw10_unpacket_2lane              |47        |0       |147     |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_uial2axis                                  |uial2axis                         |29        |0       |28      |0       |0       |0        |0           |0       |0       |0       |0       |
+|  u_uicfgcs500                                 |uicfgcs500                        |238       |106     |247     |0       |0       |0        |0           |0       |0       |0       |0       |
+|    uii2c_inst                                 |uii2c                             |38        |0       |36      |0       |0       |0        |0           |0       |0       |0       |0       |
+|    gain_tbl                                   |SC500GainTbl                      |4         |0       |8       |0       |0       |0        |0           |0       |0       |0       |0       |
+|  startup_gate                                 |cvp_camera_gate                   |2         |0       |3       |0       |0       |0        |0           |0       |0       |0       |0       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+DataNet Average Fanout:
+
+   Index     Fanout    Nets   
+    #1         1       17390  
+    #2         2       2980   
+    #3         3       1401   
+    #4         4        691   
+    #5        5-10      977   
+    #6       11-50      440   
+    #7       51-100     17    
+  Average     1.97            

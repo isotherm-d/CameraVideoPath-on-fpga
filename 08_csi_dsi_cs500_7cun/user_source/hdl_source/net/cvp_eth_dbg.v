@@ -83,6 +83,7 @@ module cvp_eth_dbg #(
 
     // 帧内字节计数终点(每有效拍写 1 字节, 一帧 = IMG_W*IMG_H*3 字节)
     localparam integer FRAME_BYTES = IMG_W * IMG_H * 3;
+    localparam [10:0] PACKET_BYTES=DATA_BYTES;
     localparam integer BYTE_COUNT_W = $clog2(FRAME_BYTES);
     localparam [BYTE_COUNT_W-1:0] PX_LAST = FRAME_BYTES - 1;
 
@@ -184,16 +185,20 @@ module cvp_eth_dbg #(
     reg  [6:0]  r_credit_bin;// 已生产整块数(mod 128)
     reg  [3:0]  r_skip;
     reg         r_capture;   // 当前帧是否写入(帧头拍决定)
+    reg [31:0] packet_frame_id;
+    reg [31:0] packet_offset;
 
     wire        w_bf_full;
     wire [FIFO_AW:0] w_bf_level;
     wire        w_rd_en, w_rd_valid, w_rd_empty;   // 8bit FIFO 读侧(由 MAC 驱动)
     wire [7:0]  w_rd_data;
+    wire [4:0] desc_level;
 
     // 取新拍: 装载态常取; 展开中在 (sel==3, bsel==1) 预取
     // One outstanding read; reserve room for the current and prefetched word.
     // Otherwise the idle path can pop a second word while accepting the first.
     assign w_pxf_rd = (!w_pxf_empty) && !r_read_pending && !w_pxf_valid &&
+                     (!ENABLE_STATUS||desc_level<14) &&
                      (w_bf_level < (1 << FIFO_AW) - 32) &&
                      ((!r_run) || ((r_sel == 2'd3) && (r_bsel == 2'd1)));
 
@@ -264,6 +269,7 @@ module cvp_eth_dbg #(
             r_credit_bin  <= 7'd0;
             r_skip        <= 4'd0;
             r_capture     <= 1'b0;
+            packet_frame_id<=0;packet_offset<=0;
         end else begin
             if (w_pxf_rd) r_read_pending <= 1'b1;
             if (w_pxf_valid) r_read_pending <= 1'b0;
@@ -297,6 +303,11 @@ module cvp_eth_dbg #(
 
             /* 帧字节计数 + 帧头标记强制对齐(标记优先, 计数兜底) */
             if (w_sof) begin
+                packet_frame_id<=w_load?w_pxf_data[128:97]:beat_frame_id;
+                packet_offset<=0;
+                // A short previous frame leaves bytes in the elastic FIFO.
+                // Describe that tail as a discard, never join it to this SOF.
+                if(w_write)r_burst<=1;else r_burst<=0;
                 r_px      <= 1; // SOF byte zero is written on this clock.
                 r_frame_active <= 1'b1;
                 r_skip    <= (r_skip == FRAME_SKIP - 1) ? 4'd0 : r_skip + 4'd1;
@@ -311,9 +322,13 @@ module cvp_eth_dbg #(
             end
 
             /* 整块信用: 每写满 DATA_BYTES 字节记一次 */
-            if (w_chunk_done) begin
+            if (w_sof) begin
+                // First byte belongs to the new packet, independently of the
+                // incomplete previous frame's byte count.
+            end else if (w_chunk_done) begin
                 r_burst      <= 11'd0;
                 r_credit_bin <= r_credit_bin + 7'd1;
+                packet_offset<=packet_offset+DATA_BYTES;
             end else if (w_write) begin
                 r_burst <= r_burst + 11'd1;
             end
@@ -353,12 +368,18 @@ module cvp_eth_dbg #(
         endcase
     end
 
-    wire desc_valid,desc_ready,desc_pop;wire [31:0] desc_id;
-    cvp_sync_fifo #(.DW(32),.AW(4)) frame_descriptors(
+    wire desc_valid,desc_ready,desc_pop;wire [75:0] desc_word;
+    wire abort_tail=w_sof&&r_burst!=0;
+    // Every complete packet gets its own frame identity and byte offset.
+    // An incomplete tail is drained without transmitting a packet/credit.
+    wire descriptor_write=ENABLE_STATUS&&(abort_tail||w_chunk_done);
+    wire [75:0] descriptor_data=abort_tail?
+       {1'b1,r_burst,packet_frame_id,packet_offset}:
+       {1'b0,PACKET_BYTES,packet_frame_id,packet_offset};
+    cvp_sync_fifo #(.DW(76),.AW(4)) frame_descriptors(
       .clk(i_clk_gmii),.rst_n(i_rst_gmii_n),
-      .i_valid(w_sof&&w_cap_now&&ENABLE_STATUS),
-      .i_data(w_load?w_pxf_data[128:97]:beat_frame_id),
-      .o_ready(desc_ready),.o_valid(desc_valid),.o_data(desc_id),.i_ready(desc_pop),.o_level());
+      .i_valid(descriptor_write),.i_data(descriptor_data),
+      .o_ready(desc_ready),.o_valid(desc_valid),.o_data(desc_word),.i_ready(desc_pop),.o_level(desc_level));
     /* A2: 状态快照改为 cvp_status_bridge(ERAM ping-pong) + mac 流式读,
      * 线上字节序与原 cvp_mailbox+status_packet 完全一致 */
     wire status_valid,status_pop;wire [15:0] status_rdata;wire [7:0] status_raddr;wire status_bank;
@@ -367,7 +388,7 @@ module cvp_eth_dbg #(
       .m_clk(i_clk_gmii),.m_rst_n(i_rst_gmii_n),.m_valid(status_valid),.m_ready(status_pop),
       .i_raddr(status_raddr),.o_rdata(status_rdata),.o_bank(status_bank));
     cvp_gmii_mac_tx #(
-        .ENABLE_STATUS(ENABLE_STATUS),.STATUS_BITS(STATUS_BITS),
+        .ENABLE_STATUS(ENABLE_STATUS),.STATUS_BITS(STATUS_BITS),.PACKET_DESCRIPTORS(ENABLE_STATUS),
         .DATA_BYTES     (DATA_BYTES),
         .PKTS_PER_FRAME (PKTS_PER_FRAME),
         .MAC_DST        (MAC_DST),
@@ -379,7 +400,8 @@ module cvp_eth_dbg #(
     ) u_mac (
         .i_status_valid(status_valid),.o_status_pop(status_pop),
         .i_status_rdata(status_rdata),.i_status_bank(status_bank),.o_status_raddr(status_raddr),
-        .i_frame_valid(desc_valid),.i_frame_id(desc_id),.o_frame_pop(desc_pop),
+        .i_frame_valid(desc_valid),.i_frame_id(desc_word[63:32]),.o_frame_pop(desc_pop),
+        .i_packet_offset(desc_word[31:0]),.i_packet_bytes(desc_word[74:64]),.i_packet_drop(desc_word[75]),
         .o_frame_done(o_frame_tx_done),.o_frame_done_id(o_frame_tx_id),
 
         .i_clk          (i_clk_gmii),

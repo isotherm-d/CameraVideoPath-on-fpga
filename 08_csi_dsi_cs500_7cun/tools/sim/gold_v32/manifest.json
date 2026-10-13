@@ -1,0 +1,6 @@
+{
+  "baseline": "v32 permanent-black-screen repro; original module name restored, LF normalized",
+  "original_source_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_advanced.v": "2c25ff91f872993b21c04ec9cb3cb06f649fa8d345161a447fc38d2150de217c"
+  }
+}

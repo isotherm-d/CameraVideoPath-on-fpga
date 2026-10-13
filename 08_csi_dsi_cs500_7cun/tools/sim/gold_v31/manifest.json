@@ -1,0 +1,7 @@
+{
+  "baseline": "v31 user-reported board functionality pass before AE changes",
+  "source_hash_mode": "CRLF-to-LF normalized, original module name restored",
+  "original_source_sha256": {
+    "08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v": "3588a051765a82ac376a986c62a8d87b7ff16d60efbfc18470e5a328596b0c71"
+  }
+}

@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from v26_protocol import FIELDS,STATUS_STRUCT,status as old_status
-from v27_protocol import EXT,NAMES,status,profile_fields
+from v27_protocol import EXT,NAMES,STREAM,status,profile_fields,stream_error_text
 from v27_reference import contour
 
 def packet(extended=True,version=1):
@@ -19,6 +19,24 @@ def packet(extended=True,version=1):
     return bytes(data)
 
 class WireTests(unittest.TestCase):
+    def test_stream_diagnostics_reserved_extension(self):
+        p=bytearray(packet())
+        p[174:198]=STREAM.pack(b'STRM',1,0x21,1,3,230399,42,921600,0)
+        parsed=status(bytes(p))
+        self.assertEqual(parsed['stream_error_history'],0x21)
+        self.assertEqual(parsed['stream_bad_groups'],230399)
+        self.assertEqual(parsed['stream_bad_frame'],42)
+        self.assertEqual(parsed['stream_bad_pixels'],921600)
+        self.assertEqual(parsed['edge_high'],90)
+        self.assertEqual(stream_error_text(0x21),'RAW组数/输出帧长度')
+        self.assertNotIn('stream_diag_version',status(packet()))
+    def test_pid_digital_gain_extension(self):
+        p=bytearray(packet())
+        p[174:198]=STREAM.pack(b'STRM',1,0,0,0,0,0,0,(768<<16)|(0x84<<8)|0xae)
+        parsed=status(bytes(p))
+        self.assertEqual(parsed['ae_digital_gain_q8'],768)
+        self.assertEqual(parsed['ae_pid_flags'],0x84)
+        self.assertNotIn('ae_digital_gain_q8',status(packet()))
     def test_prefix_is_compatible_with_v26(self):
         p=packet();self.assertIsNotNone(old_status(p));self.assertEqual(status(p)['firmware'],27)
         self.assertEqual(status(p)['last_register'],0x0100)
@@ -32,6 +50,15 @@ class WireTests(unittest.TestCase):
     def test_invalid_profiles(self):
         for args in ((0,1,2,1),(3,0,10,1),(3,100,50,1),(5,20,2041,1),(5,20,50,0)):
             with self.assertRaises(ValueError):profile_fields(*args)
+
+class AdaptiveAETelemetryTests(unittest.TestCase):
+    def test_build_and_protective_target_in_reserved_extension(self):
+        data=bytearray(packet())
+        data[139]=1
+        data[140:142]=bytes((36,83))
+        parsed=status(data)
+        self.assertEqual(parsed['hardware_build'],36)
+        self.assertEqual(parsed['ae_target_mean'],83)
 
 class ImageTests(unittest.TestCase):
     def test_constant_has_no_contours(self):

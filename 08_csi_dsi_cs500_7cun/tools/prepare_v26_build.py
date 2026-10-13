@@ -17,6 +17,11 @@ for source in (project/"td_project").iterdir():
 al=build/"td_project/camera_to_dsi_display.al"
 s=al.read_text(encoding="utf-8")
 s=re.sub(r'(<Project[^>]* Path=")[^"]*',lambda m:m[1]+(build/"td_project").as_posix(),s,count=1)
+# Restore required RAW processing sources if GUI source pruning removed one.
+for name in ("cvp_proc", "cvp_demosaic", "group_fifo", "pack_4"):
+    rel="../user_source/hdl_source/isp2/"+name+".v"
+    if rel not in s:
+        s=s.replace("</Verilog>",f'<File Path="{rel}"><FileInfo><Attr Name="UsedInSyn" Val="true"/><Attr Name="UsedInP&R" Val="true"/><Attr Name="BelongTo" Val="design_1"/></FileInfo></File>\n        </Verilog>',1)
 # New modules are registered before each fresh build, including optional adapters.
 for sub in ("common","advanced"):
     for rtl in sorted((build/"user_source/hdl_source"/sub).glob("*.v")):

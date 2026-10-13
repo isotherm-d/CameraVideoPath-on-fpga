@@ -1,0 +1,141 @@
+Model Technology ModelSim SE-64 vlog 2020.4 Compiler 2020.10 Oct 13 2020
+Start time: 10:43:45 on Oct 13,2026
+vlog -work work C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_camera_gate.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_keys.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_luma_pack.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_mailbox.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_pixel_delay.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_stream_tag.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_sync_fifo.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\common\cvp_window3x3.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_advanced.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_ae_control.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_cfg_ctrl.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_contour.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_divider.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_frame_stats.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_fx_median.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_fx_sobel.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_gain11.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_osd_stream.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_patch_bridge.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_sensor_bridge.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_style_stream.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_style.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_temperature.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\advanced\cvp_tone.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\uics500_cfg\SC500GainTbl.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\uics500_cfg\uicfgcs500.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\uics500_cfg\uics500reg.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\uics500_cfg\uics500regAE.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\uics500_cfg\uii2c.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\net\cvp_eth_dbg.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\net\cvp_gmii_mac_tx.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\net\cvp_mdio_ro.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\net\cvp_cmd_rx.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\net\cvp_async_fifo.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\cvp_dpc.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\cvp_proc.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\cvp_demosaic.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\group_fifo.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\pack_4.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\user_source\hdl_source\isp2\imgproc_win3x3.v C:\Anlogic\TD_6.2.1_Engineer_6.2.168.116\sim_release\ph1p\ph1p_logic_hdio.v C:\Anlogic\TD_6.2.1_Engineer_6.2.168.116\sim_release\ph1p\ph1p_phy_gsr.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_a\cvp_frame_stats_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_a\cvp_style_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_a\cvp_contour_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v30\cvp_fx_median_v30_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v30\cvp_proc_v30_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v30\cvp_style_v30_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v30\cvp_tone_v30_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v31\cvp_ae_v31_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v32\cvp_advanced_v32_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v33\cvp_advanced_v33_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v33\cvp_ae_control_v33_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v33\cvp_gain11_v33_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\gold_v33\cvp_sensor_bridge_v33_gold.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_advanced.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_ae_pid.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_ae_smooth.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_ae.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_bayer.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_commands.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_config.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_digital_gain_frame.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_digital_gain_overlap.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_fault_recovery.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_gain_total.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_keys.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_network.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_patch.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_pid_pipeline.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_sensor.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_stats.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_stream_health.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_style.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v26_window.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_awb.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_camera.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_config.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_contour.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_network.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_v27_startup.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_a_diff_stats.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_a_diff_style.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_a_status_bridge.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_a_status_wire.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_opt_median.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_opt_proc.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_opt_style.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_opt_tone.v C:\Users\cqm87\Desktop\2026\cvp\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\tools\sim\tb_cvp_color_path.v 
+-- Compiling module cvp_camera_gate
+-- Compiling module cvp_keys
+-- Compiling module cvp_luma_pack
+-- Compiling module cvp_mailbox
+-- Compiling module cvp_pixel_delay
+-- Compiling module cvp_stream_tag
+-- Compiling module cvp_sync_fifo
+-- Compiling module cvp_window3x3
+-- Compiling module cvp_advanced
+-- Compiling module cvp_stream_health
+-- Compiling module cvp_ae_control
+-- Compiling module cvp_cfg_ctrl
+-- Compiling module cvp_contour
+-- Compiling module cvp_divider
+-- Compiling module cvp_frame_stats
+-- Compiling module cvp_fx_median
+-- Compiling module cvp_fx_sobel
+-- Compiling module cvp_gain11
+-- Compiling module cvp_osd_stream
+-- Compiling module cvp_patch_bridge
+-- Compiling module cvp_sensor_bridge
+-- Compiling module cvp_style_stream
+-- Compiling module cvp_style
+-- Compiling module cvp_temperature
+-- Compiling module cvp_tone
+-- Compiling module SC500GainTbl
+-- Compiling module uicfgcs500
+-- Compiling module uics500reg
+-- Compiling module uics500regAE
+-- Compiling module uii2c
+-- Compiling module cvp_eth_dbg
+-- Compiling module cvp_status_bridge
+-- Compiling module cvp_gmii_mac_tx
+-- Compiling module cvp_mdio_ro
+-- Compiling module cvp_cmd_rx
+-- Compiling module cvp_async_fifo
+-- Compiling module cvp_dpc
+-- Compiling module cvp_dpc_legacy
+-- Compiling module cvp_proc
+-- Compiling module cvp_demosaic
+-- Compiling module group_fifo
+-- Compiling module pack_4
+-- Compiling module imgproc_win3x3
+-- Compiling module PH1P_LOGIC_HD_IDDR
+-- Compiling module PH1P_LOGIC_HD_ODDR
+-- Compiling module PH1P_PHY_GSR
+-- Compiling module cvp_frame_stats_gold
+-- Compiling module cvp_style_gold
+-- Compiling module cvp_contour_gold
+-- Compiling module cvp_fx_median_v30_gold
+-- Compiling module cvp_proc_v30_gold
+-- Compiling module cvp_style_v30_gold
+-- Compiling module cvp_tone_v30_gold
+-- Compiling module cvp_ae_v31_gold
+-- Compiling module cvp_advanced_v32_gold
+-- Compiling module cvp_advanced_v33_gold
+-- Compiling module cvp_stream_health_v33_gold
+-- Compiling module cvp_ae_control_v33_gold
+-- Compiling module cvp_gain11_v33_gold
+-- Compiling module cvp_sensor_bridge_v33_gold
+-- Compiling module tb_v26_advanced
+-- Compiling module tb_v26_ae_pid
+-- Compiling module tb_v26_ae_smooth
+-- Compiling module tb_v26_ae
+-- Compiling module tb_v26_bayer
+-- Compiling module tb_v26_commands
+-- Compiling module tb_v26_config
+-- Compiling module tb_v26_digital_gain_frame
+-- Compiling module tb_v26_digital_gain_overlap
+-- Compiling module tb_v26_fault_recovery
+-- Compiling module tb_v26_gain_total
+-- Compiling module tb_v26_keys
+-- Compiling module tb_v26_network
+-- Compiling module tb_v26_patch
+-- Compiling module tb_v26_pid_pipeline
+-- Compiling module tb_v26_sensor
+-- Compiling module tb_v26_stats
+-- Compiling module tb_v26_stream_health
+-- Compiling module tb_v26_style
+-- Compiling module tb_v26_window
+-- Compiling module tb_v27_awb
+-- Compiling module tb_v27_camera
+-- Compiling module tb_v27_config
+-- Compiling module tb_v27_contour
+-- Compiling module tb_v27_network
+-- Compiling module tb_v27_startup
+-- Compiling module tb_a_diff_stats
+-- Compiling module tb_a_diff_style
+-- Compiling module tb_a_status_bridge
+-- Compiling module tb_a_status_wire
+-- Compiling module tb_opt_median
+-- Compiling module tb_opt_proc
+-- Compiling module tb_opt_style
+-- Compiling module tb_opt_tone
+-- Compiling module tb_cvp_color_path
+
+Top level modules:
+	cvp_pixel_delay
+	pack_4
+	PH1P_PHY_GSR
+	cvp_advanced_v33_gold
+	tb_v26_advanced
+	tb_v26_ae_pid
+	tb_v26_ae_smooth
+	tb_v26_ae
+	tb_v26_bayer
+	tb_v26_commands
+	tb_v26_config
+	tb_v26_digital_gain_frame
+	tb_v26_digital_gain_overlap
+	tb_v26_fault_recovery
+	tb_v26_gain_total
+	tb_v26_keys
+	tb_v26_network
+	tb_v26_patch
+	tb_v26_pid_pipeline
+	tb_v26_sensor
+	tb_v26_stats
+	tb_v26_stream_health
+	tb_v26_style
+	tb_v26_window
+	tb_v27_awb
+	tb_v27_camera
+	tb_v27_config
+	tb_v27_contour
+	tb_v27_network
+	tb_v27_startup
+	tb_a_diff_stats
+	tb_a_diff_style
+	tb_a_status_bridge
+	tb_a_status_wire
+	tb_opt_median
+	tb_opt_proc
+	tb_opt_style
+	tb_opt_tone
+	tb_cvp_color_path
+End time: 10:43:45 on Oct 13,2026, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
