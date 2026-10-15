@@ -1,0 +1,23 @@
+Location         : E:\TD_6.2.1\PROJECT\CameraVideoPath-on-fpga\08_csi_dsi_cs500_7cun\syn_1
+Running with     : Tang Dynasty v6.2.168116
+                   Copyright (c) 2012-2025 Anlogic Inc.
+Top Model        : design_top_wrapper
+Device           : PH1P35MDG324
+Speed            : 3
+
+Timing Mode      : basic
+Setup            : WNS  -981ps  TNS   -39424ps  NUM_FEPS   122
+Hold             : WNS   114ps  TNS        0ps  NUM_FEPS     0
+
+Flow Statistics  :
+--------------------------------------------------------------------------------------------------
+     command     |  #calls  |  wall time  |  cpu time(s)  |  used memory(mb)  |  peak memory(mb)  
+--------------------------------------------------------------------------------------------------
+  optimize_gate  |    1     |  1m0s(56%)  |    58(56%)    |       1487        |       1487        
+  optimize_rtl   |    1     |  45s(42%)   |    43(42%)    |       1057        |       1165        
+  import_device  |    1     |   1s(0%)    |     0(0%)     |        325        |        325        
+    read_adc     |    1     |   1s(0%)    |     1(0%)     |        765        |        766        
+    read_sdc     |    2     |   0s(0%)    |     0(0%)     |        758        |        766        
+--------------------------------------------------------------------------------------------------
+      total      |    6     |    1m47s    |      102      |       1487        |       1487        
+--------------------------------------------------------------------------------------------------

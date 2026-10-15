@@ -382,7 +382,63 @@
                     <Attr Name="CompileOrder" Val="54"/>
                 </FileInfo>
             </File>
-        </Verilog>
+                    <File Path="../user_source/hdl_source/detect/det_color_feat.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="200"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/det_cid_filter.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="201"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/det_bin_open3.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="202"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/det_wbc20.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="203"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/det_roi_bridge.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="204"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/u_roi_pixfill.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="205"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/detect/cvp_box_overlay.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="206"/>
+                </FileInfo>
+            </File>
+</Verilog>
         <System_Verilog>
             <File Path="../user_source/hdl_source/mipi_dphy_rx/mipi_dphy_rx_ph1p_mipiio_wrapper.sv">
                 <FileInfo>
