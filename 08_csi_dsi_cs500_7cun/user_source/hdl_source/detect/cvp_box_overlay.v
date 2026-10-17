@@ -19,6 +19,8 @@
  * 帧间移动 ~1px，观感无影响。空心描边 2px（BORDER_T），框内目标可见。
  * 检测框锁存时四边外扩 BOX_MARGIN 像素（默认 16，钳到屏内）——给淡染
  * 边缘留余量；测试框不外扩。退化/空槽框（全 F、全 0）不画。
+ * SW1 板载按键（i_sw1_n）切换识别框显隐：只停画框，检测链照常运行，
+ * 上电默认开框。原复位功能已写死（按键一按 PLL 重锁导致死机）。
  * ============================================================================
  */
 `timescale 1ns/1ps
@@ -27,7 +29,8 @@ module cvp_box_overlay #(
     parameter N_BOX = 5,
     parameter IMG_W = 1280,
     parameter IMG_H = 720,
-    parameter BOX_MARGIN = 16   /* 检测框四边外扩像素数（0=原框；10-17 由 8 调 16） */
+    parameter BOX_MARGIN = 16,  /* 检测框四边外扩像素数（0=原框；10-17 由 8 调 16） */
+    parameter DB_CNT = 2000000  /* SW1 防抖稳定拍数（2e6=20ms@100M；TB 传小值） */
 ) (
     input  wire        i_clk,
     input  wire        i_rst_n,
@@ -47,7 +50,9 @@ module cvp_box_overlay #(
     /* 诊断：原始分类标记（det_color_feat 输出直通，cid==5 像素涂白） */
     input  wire        i_mark_valid,
     input  wire [2:0]  i_mark_cid,
-    input  wire        i_mark_en
+    input  wire        i_mark_en,
+    /* SW1 板载按键（R10，低有效，PULLUP）——识别框开关 */
+    input  wire        i_sw1_n
 );
     /* ---- x/y 光栅计数（sof 归零；行宽由 IMG_W 参数决定，流上无 eol） ---- */
     reg [11:0] r_x, r_y;
@@ -105,6 +110,33 @@ module cvp_box_overlay #(
         end
     end
 
+    /* ---- SW1 识别框开关（2026-10-17）：2FF 同步 + 稳定计数防抖 + 按下翻转 --
+     * 按键低有效（PULLUP，按下=0）。r_sw_stable 为去抖后电平，计数满 DB_CNT
+     * 拍才接受新电平；仅按下沿翻转 r_box_en。复位值 1 = 上电默认开框。 */
+    reg [1:0]  r_sw_sync;
+    reg        r_sw_stable;
+    reg [31:0] r_sw_cnt;
+    reg        r_box_en;
+    always @(posedge i_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            r_sw_sync   <= 2'b11;
+            r_sw_stable <= 1'b1;
+            r_sw_cnt    <= 32'd0;
+            r_box_en    <= 1'b1;
+        end else begin
+            r_sw_sync <= {r_sw_sync[0], i_sw1_n};
+            if (r_sw_sync[1] == r_sw_stable)
+                r_sw_cnt <= 32'd0;
+            else if (r_sw_cnt == DB_CNT-1) begin
+                r_sw_cnt    <= 32'd0;
+                r_sw_stable <= r_sw_sync[1];
+                if (!r_sw_sync[1])
+                    r_box_en <= ~r_box_en;
+            end else
+                r_sw_cnt <= r_sw_cnt + 32'd1;
+        end
+    end
+
     /* ---- 空心描边（BORDER_T 像素宽，与 PC GUI 框线一致） ------------------
      * 只画边框线：in_range 保证无符号减法不下溢；框内不覆写，目标可见 */
     localparam [11:0] BORDER_T = 12'd2;
@@ -129,7 +161,7 @@ module cvp_box_overlay #(
                 w_det_hit = 1'b1;
     end
 
-    wire w_hit = w_test_hit || w_det_hit;
+    wire w_hit = w_test_hit || (w_det_hit && r_box_en);  /* SW1 关=只停画，检测照跑 */
 
     assign o_valid = i_valid;
     assign o_sof   = i_sof;

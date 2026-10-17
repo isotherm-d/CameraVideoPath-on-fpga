@@ -2,7 +2,9 @@
 
 module design_top_wrapper (
     input wire        I_sys_clk,
-    input wire        I_rst_n,
+    input wire        I_sw1_box,   /* SW1(R10,低有效)：识别框开关。原 I_rst_n 复位键已写死
+                                    * （按一下 PLL 重锁->S_pll_lock 掉->全系统复位->死机，
+                                    *   队长 2026-10-17 指令"不许复位"），引脚改作开关 */
       
     output wire       O_cam_scl,
     inout  wire       IO_cam_sda,
@@ -140,7 +142,7 @@ module design_top_wrapper (
 	
     PLL u_PLL(
         .refclk      ( I_sys_clk         ),
-        .reset    	 ( ~I_rst_n          ),
+        .reset    	 ( 1'b0             ),  /* 复位写死（原 ~I_rst_n） */
         
         .clk0_out    ( S_100m_clk        ),
         .clk1_out    ( S_24m_clk         ),
@@ -555,7 +557,8 @@ cvp_box_overlay #(
     /* 诊断：原始分类标记（白点 = det_color_feat 判定为紫的像素） */
     .i_mark_valid ( w_cc_valid ),
     .i_mark_cid   ( w_cc_cid   ),
-    .i_mark_en    ( 1'b0           )   /* 诊断标记关闭（交付态） */
+    .i_mark_en    ( 1'b0           ),   /* 诊断标记关闭（交付态） */
+    .i_sw1_n      ( I_sw1_box      )    /* SW1：识别框开关（overlay 内部防抖翻转） */
 );
 
 pack_4 u_pack4 (
@@ -580,7 +583,7 @@ pack_4 u_pack4 (
     // 125M GMII 时钟(独立 PLL, 25M 输入; PLL IP 拷贝自 rgmii 例程)
     pll_gmii125 u_pll_gmii125 (
         .refclk    ( I_sys_clk    ),
-        .pllreset  ( ~I_rst_n     ),
+        .pllreset  ( 1'b0         ),   /* 复位写死（原 ~I_rst_n） */
         .clk0_out  ( S_gmii_125m  ),
         .clk1_out  (              ),
         .clk2_out  (              ),

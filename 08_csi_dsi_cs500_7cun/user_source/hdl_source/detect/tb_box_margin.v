@@ -26,18 +26,20 @@ module tb_box_margin;
 
     reg        valid = 0, sof = 0, toggle = 0;
     reg        test_en = 0, mark_en = 0, mark_valid = 0;
+    reg        i_sw1_n = 1;
     reg [23:0] rgb = 24'h123456;
     reg [239:0] boxes = {240{1'b1}};
     wire o_valid, o_sof;
     wire [23:0] o_rgb;
 
-    cvp_box_overlay #(.BOX_MARGIN(M)) dut (
+    cvp_box_overlay #(.BOX_MARGIN(M), .DB_CNT(20)) dut (   /* DB_CNT=20 拍快跑 */
         .i_clk(clk), .i_rst_n(rst_n),
         .i_valid(valid), .i_sof(sof), .i_rgb(rgb),
         .o_valid(o_valid), .o_sof(o_sof), .o_rgb(o_rgb),
         .i_box_xy(boxes), .i_box_toggle(toggle),
         .i_test_box(48'h0), .i_test_en(test_en),
-        .i_mark_valid(mark_valid), .i_mark_cid(3'd5), .i_mark_en(mark_en)
+        .i_mark_valid(mark_valid), .i_mark_cid(3'd5), .i_mark_en(mark_en),
+        .i_sw1_n(i_sw1_n)
     );
 
     integer gx0, gy0, gx1, gy1, gcnt;   /* 本帧绿色扫描结果 */
@@ -107,6 +109,25 @@ module tb_box_margin;
         end
     endtask
 
+    /* SW1 按键激励（低有效）。press 含 <DB_CNT 的抖动 + 稳定按下 + 稳定松开 */
+    task press_sw1;
+        begin
+            i_sw1_n = 0; repeat (4)  @(negedge clk);
+            i_sw1_n = 1; repeat (3)  @(negedge clk);   /* 抖动：不得翻转 */
+            i_sw1_n = 0; repeat (30) @(negedge clk);   /* 稳定按下 -> 翻转 */
+            i_sw1_n = 1; repeat (30) @(negedge clk);   /* 稳定松开 */
+        end
+    endtask
+
+    task bounce_only;   /* 全程短于 DB_CNT 的抖动：不得翻转 */
+        begin
+            i_sw1_n = 0; repeat (6)  @(negedge clk);
+            i_sw1_n = 1; repeat (6)  @(negedge clk);
+            i_sw1_n = 0; repeat (6)  @(negedge clk);
+            i_sw1_n = 1; repeat (30) @(negedge clk);
+        end
+    endtask
+
     initial begin
         errors = 0;
         repeat (5) @(negedge clk);
@@ -161,7 +182,25 @@ module tb_box_margin;
         end else
             $display("PASS: dual-box total cnt=%0d", gcnt);
 
-        if (errors == 0) $display("TB_BOX_MARGIN: ALL 7 CHECKS PASSED (M=%0d)", M);
+        /* 7. SW1 按下：框消失（r_box_en 翻转，检测语义不在此层） */
+        latch_slot0({12'd100, 12'd100, 12'd200, 12'd160});
+        run_frame;
+        expect_rect(100-M, 100-M, 200+M, 160+M);
+        press_sw1;
+        run_frame;
+        expect_no_green("SW1 pressed");
+
+        /* 8. 再按一次：恢复显示 */
+        press_sw1;
+        run_frame;
+        expect_rect(100-M, 100-M, 200+M, 160+M);
+
+        /* 9. 抖动短于 DB_CNT：不得翻转，框保持可见 */
+        bounce_only;
+        run_frame;
+        expect_rect(100-M, 100-M, 200+M, 160+M);
+
+        if (errors == 0) $display("TB_BOX_MARGIN: ALL 10 CHECKS PASSED (M=%0d)", M);
         else             $display("TB_BOX_MARGIN: %0d FAILURES (M=%0d)", errors, M);
         $finish;
     end

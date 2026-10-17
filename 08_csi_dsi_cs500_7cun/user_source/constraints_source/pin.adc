@@ -1,6 +1,6 @@
 
 set_pin_assignment	{ I_sys_clk }			{ LOCATION = C4; IOSTANDARD  = LVCMOS33; PULLTYPE = PULLUP; }
-set_pin_assignment	{ I_rst_n }				{ LOCATION = R10; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
+set_pin_assignment	{ I_sw1_box }			{ LOCATION = R10; IOSTANDARD = LVCMOS33; PULLTYPE = PULLUP; }
 
 set_pin_assignment	{ O_cam_scl }		{ LOCATION = T9; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
 set_pin_assignment	{ IO_cam_sda }		{ LOCATION = U9; IOSTANDARD  = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = PULLUP; }
