@@ -1,13 +1,15 @@
 /* ============================================================================
  * tb_box_margin —— cvp_box_overlay 外扩/钳位单元回归（detect 组，2026-10-17）
  * ============================================================================
- * 驱动整帧 1280x720 像素流，扫描绿色（24'h00FF00）的包围盒与像素数：
- *   1. 中部框 (100,100)-(200,160)  → 外扩 8 → (92,92)-(208,168)
- *   2. 原点框 (0,0)-(5,5)          → 钳位   → (0,0)-(13,13)
- *   3. 右下角框 (1270,710)-(1279,719) → 钳位 → (1262,702)-(1279,719)
+ * 期望值全部由 M 参数推导（M 必须等于被测 BOX_MARGIN）——调外扩参数
+ * 只改本文件一处，检查自动跟随。驱动整帧 1280x720 像素流，扫描绿色
+ * （24'h00FF00）的包围盒与像素数：
+ *   1. 中部框 (100,100)-(200,160)  → (100-M,100-M)-(200+M,160+M)
+ *   2. 原点框 (0,0)-(5,5)          → 左/上钳位 (0,0)-(5+M,5+M)
+ *   3. 右下角框 (1270,710)-(1279,719) → 右/下钳位到屏边
  *   4. 全 F 空槽                   → 无绿
  *   5. 全 0 退化框                 → 无绿（护栏：锁存倒置坐标）
- *   6. 双真框 + 其余槽全 F         → 总周长像素数与合并包围盒
+ *   6. 双真框 + 其余槽全 F         → 合并包围盒 + 两框周长像素数之和
  * 空心校准：像素数精确等于 4*W'+4*H'-16（2px 描边周长公式），
  * 框内多画/漏画一个像素都会 FAIL。
  * 一键跑：vsim -c -do run_box_margin.do
@@ -16,6 +18,7 @@
 `timescale 1ns/1ps
 module tb_box_margin;
     localparam W = 1280, H = 720;
+    localparam M = 16;              /* 与被测 BOX_MARGIN 保持一致 */
     localparam [23:0] GREEN = 24'h00FF00;
 
     reg clk = 0, rst_n = 0;
@@ -28,7 +31,7 @@ module tb_box_margin;
     wire o_valid, o_sof;
     wire [23:0] o_rgb;
 
-    cvp_box_overlay dut (
+    cvp_box_overlay #(.BOX_MARGIN(M)) dut (
         .i_clk(clk), .i_rst_n(rst_n),
         .i_valid(valid), .i_sof(sof), .i_rgb(rgb),
         .o_valid(o_valid), .o_sof(o_sof), .o_rgb(o_rgb),
@@ -40,7 +43,7 @@ module tb_box_margin;
     integer gx0, gy0, gx1, gy1, gcnt;   /* 本帧绿色扫描结果 */
     integer px, py, i, errors;
 
-    /* 锁存一组框：slot0=b，其余槽全 F */
+    /* 锁存一组框：slot0=b，其余槽全 F（显式拼接：10.3c 拒绝 {N{X},b} 混写） */
     task latch_slot0(input [47:0] b);
         begin
             boxes = {48'hFFFFFFFFFFFF, 48'hFFFFFFFFFFFF, 48'hFFFFFFFFFFFF,
@@ -110,20 +113,20 @@ module tb_box_margin;
         rst_n = 1;
         repeat (2) @(negedge clk);
 
-        /* 1. 中部普通框：外扩 8 */
+        /* 1. 中部普通框：四边外扩 M */
         latch_slot0({12'd100, 12'd100, 12'd200, 12'd160});
         run_frame;
-        expect_rect(92, 92, 208, 168);
+        expect_rect(100-M, 100-M, 200+M, 160+M);
 
         /* 2. 原点边缘框：左/上钳位到 0 */
         latch_slot0({12'd0, 12'd0, 12'd5, 12'd5});
         run_frame;
-        expect_rect(0, 0, 13, 13);
+        expect_rect(0, 0, 5+M, 5+M);
 
-        /* 3. 右下角框：右/下钳位到屏边 */
+        /* 3. 右下角框：右/下钳到屏边（有效框 x1>x0 保证外扩永不塌点） */
         latch_slot0({12'd1270, 12'd710, 12'd1279, 12'd719});
         run_frame;
-        expect_rect(1262, 702, 1279, 719);
+        expect_rect(1270-M, 710-M, 1279, 719);
 
         /* 4. 全 F 空槽：不画 */
         latch_slot0(48'hFFFFFFFFFFFF);
@@ -135,9 +138,8 @@ module tb_box_margin;
         run_frame;
         expect_no_green("all-zero box");
 
-        /* 6. 双真框（slot0/slot1），其余槽全 F：
-         *    (300,200)-(340,240) → (292,192)-(348,248) 周长 4*57+4*57-16=440
-         *    (500,300)-(600,400) → (492,292)-(608,408) 周长 4*117+4*117-16=920 */
+        /* 6. 双真框（slot0/slot1），slot2=全0 走护栏，其余槽全 F：
+         *    周长和 = [8*(41+2M)-16] + [8*(101+2M)-16]，角点查合并包围盒 */
         boxes = {48'hFFFFFFFFFFFF, 48'hFFFFFFFFFFFF,
                  48'd0,
                  {12'd500, 12'd300, 12'd600, 12'd400},
@@ -146,21 +148,21 @@ module tb_box_margin;
         repeat (4) @(negedge clk);
         toggle = 0;
         run_frame;
-        /* 双框：包围盒只查角点（周长公式只适用单实心矩形）；总像素数单查 */
-        if (gx0 !== 292 || gy0 !== 192 || gx1 !== 608 || gy1 !== 408) begin
+        if (gx0 !== 300-M || gy0 !== 200-M || gx1 !== 600+M || gy1 !== 400+M) begin
             errors = errors + 1;
-            $display("FAIL: dual-box bbox got (%0d,%0d)-(%0d,%0d), exp (292,192)-(608,408)",
-                     gx0, gy0, gx1, gy1);
+            $display("FAIL: dual-box bbox got (%0d,%0d)-(%0d,%0d), exp (%0d,%0d)-(%0d,%0d)",
+                     gx0, gy0, gx1, gy1, 300-M, 200-M, 600+M, 400+M);
         end else
-            $display("PASS: dual-box bbox (292,192)-(608,408)");
-        if (gcnt !== 440 + 920) begin
+            $display("PASS: dual-box bbox (%0d,%0d)-(%0d,%0d)", gx0, gy0, gx1, gy1);
+        if (gcnt !== (8*(41+2*M)-16) + (8*(101+2*M)-16)) begin
             errors = errors + 1;
-            $display("FAIL: dual-box total cnt=%0d, exp 1360", gcnt);
+            $display("FAIL: dual-box total cnt=%0d, exp %0d",
+                     gcnt, (8*(41+2*M)-16) + (8*(101+2*M)-16));
         end else
-            $display("PASS: dual-box total cnt=1360");
+            $display("PASS: dual-box total cnt=%0d", gcnt);
 
-        if (errors == 0) $display("TB_BOX_MARGIN: ALL 7 CHECKS PASSED");
-        else             $display("TB_BOX_MARGIN: %0d FAILURES", errors);
+        if (errors == 0) $display("TB_BOX_MARGIN: ALL 7 CHECKS PASSED (M=%0d)", M);
+        else             $display("TB_BOX_MARGIN: %0d FAILURES (M=%0d)", errors, M);
         $finish;
     end
 endmodule

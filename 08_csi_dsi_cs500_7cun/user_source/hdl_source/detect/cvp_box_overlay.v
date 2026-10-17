@@ -17,7 +17,7 @@
  * （与 det_wbc20 o_box_xy 一致；全 F 框因坐标 >IMG_W 天然不命中）。
  * 检测框在 i_box_toggle（每帧一翻）沿锁存，滞后检测帧一帧——白细胞
  * 帧间移动 ~1px，观感无影响。空心描边 2px（BORDER_T），框内目标可见。
- * 检测框锁存时四边外扩 BOX_MARGIN 像素（默认 8，钳到屏内）——给淡染
+ * 检测框锁存时四边外扩 BOX_MARGIN 像素（默认 16，钳到屏内）——给淡染
  * 边缘留余量；测试框不外扩。退化/空槽框（全 F、全 0）不画。
  * ============================================================================
  */
@@ -27,7 +27,7 @@ module cvp_box_overlay #(
     parameter N_BOX = 5,
     parameter IMG_W = 1280,
     parameter IMG_H = 720,
-    parameter BOX_MARGIN = 8    /* 检测框四边外扩像素数（0=原框） */
+    parameter BOX_MARGIN = 16   /* 检测框四边外扩像素数（0=原框；10-17 由 8 调 16） */
 ) (
     input  wire        i_clk,
     input  wire        i_rst_n,
