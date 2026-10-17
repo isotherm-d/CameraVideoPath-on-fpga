@@ -17,6 +17,8 @@
  * （与 det_wbc20 o_box_xy 一致；全 F 框因坐标 >IMG_W 天然不命中）。
  * 检测框在 i_box_toggle（每帧一翻）沿锁存，滞后检测帧一帧——白细胞
  * 帧间移动 ~1px，观感无影响。空心描边 2px（BORDER_T），框内目标可见。
+ * 检测框锁存时四边外扩 BOX_MARGIN 像素（默认 8，钳到屏内）——给淡染
+ * 边缘留余量；测试框不外扩。退化/空槽框（全 F、全 0）不画。
  * ============================================================================
  */
 `timescale 1ns/1ps
@@ -24,7 +26,8 @@
 module cvp_box_overlay #(
     parameter N_BOX = 5,
     parameter IMG_W = 1280,
-    parameter IMG_H = 720
+    parameter IMG_H = 720,
+    parameter BOX_MARGIN = 8    /* 检测框四边外扩像素数（0=原框） */
 ) (
     input  wire        i_clk,
     input  wire        i_rst_n,
@@ -65,16 +68,40 @@ module cvp_box_overlay #(
         end
     end
 
-    /* ---- 检测框快照（toggle 沿锁存，滞后检测帧一帧） -------------------- */
+    /* ---- 检测框快照（toggle 沿锁存，滞后检测帧一帧） --------------------
+     * 锁存时四边外扩 BOX_MARGIN 像素并钳到屏内：淡染细胞边缘落在分类掩膜
+     * 外（cid_filter+open3 合计收缩 2~3px + 染色梯度数 px），外接框需留
+     * 余量。纯加法零乘法，只在锁存拍计算（每帧一次），不在逐像素通路上。
+     * 退化框（全 F 空槽 BOX_OFF、全 0、x1<=x0 或 y1<=y0）锁存倒置坐标
+     * 永不命中——同时消除零框在原点的描边点。 */
     reg [11:0] r_bx0 [0:N_BOX-1];
     reg [11:0] r_by0 [0:N_BOX-1];
     reg [11:0] r_bx1 [0:N_BOX-1];
     reg [11:0] r_by1 [0:N_BOX-1];
+    /* 槽字段展开中间量（锁存拍内阻塞赋值，逐槽复用）：
+     * x0=槽[47:36] y0=槽[35:24] x1=槽[23:12] y1=槽[11:0]（x0 最高位，
+     * 与 det_wbc20 打包一致） */
+    reg [47:0] v_slot;
+    reg [11:0] v_x0, v_y0, v_x1, v_y1;
     integer k1;
     always @(posedge i_clk) begin
         if (i_box_toggle) begin
-            for (k1 = 0; k1 < N_BOX; k1 = k1 + 1)
-                {r_bx0[k1], r_by0[k1], r_bx1[k1], r_by1[k1]} <= i_box_xy[k1*48 +: 48];
+            for (k1 = 0; k1 < N_BOX; k1 = k1 + 1) begin
+                v_slot = i_box_xy[k1*48 +: 48];
+                v_x0 = v_slot[47:36]; v_y0 = v_slot[35:24];
+                v_x1 = v_slot[23:12]; v_y1 = v_slot[11:0];
+                if ((v_x1 > v_x0) && (v_y1 > v_y0)) begin
+                    r_bx0[k1] <= (v_x0 > BOX_MARGIN) ? v_x0 - BOX_MARGIN : 12'd0;
+                    r_by0[k1] <= (v_y0 > BOX_MARGIN) ? v_y0 - BOX_MARGIN : 12'd0;
+                    r_bx1[k1] <= (v_x1 >= IMG_W-BOX_MARGIN) ? IMG_W-1
+                                                            : v_x1 + BOX_MARGIN;
+                    r_by1[k1] <= (v_y1 >= IMG_H-BOX_MARGIN) ? IMG_H-1
+                                                            : v_y1 + BOX_MARGIN;
+                end else begin
+                    r_bx0[k1] <= 12'hFFF; r_by0[k1] <= 12'hFFF;
+                    r_bx1[k1] <= 12'h000; r_by1[k1] <= 12'h000;
+                end
+            end
         end
     end
 
