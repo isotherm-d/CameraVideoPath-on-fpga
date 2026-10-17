@@ -676,13 +676,16 @@ module det_wbc20 #(
      *   分件填充率 = 簇像素和 / 分件框面积和 ×100 ≥ COMPACT_PCT（二选一即可；
      *   环形/花斑细胞簇靠分件支路救回，光晕环与 RBC 细链两支路都过不了）
      *   面积上限 = 簇像素和 ≤ 整帧的 MAX_AREA_PCT%（超大组件丢弃） */
-    wire [25:0] w_barea = r_c_bw * r_c_bh;
-    wire [25:0] w_c100  = r_c_cnt * 7'd100;
     wire [25:0] w_parea = {8'd0, r_c_bsum};
     localparam [17:0] MAXLIM = MAX_AREA_PCT * (IMG_W * IMG_H) / 100;
-    wire w_geom_ok = ((w_c100 >= COMPACT_PCT * w_barea) ||
-                      (w_c100 >= COMPACT_PCT * w_parea)) &&
-                     (r_c_cnt <= MAXLIM);
+    /* 几何判定两级流水（2026-10-17）：FSM 状态16 算乘积寄存、状态18 判定+写框
+     * ——原实现 mult(bw*bh)->mult(COMPACT_PCT*area)->比较->r_box 写使能同拍
+     * 串链，100M 布线后 -20ps（5 端点全在此）。拆拍后每级只含一次乘法。 */
+    reg  [25:0] r_barea_r;
+    reg  [25:0] r_c100_r;
+    wire w_geom_ok_r = ((r_c100_r >= COMPACT_PCT * r_barea_r) ||
+                        (r_c100_r >= COMPACT_PCT * {8'd0, r_c_bsum})) &&
+                       (r_c_cnt <= MAXLIM);
 
     integer fi;
     always @(posedge i_clk or negedge i_rst_n) begin
@@ -874,8 +877,19 @@ module det_wbc20 #(
                 r_c_y0   <= d_y0_a; r_c_y1 <= d_y1_a;
                 r_fst    <= 5'd16;
             end
-            5'd16: begin                             // RCM：几何过滤 + 写框
-                if (w_geom_ok)
+            5'd16: begin                             // RC0：几何乘积寄存（两级流水第一拍）
+                r_barea_r <= r_c_bw * r_c_bh;
+                r_c100_r  <= r_c_cnt * 7'd100;
+                r_fst     <= 5'd18;
+            end
+            5'd17: begin                             // 锁存完成：握手脉冲
+                o_frame_done <= 1'b1;
+                o_box_toggle <= ~o_box_toggle;
+                r_fini <= 1'b0;                      // 空帧路径：脉冲在此收尾
+                r_fst <= 5'd0;
+            end
+            5'd18: begin                             // RCM：几何过滤 + 写框（乘积已寄存一拍）
+                if (w_geom_ok_r)
                     r_box[r_round] <= {dec12(r_c_x0), dec12(r_c_y0),
                                        dec12(r_c_x1), dec12(r_c_y1)};
                 /* 未过几何过滤的簇放弃，对应槽保持全 F */
@@ -883,12 +897,6 @@ module det_wbc20 #(
                 r_scan  <= 8'd0;
                 r_found <= 1'b0; r_bestc <= 18'd0;
                 r_fst   <= (r_round == N_OUT-1) ? 5'd17 : 5'd12;
-            end
-            5'd17: begin                             // 锁存完成：握手脉冲
-                o_frame_done <= 1'b1;
-                o_box_toggle <= ~o_box_toggle;
-                r_fini <= 1'b0;                      // 空帧路径：脉冲在此收尾
-                r_fst <= 5'd0;
             end
             default: r_fst <= 5'd0;
             endcase

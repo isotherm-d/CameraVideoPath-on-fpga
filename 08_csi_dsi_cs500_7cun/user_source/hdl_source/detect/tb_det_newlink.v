@@ -255,12 +255,12 @@ module tb_det_newlink;
 
     /* argmax 逐轮探针：R_COMMIT 拍打印本轮赢家与几何过滤结果 */
     always @(posedge clk) begin
-        if (rst_n && u_wbc.r_fst == 5'd16 && hframe == 2)
+        if (rst_n && u_wbc.r_fst == 5'd18 && hframe == 2)   // 18=几何判定+写框(2026-10-17 两级流水)
             $display("[ARG ] round=%0d eff=%0d cnt=%0d box=(%0d,%0d)-(%0d,%0d) geom_ok=%b bw=%0d bh=%0d",
                      u_wbc.r_round, u_wbc.r_eff, u_wbc.r_c_cnt,
                      u_wbc.s_mnx_a[u_wbc.r_eff], u_wbc.s_mny_a[u_wbc.r_eff],
                      u_wbc.s_mxx_a[u_wbc.r_eff], u_wbc.s_mxy_a[u_wbc.r_eff],
-                     u_wbc.w_geom_ok, u_wbc.r_c_bw, u_wbc.r_c_bh);
+                     u_wbc.w_geom_ok_r, u_wbc.r_c_bw, u_wbc.r_c_bh);
     end
 
     /* ---- 标签回收诊断探针（2026-10-10）----
