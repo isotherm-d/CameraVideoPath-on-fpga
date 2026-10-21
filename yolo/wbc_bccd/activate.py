@@ -1,7 +1,7 @@
 """Activate an accepted, isolated model after confirming the saved current state."""
 import argparse,hashlib,json,shutil,datetime
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];BOARD=BASE.parent/'08_csi_dsi_cs500_7cun';HOME=BASE/'wbc_bccd';HDL=BOARD/'user_source/hdl_source/yolo'
+BASE=Path(__file__).resolve().parents[1];BOARD=BASE.parent/'hardware/mainboard';HOME=BASE/'wbc_bccd';HDL=BOARD/'user_source/hdl_source/yolo'
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main(name):

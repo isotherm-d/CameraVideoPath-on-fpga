@@ -1,7 +1,7 @@
 """Preserve the working SRAM bit and current source before activating new ROMs."""
 import datetime,hashlib,json,shutil,subprocess
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun';OUT=BASE/'wbc_bccd/baseline';HDL=BOARD/'user_source/hdl_source/yolo'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard';OUT=BASE/'wbc_bccd/baseline';HDL=BOARD/'user_source/hdl_source/yolo'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 if __name__=='__main__':

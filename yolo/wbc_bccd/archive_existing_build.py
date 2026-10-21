@@ -1,7 +1,7 @@
 """Freeze previous run-cache evidence before the existing project is rebuilt."""
 import datetime,hashlib,json,shutil
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];BOARD=BASE.parent/'08_csi_dsi_cs500_7cun';CACHE=BOARD/'td_project/camera_to_dsi_display_Runs/phy_1';OUT=BASE/'wbc_bccd/baseline/prior_run_cache'
+BASE=Path(__file__).resolve().parents[1];BOARD=BASE.parent/'hardware/mainboard';CACHE=BOARD/'td_project/camera_to_dsi_display_Runs/phy_1';OUT=BASE/'wbc_bccd/baseline/prior_run_cache'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 if __name__=='__main__':
  if OUT.exists():raise FileExistsError('Keep previous run cache immutable')

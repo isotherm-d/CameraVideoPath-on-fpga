@@ -5,26 +5,26 @@ import numpy as np
 from export import ROOT,HDL,writehex
 from calibrate import predict
 MS=Path(r'C:/modeltech64_2020.4/win64')
-BOARD=HDL.parents[3];CELL=HDL.parent/'classify'
+REPO=ROOT.parent;BOARD=REPO/'hardware/mainboard';CELL=HDL.parent/'classify';LEGACY_CELL=REPO/'old/cellnet32/classify'
 
 def main(args):
  out=ROOT/'tmp'/('integration_paced' if args.paced else 'integration_full' if args.full else 'integration_control');out.mkdir(parents=True,exist_ok=True)
- sources=list(HDL.glob('*.v'))+(list(CELL.glob('*.v')) if args.full else [])
+ sources=list(HDL.glob('*.v'))+([*CELL.glob('*.v'),*LEGACY_CELL.glob('*.v')] if args.full else [])
  tests=['tb_yolo_full'] if args.full else ['tb_yolo_control','tb_yolo_post']
  files=sources+list(HDL.glob('*.vh'))+list((HDL/'model').glob('*.hex'))+[ROOT/(n+'.sv') for n in tests]
- if args.full:files+=[CELL/'model/wrom.hex']
+ if args.full:files += list(LEGACY_CELL.glob('*.vh'))+[LEGACY_CELL/'model/wrom.hex']
  def hashes():return {str(p.relative_to(ROOT.parent)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
  before=hashes()
  for p in (HDL/'model').glob('*.hex'):shutil.copy2(p,out/p.name)
  if args.full:
-  shutil.copy2(CELL/'model/wrom.hex',out/'wrom.hex')
+  shutil.copy2(LEGACY_CELL/'model/wrom.hex',out/'wrom.hex')
   run=ROOT/'runs/s160_w0075_intqat';vec=run/'vectors/v0'
   for n in ['rgb.hex','expected_boxes.hex']:shutil.copy2(vec/n,out/n)
   # Independent CellNet ROM-decoded integer golden on the same fixed480 view.
   image=np.load(vec/'golden.npz')['rgb'];xy=np.arange(32)*15
   xx,yy=np.meshgrid((407+xy-320)//4,(127+xy-40)//4);rgb=image[yy,xx]
   writehex(out/'class_bytes.hex',rgb.transpose(2,0,1).ravel(),2)
-  header=(CELL/'cellnet32_params.vh').read_text()
+  header=(LEGACY_CELL/'cellnet32_params.vh').read_text()
   def param(n):return int(re.search(r'\b'+n+r'\s*=\s*(\d+)',header)[1])
   words=np.array([int(v,16) for v in (out/'wrom.hex').read_text().split()],dtype='<u4');a=rgb.transpose(2,0,1).astype(np.int64)
   for layer,ci in [(1,3),(2,6),(3,12)]:
@@ -61,7 +61,7 @@ def main(args):
   if p.returncode or re.search(r'\*\* (?:Fatal|Error)|MISMATCH',p.stdout) or (marker and marker not in p.stdout):raise RuntimeError(name+': '+p.stdout[-4000:])
   print(name,'PASS',p.stdout[-1000:],flush=True)
  run('vlib',['work'],'vlib')
- run('vlog',['-sv','+incdir+'+str(HDL),*[str(p) for p in sources],*[str(ROOT/(t+'.sv')) for t in tests]],'compile')
+ run('vlog',['-sv','+incdir+'+str(HDL),'+incdir+'+str(LEGACY_CELL),*[str(p) for p in sources],*[str(ROOT/(t+'.sv')) for t in tests]],'compile')
  for t in tests:
   generics=['-gPIXEL_GAP=3','-gROW_GAP=604'] if args.paced else []
   run('vsim',['-batch','-quiet','-l',t+'.transcript','work.'+t,*generics,'-do','run -all; quit -f'],t,'TEST_RESULT PASS '+t)

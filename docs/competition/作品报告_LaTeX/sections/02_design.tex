@@ -1,0 +1,330 @@
+\section{系统组成及功能说明}
+\subsection{整体介绍}
+系统由相机主板、显示子板、SC500CS 摄像头、PC 和 HDMI 显示器组成。主板采用安路 PH1P35，承担 MIPI 接收、ISP、全帧采样、量化检测分类、身份跟踪与类别确认、框与类型叠加及网络发送；子板采用 EG4D20，承担网络接收、图像重组、DDR 缓存和 HDMI 输出。ETHA 连接 PC，ETHB 镜像同一标注码流至子板。相机主链路持续前进，PC 收图速度与 CNN 忙闲不反向阻塞采集。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}
+\node[box,text width=3.3cm] (cam) at (-3.6,0) {SC500CS 摄像头\\MIPI 2 lane RAW10};
+\node[box,text width=4.4cm] (main) at (2.6,0) {相机主板 PH1P35\\采集 ISP AE AWB\\全帧量化检测分类\\框与类型叠加};
+\node[box,text width=4.1cm] (pc) at (-3.6,-3.2) {PC 上位机\\原样收图 控制 存帧};
+\node[box,text width=4.1cm] (sub) at (2.6,-3.2) {显示子板 EG4D20\\重组 DDR OSD HDMI};
+\draw[flow] (cam)--(main);
+\draw[flow] (main.south) -- ++(0,-.45) -| node[lab,pos=.55,above]{ETHA 视频} (pc.north);
+\draw[flow] (main.south) -- node[lab,pos=.65,right]{ETHB 镜像} (sub.north);
+\draw[ctrl] (pc.west)--(-6.3,-3.2)--(-6.3,1.6)--node[lab,above]{UDP 命令}(2.6,1.6)--(main.north);
+\end{tikzpicture}
+\caption{系统组成及双网口连接关系}\label{fig:system}
+\end{figure}
+
+视频使用 UDP 6000，控制使用 UDP 6001，状态与应答使用 UDP 6002。主板地址为 \code{192.168.1.66}，视频目的地址与 PC 接收地址为 \code{192.168.1.100/24}；子板在独立镜像链路上按同一目的 IP 过滤视频。子板是接收显示设备，不承担主板参数控制；因此其可达性应以接收、CRC、缓存和画面更新判断。
+
+
+
+\lead{当前工程目录与模块边界}
+项目根目录为\path{camera processing unit/}。表\ref{tab:layout}给出整理后的实际入口；下文源码路径均相对该根目录。主板工程是\path{hardware/mainboard/td_project/camera_to_dsi_display.al}，子板工程是\path{hardware/hdmi/HDMI_OUT.al}。原构建摘要保留构建时路径，不能直接当作当前磁盘位置；现存目录映射记录在\path{tools/project_layout.json}。
+
+\begin{table}[htbp]\centering\small
+\caption{当前工程的目录与职责}\label{tab:layout}
+\begin{tabularx}{\linewidth}{|L{5.4cm}|Y|}
+\hline\tablehead 当前目录 & 内容与作用\\\hline
+\path{hardware/mainboard/} & PH1P35主板工程、相机/ISP/识别/网络RTL、工具及部署摘要\\\hline
+\path{hardware/hdmi/} & EG4D20网口收流、DDR三缓冲与HDMI输出工程\\\hline
+\path{yolo/wbc_bccd/} & 当前两来源训练、评估、导出及冻结资产\\\hline
+\path{yolo/five/}、\path{yolo/robust/} & 当前流程复用的训练、整数参考和验证工具\\\hline
+\path{docs/competition/} & 官方作品报告LaTeX、PDF及原始Word模板\\\hline
+\path{docs/design_notes/} & 相机、ISP、控制、显示及检测专题资料\\\hline
+\path{old/releases/}、\path{old/cellnet32/} & 历史位流与退役分类器；不代表当前活动识别方案\\\hline
+\end{tabularx}
+\end{table}
+
+主板自v30起取消本地DDR至DSI显示支路并关闭7寸屏背光，视频经双网口输出；完整帧显示缓存位于子板。CellNet32与中心640/固定480分类属于历史原型。当前顶层不实例化这些分类器，但仍复用\path{classify/cvp_cell_tracks.v}和\path{classify/cvp_cell_label.v}完成身份确认和叠加；工程文件中保留的旧源码条目不等于其处于有效综合层次。\cite{repo,layout,yolortl}
+
+数据面和控制面在主板内部汇合。图像在像素域逐拍处理，统计模块在帧尾生成亮度及色彩信息，控制器生成下一次设置；网络命令写入影子配置，再在有效帧首统一提交。帧号、配置号和图像同步标志贯穿处理链，使输出画面、状态与参数之间有明确对应关系。\cite{repo,interface}
+
+\Needspace{10\baselineskip}
+\subsection{硬件系统介绍}
+\subsubsection{硬件整体介绍}
+相机主板为 MLKPAI-F02，器件 PH1P35MDG324，配置 SC500CS 摄像头及两颗 YT8531 千兆 PHY。显示子板为 MLKPAI-F01，器件 EG4D20EG176，使用 YT8531 PHY 和合封 16 MB DDR1。两板以千兆网线直连，PC 连接主板另一网口，显示器连接子板 HDMI。当前主板采用网络输出结构，显示缓存位于子板。
+
+\begin{table}[htbp]\centering\small
+\caption{硬件单元与主要时钟域}
+\begin{tabularx}{\linewidth}{|L{2.3cm}|L{2.6cm}|Y|}
+\hline\tablehead 单元 & 时钟或规格 & 作用\\\hline
+摄像头采集 & 约 40.2 MHz 组时钟 & MIPI 解包，形成 40 bit 四像素组\\\hline
+主板像素处理 & 100 MHz & RAW 展开、插值、数字增益、统计、模式处理\\\hline
+主板网络发送 & 125 MHz GMII & RGB 字节展开、协议发送、双口镜像\\\hline
+子板接收 & 125 MHz & PHY 接收、协议解析、帧重组\\\hline
+子板存储 & 150 MHz & 三缓冲、FDMA、DDR 读写\\\hline
+子板显示 & 75 MHz / 375 MHz & 光栅时序 / TMDS 串化\\\hline
+\end{tabularx}
+\end{table}
+
+传感器以 VTS=1003 行配置 30 fps 工作点，采窗为 $1287\times727$，有效图像为 $1280\times720$。采窗和有效输出是两个独立参数：传感器边界余量用于成像配置，下游行帧计数则严格以有效图像尺寸为准。曝光以半行为编码单位，范围为 62～1800；默认曝光码为 500，模拟增益默认档位为 108。图像输出与控制通路均围绕这一工作点设计。
+
+\subsubsection{机械设计介绍}
+机械结构采用显微镜摄像头支架V10方案，由镂空底座、排线立柱、可更换摄像头托座、遮光后盖和连接横销组成，各零件采用分件设计，便于3D打印和装配。底座用于承放开发板，立柱导槽用于整理摄像头排线；托座通过插接与横销固定，并设置间隔5 mm的三档孔位，便于粗调安装高度。
+
+显微镜托座将摄像头固定腔与入筒段连成一体，入筒段长40 mm、外径22.75 mm，按内径23.15 mm的目镜筒设计。可拆遮光后盖采用周圈台阶限位，避让摄像头中央器件和排线接口。拔出横销后可更换竖直托座，适应显微图像采集与竖直演示两种装配方式。\cite{mechanical}
+
+\subsubsection{电路各模块介绍}
+\lead{采集与跨时钟域}
+SC500CS 经 MIPI CSI-2 双通道发送 RAW10 数据。接收模块完成包解析和 RAW10 还原，\code{uial2axis} 组织行帧信息，\code{line_retimer} 将有效数据重切为每行 320 拍、每拍 4 像素，共 720 行的组流。异步 \code{group_fifo} 将采集域接入 100 MHz 主域。下游齿轮箱每次取出完整 40 bit 组，再展开为四个 10 bit 单像素，避免把组握手与单像素握手混用。
+
+真实帧起点用于重置行列位置和像素身份。短帧或异常帧通过组数、输出像素数和流健康检查识别，尾部残留数据在新的帧身份开始前清理，避免相邻帧拼接。控制寄存器、有效标志和多位数据分别使用适合的跨域方式；整帧状态采用快照后传递，保证接收端读到同一次统计。
+
+\lead{公共像素流}
+内部接口以 \code{valid} 配合固定 128 bit 像素字传递，不设置摄像头反压。RGB 为 24 bit，坐标各 12 bit，帧身份为 32 bit，配置号为 16 bit，模式号为 8 bit，另携带 SOF/EOL/EOF、错误与工作状态。每帧应有 $1280\times720=921600$ 个有效像素、720 个行尾和 1 个帧尾。
+
+\begin{table}[htbp]\centering\small
+\caption{公共像素字的关键字段}
+\begin{tabularx}{\linewidth}{|L{3.1cm}|Y|}
+\hline\tablehead 位范围 & 含义\\\hline
+23:0 & RGB888，R 为高字节\\\hline
+35:24 / 47:36 & 零起始 x / y 坐标\\\hline
+79:48 / 95:80 & 采集帧身份 / 生效配置号\\\hline
+103:96 & 图像模式号\\\hline
+104 / 105 / 106 & SOF / EOL / EOF，与对应像素同拍\\\hline
+107～111 & 错误、OSD、AE、WB 状态\\\hline
+127:112 & 预留字段\\\hline
+\end{tabularx}
+\end{table}
+
+点运算须对 RGB 和整个元数据施加相同延迟；窗口运算的输出坐标必须描述实际窗口中心。窗口边界需要补齐首末行列，并在帧结束时排空流水。分类支路使用未经过对比度、风格化和 OSD 的 \code{clean_pixel}，避免展示效果改变算法输入分布。\cite{interface}
+
+\lead{网络发送与带宽}
+四个 RGB888 像素合并为 96 bit 组，经跨域缓存进入 125 MHz 发送域，再按 R、G、B 顺序展开。每个 UDP 包的应用头为 6 B：1 B 帧序号、1 B 格式和 4 B 大端字节偏移，随后为 1440 B 图像数据，即 480 个像素。帧内偏移由源数据描述符提供，与真实帧身份一致。
+\begin{align}
+B_{\rm frame}&=1280\times720\times3=2764800\ \mathrm{B},\\
+N_{\rm packet}&=2764800/1440=1920.
+\end{align}
+以太网头、IP 头、UDP 头、应用头和 FCS 合计 60 B，因此每个以太网帧为 1500 B。计入 8 B 前导码与 12 B 帧间隙，30 fps 时预算为
+\begin{equation}
+R_{\rm wire}=1920\times(1500+8+12)\times8\times30
+ \approx700.4\ \mathrm{Mb/s}.
+\end{equation}
+相应单帧线时约 23.35 ms，小于 33.33 ms 帧周期。两颗 PHY 各自完成千兆协商，ETHB 复制主发送流；PC 与子板在各自物理链路上接收，因此无需在同一链路上重复发送两份视频。
+
+\lead{子板重组与显存写入}
+协议栈输出按包连续到达的 UDP 载荷，帧缓存需要按光栅顺序排列的固定长视频。\code{cvp_rx_assemble} 解析应用头，以暂存 FIFO 保存字节，以描述符保存目标偏移。输入端检查格式、界限、对齐和顺序；输出端先填充缺口，再输出本包像素，帧尾补齐到规定长度。
+
+小缺口白名单为 0～4 个完整图像包；缺口超限、重复或逆序的数据不会破坏已提交的光栅位置，接收端跟踪丢弃并在合法新帧起点恢复。填充阶段受缓存水位约束时，合法包可推进已承诺位置而不进入载荷队列，防止输入位置停滞导致后续缺口级联。链路断开、锁相异常与错误恢复分别经过同步和复位时序控制。
+
+写侧 FIFO 必须积累完整 DMA 突发的数据后才提出请求，256 字突发的门槛与原生 FIFO 标志语义一致。补洞和补帧输出限制为每三拍一个像素，以匹配写通路可持续吞吐；发出下一帧同步前须等待本帧 DMA 写入完成，而不能仅凭重组器已经输出最后一个像素判断帧结束。\cite{hdmistart,hdmicolor}
+
+\lead{DDR 读出与显示}
+DDR1 按 4 MB 帧步进分配三块缓存，总计 12 MB。写侧以 30 fps 提交帧，读侧以 60 Hz 输出；只有完整写入的缓存才可发布，显示端在 VS 边界切换，避免读写使用同一帧槽。首帧就绪前输出黑底，读空时屏蔽该场余下视频，避免把失去位置关系的旧像素持续送往 HDMI。
+
+按显存侧 32 bit 像素字计算，写与读的带宽为
+\begin{equation}
+B_{\rm DDR}=1280\times720\times4\times(30+60)
+ =331.776\ \mathrm{MB/s},
+\end{equation}
+约为 600 MB/s 峰值的 55.3\%。预算还需结合仲裁、行预取、刷新和总线停顿验证，不能将峰值余量直接等同于任意停顿均可承受。
+
+DDR 返回数据以 DQS 为采样基准，在上升沿采集低 16 bit、下降沿拼接完整 32 bit 字，再用 Gray 指针异步 FIFO 交给控制器域。数据有效由真实采集产生，避免使用固定请求延迟推断。控制器执行周期刷新并保证初始化及 DLL 稳定等待。显示端对齐 FIFO 读延迟，将 RGB、DE、HS、VS 延迟一致后送往 TMDS 编码器；OSD 在相同光栅坐标下叠加。\cite{hdmicolor}
+
+\Needspace{10\baselineskip}
+\subsection{软件系统介绍}
+\subsubsection{软件整体介绍}
+软件包括FPGA RTL、离线训练与整数导出、PC收图控制程序及验证脚本。当前顶层\path{hardware/mainboard/user_source/hdl_source/design_top_wrapper.v}将\code{cvp_advanced}的clean RGB送入\code{cvp_yolo160_detector}，后接\code{cvp_yolo_tracks}与\code{cvp_cell_label}；标注后RGB进入\code{pack_4}及网络发送。活动识别支路参数为\code{FRAME_INTERVAL=2}、\code{SINGLE_TARGET=1}、\code{FULL_NAMES=1}。PC GUI入口位于\path{hardware/mainboard/tools/cam_gui_v27.py}，仅负责原样预览、存帧与参数控制，实时识别和叠加均在FPGA完成。
+
+上位机使用独立请求号管理事务。SET 写入影子寄存器，COMMIT 请求在下一有效帧首生效，状态返回接受、待生效、生效、忙或拒绝。客户端等待应答并重试，提交后查询实际值，未核对通过不显示成功。传感器应答表示写入事务完成，光学曝光变化仍需等待传感器输出反映新参数。
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}
+\node[box,text width=3.0cm] (a) at (-4.3,0) {采集与去马赛克\\校正前 RGB};
+\node[box,text width=3.4cm] (b) at (0,0) {白平衡与数字增益\\标准 clean RGB};
+\node[box,text width=2.8cm] (c) at (4.4,0) {色阶与七模式\\框 类型 UDP};
+\node[box,text width=5.0cm] (awb) at (-3.3,-2.6) {AWB 校正前色彩统计\\中性样本 → R/B 增益};
+\node[box,text width=5.0cm] (ae) at (3.3,-2.6) {AE 校正后亮度统计\\PID → 曝光与数字增益};
+\draw[flow] (a)--(b);\draw[flow] (b)--(c);
+\draw[ctrl] (a.south) -- ++(0,-.4) -| (awb.north);
+\draw[ctrl] (awb.east) -- ++(.4,0) |- (b.south west);
+\draw[ctrl] (b.south) -- ++(0,-.45) -| (ae.north);
+\draw[ctrl] (ae.east)--++(.5,0)|- (0,1.6)--(b.north);
+\end{tikzpicture}
+\caption{主板像素通路与自动图像调节的统计口径}\label{fig:isp}
+\end{figure}
+
+图像接收线程和状态线程分别处理 UDP 6000 与 6002，GUI 定时取得线程快照并更新画面。单帧按帧序号和字节偏移拼接，状态区结合 RAW 组数、输出长度、帧率及累计错误观察链路。一次接收程序独占视频端口，避免多个进程分流同一批 UDP 包。
+
+\Needspace{10\baselineskip}
+\subsubsection{软件各模块介绍}
+\lead{RAW 与彩色重建}
+RAW10 展开后先经过四拍相位保持延迟，再进入 $3\times3$ Bayer 双线性插值。当前 RAW 通路不执行坏点替换。行列计数以有效帧起点对齐，并以 BGGR 相位选择 R、G、B 的重建位置。以蓝色中心 $p_{11}$ 为例，
+\begin{align}
+\widehat B&=p_{11},\\
+\widehat G&=(p_{01}+p_{10}+p_{12}+p_{21})/4,\\
+\widehat R&=(p_{00}+p_{02}+p_{20}+p_{22})/4.
+\end{align}
+红色中心的 R/B 关系对换；绿色中心根据所在行，从水平和垂直的同色邻点分别求均值。插值结果取高 8 bit 形成 RGB888。Bayer 不同位置的邻点颜色不同，任何 RAW 空间处理都必须根据采样相位选择邻域，不能把几何相邻直接当作同色。\cite{rtl}
+
+\lead{白平衡与数字增益}
+四种白平衡模式为标定预设、色温 K 值、手动 RGB 和自动场景。预设为 R344/G256/B451，Q8 中 256 表示 1 倍。设白平衡编码为 $w_c$，全局数字增益编码为 $d$，两者先相乘再统一校正：
+\begin{align}
+g_c&=\left\lfloor(w_c d+128)/256\right\rfloor,\\
+O_c&=\min\!\left(255,\left\lfloor(I_cg_c+128)/256\right\rfloor\right).
+\end{align}
+此结构只在最终 RGB8 输出处饱和，避免先对白平衡结果截断，再乘全局增益造成中间精度损失。$g_c$ 在帧首锁存，整帧使用同一组通道设置。
+
+AWB 使用数字校正前的 RGB 估计原始色偏。先以标定先验拉平色度，筛选不接近黑位和削顶、通道差异足够小的中性样本；保守判据要求归一色度范围不超过最大通道的 $1/8$。全画面分为四个象限，至少两个象限具有足够样本才接收估计，避免单一物体主导白平衡。
+
+对中性集合 $\mathcal N$，候选增益以绿色为锚点：
+\begin{equation}
+w_R^{\rm cand}=\operatorname{clip}_{128}^{1024}
+\left(256\frac{\sum_{p\in\mathcal N}G_p}{\sum_{p\in\mathcal N}R_p}\right),\qquad
+w_B^{\rm cand}=\operatorname{clip}_{128}^{1024}
+\left(256\frac{\sum_{p\in\mathcal N}G_p}{\sum_{p\in\mathcal N}B_p}\right).
+\end{equation}
+候选值先限制在标定增益的 $\pm25\%$ 邻域，与标定基准按置信度混合，再通过 $1/16$ 权重的一阶平滑更新。全帧样本数、有效象限或通道和不满足条件时冻结增益，并输出原因与样本状态。
+
+\lead{亮度统计与高光保护}
+AE 统计位于白平衡与全局增益之后、风格化之前。单像素亮度及高光比例为
+\begin{equation}
+Y=\left\lfloor\frac{77R+150G+29B+128}{256}\right\rfloor,\qquad
+r_{\rm clip}=\frac{\#\{Y\ge245\}}{N}.
+\end{equation}
+默认目标亮度为 112，死区为目标 $\pm8$。当高光比例超过 5\% 时，控制器可降低实际目标，在 32～112 范围内保留高光安全裕量，避免高反差场景反复“保护高光”和“恢复固定均值”。GUI 同时显示实际目标，均值低于 112 不必然代表尚未收敛。
+
+\lead{自适应采样与定点 PID}
+控制器在帧事件上决策。亮度误差绝对值至少为 24 时使用两帧平均，接近目标时使用四帧平均；两种窗口都保留四分之一亮度码精度。设窗口均值的 Q2 编码为 $M_k$，目标 Q2 编码为 $T_k$，则
+\begin{align}
+e_k&=T_k-M_k,\\
+I_k&=\operatorname{clip}_{-512}^{512}(I_{k-1}+e_k),\\
+D_k&=(D_{k-1}+M_{k-1}-M_k)\mathbin{\gg}1,\\
+C_k&=(6e_k+3I_k+D_k)\mathbin{\gg}2.
+\end{align}
+$K_p,K_i,K_d$ 的 Q10 编码分别为 6、3、1，实际系数为 $6/1024$、$3/1024$、$1/1024$。上式右移 2 位消除测量 Q2 倍率；$C_k$ 随后作为 Q10 比例调节量参与总曝光更新。微分使用测量变化，目标变化不会直接引入微分冲击；误差反向时清除旧积分和微分历史。
+
+控制量与误差方向相反时取零，大误差比例步长限幅为 $256/1024$，小误差为 $64/1024$；饱和时抑制继续积分。在死区内停止调节并清理历史。令 $U_k=E_kd_k$ 为“曝光半行码×Q8 数字增益”的整数总曝光量，
+\begin{align}
+\Delta U_k&=\max\!\left(256,\left\lfloor\frac{U_k|C_k|+512}{1024}\right\rfloor\right),\\
+U_{k+1}&=\operatorname{clip}_{62\times256}^{1800\times1024}
+\bigl(U_k+\operatorname{sgn}(C_k)\Delta U_k\bigr)\qquad(C_k\ne0).
+\end{align}
+先把 $U_{k+1}$ 分配给传感器曝光：当 $U_{k+1}\le1800\times256$ 时令数字增益为 1 倍，曝光由 $U/256$ 四舍五入得到；超过该值则固定曝光 1800，再由 $U/1800$ 得到 1～4 倍数字增益。AE 不自动改变模拟增益，模拟增益保留用户设定。
+
+计算按测量、历史更新、乘加、限幅、总量更新和执行器分配分段，避免把整条 PID 算术路径集中在一拍。除以常数 1800 使用移位恢复除法，利用帧间充足时间降低组合逻辑压力。\cite{pid}
+
+\lead{参数执行与一致性}
+传感器桥保持一次仅有一个在途事务，曝光寄存器以 group hold 成组提交，I2C NACK 或超时通过状态返回。涉及曝光变化的提交确认后，丢弃两帧旧反馈再重新统计；纯 FPGA 数字增益在 SOF 原子提交后即可统计新数据，不增加额外两帧等待。控制器仅在实际生效参数与请求匹配时保存对应 PID 历史，手动请求优先并使旧历史失效。
+
+\lead{七种实时图像模式}
+七种模式的选择与处理方式见下表。
+
+\begin{table}[htbp]\centering\small
+\caption{图像模式及运算原理}
+\begin{tabularx}{\linewidth}{|L{.9cm}|L{1.8cm}|Y|}
+\hline\tablehead 编号 & 模式 & 实现\\\hline
+0 & 原图 & 标准校正图像直通\\\hline
+1 & 灰度 & $Y=(R+2G+B)\gg2$，三通道同值\\\hline
+2 & 二值化 & 灰度与可配置阈值比较\\\hline
+3 & Sobel 边缘 & 窗口梯度、高低门限与连通判决\\\hline
+4 & 卡通 & 中值平滑、每通道 3 bit 量化、轮廓描边\\\hline
+5 & 素描 & 白底黑线；独立阈值和线宽\\\hline
+6 & 复古暖色 & 定点 sepia 矩阵映射与饱和限幅\\\hline
+\end{tabularx}
+\end{table}
+Sobel 在灰度 $3\times3$ 窗口中计算水平和垂直梯度，以 $|G_x|+|G_y|$ 近似幅值，避免平方根。边缘与素描分别保存阈值与线宽，低阈值可联动为高阈值的一半，参数通过帧首提交保持一帧内一致。卡通先保边平滑，再降低颜色级数，最后叠加轮廓。
+
+显示色阶根据 32 箱亮度直方图选取黑白分位点，用限幅线性映射拉伸对比度；低跨度画面旁路，增益限定在 0.5～2 倍。它属于自动色阶，不等同于使用整条累计分布函数的直方图均衡。算法支路可直接使用处理前的标准像素流。
+
+
+\lead{全帧采样与网络结构}
+\code{cvp_yolo160_detector} 从 $1280\times720$ clean RGB 直接采样为 $160\times160$，覆盖全画面，不再受中心640或固定480窗口限制。采样位置为
+\begin{equation}
+x_k=4+8k,\qquad y_j=2+4j+\lfloor j/2\rfloor,\qquad k,j=0,\ldots,159.
+\end{equation}
+这是横纵不同比例的直接近邻缩放，没有补边。检测框解码后按横向8倍、纵向4.5倍恢复至原画面，并裁到合法边界；训练与整数参考使用一致的坐标约定。小目标在160输入中损失细节，需要真实相机验证。
+
+本网络是自行实现、面向RTL的单尺度YOLO风格检测器，采用锚框、objectness和类别联合预测；并非官方YOLOv5/v8完整移植，不具有其多尺度颈部与检测头。十层普通卷积的输出通道为8/8/8/16/24/40/80/24/40/30，前四层后各有 $2\times2$ 最大池化；第八层为 $1\times1$，其余为 $3\times3$，最后空间尺寸为 $10\times10$。
+
+\begin{table}[htbp]\centering\small
+\caption{板端检测网络的空间尺寸与通道}
+\begin{tabularx}{\linewidth}{|L{1.8cm}|L{3.0cm}|L{2.4cm}|Y|}
+\hline\tablehead 层 & 输入空间 / 通道 & 输出通道 & 输出空间与处理\\\hline
+1 & $160^2$/3 & 8 & $80^2$，卷积后池化\\\hline
+2 & $80^2$/8 & 8 & $40^2$，卷积后池化\\\hline
+3 & $40^2$/8 & 8 & $20^2$，卷积后池化\\\hline
+4 & $20^2$/8 & 16 & $10^2$，卷积后池化\\\hline
+5 / 6 / 7 & $10^2$/16、24、40 & 24、40、80 & $10^2$，$3\times3$卷积\\\hline
+8 / 9 & $10^2$/80、24 & 24、40 & $1\times1$ / $3\times3$卷积\\\hline
+10 & $10^2$/40 & 30 & 三锚框各10字段\\\hline
+\end{tabularx}
+\end{table}
+
+每个格点的三个锚框各输出 $t_x,t_y,t_w,t_h,t_o$ 和五类logit，共30通道、3000个有符号整数输出。160尺度锚框为 $(20,24),(40,48),(80,88)$。设格点坐标为 $(g_x,g_y)$、步长16、锚框宽高为 $(a_w,a_h)$，浮点解码为
+\begin{align}
+(c_x,c_y)&=16\,[2\sigma(t_{x,y})-0.5+(g_x,g_y)],\\
+(w,h)&=[2\sigma(t_{w,h})]^2\,(a_w,a_h),\\
+s&=255\,Q_{\sigma}(t_o),\quad \widehat c=\arg\max_c t_c.
+\end{align}
+硬件使用ROM sigmoid、整数运算及边界限幅，按相同整数参考逐项核对，不直接在FPGA计算指数。\cite{yolortl,twosource}
+
+\lead{量化计算与调度}
+首层输入为8 bit RGB、权重8 bit；中间卷积权重有符号4 bit、激活无符号4 bit；末层权重8 bit，输出有符号16 bit logit。训练先浮点再折叠BatchNorm，按输出通道导出偏置和移位，量化感知前向使用float64精确整数累加，避免半LSB附近与RTL舍入不同。
+
+\code{yolo160_first} 在采样流上计算首层并池化，不缓存整张RGB输入。\code{yolo160_core} 对后九层采用四输出通道复用同一输入激活，特征在片内RAM间交替读写，4 bit激活打包存储；低位宽乘法采用LUT移位加法结构。四路是硬件并行度，不是把模型改成分组卷积。首层累加界限按有符号32 bit、后续按24 bit导出检查，ROM与元参数均带哈希。
+
+默认 \code{FRAME_INTERVAL=2}：相机按30 fps配置，网络15次/秒调度。一次720p节拍联合仿真从采样起点到检测提交为6295080拍，100 MHz下62.9508 ms，小于66.67 ms；不等于实测曝光至屏幕延迟。网络忙闲不反压相机，配置改变或不完整输入按事务中止，不发布半成品结果。\cite{yoloreport}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}
+\node[box,text width=10.7cm] (a) at (0,0) {全帧clean RGB $1280\times720$ 与帧号、配置号\\每两帧采样一次RGB160};
+\node[box,text width=10.7cm] (b) at (0,-1.7) {流式首层与四路复用卷积\\$10\times10$格点、三锚框、五类联合输出};
+\node[box,text width=10.7cm] (c) at (0,-3.4) {整数解码、top20、NMS、身份匹配与类别确认\\非推理帧保持完整结果，最多选择一个细胞};
+\node[box,text width=10.7cm] (d) at (0,-5.1) {框左上角英文全称，视频帧首锁存\\标注RGB经双网口送往PC与HDMI子板};
+\draw[flow] (a)--(b);\draw[flow] (b)--(c);\draw[flow] (c)--(d);
+\end{tikzpicture}
+\caption{全帧联合检测分类与单框保持的主板实现}\label{fig:yolo}
+\end{figure}
+
+\lead{候选筛选、跨帧保持与英文全称}
+\code{yolo160_boxes} 使用整数sigmoid查表值 $Q_{\sigma}\in[0,255]$，检测分数为其objectness值乘255，五类logit的argmax独立决定类型。当前阈值52020/65025，由公开验证与用户开发截图联合校准；检测分数与五类判断解耦，使只有定位监督的BCCD样本不因类别分数乘积被再次过滤。这些分数不是经概率校准的正确率。按分数稳定排序保留top20，再执行跨类别NMS，IoU阈值103/256，最多提交五个候选。候选均来自同一次网络推理，各自带框与类别，不把一个固定视场的分类标签复制到其他框。
+
+\code{cvp_yolo_tracks} 进行几何身份匹配，每个目标首次连续两次结果一致才确认，切换类别需连续三次异类一致。优先维持已选中身份，失去该身份后才选最近画面中心的有效目标；距离比较分拍执行。每帧最多显示一个框。跳过推理的帧保持最近完整结果；连续一、两次推理漏检保留身份、框和类别，第三次仍漏检撤框。框有效期5个视频帧，类别有效期15帧；配置变化、超时或非法帧身份拒绝旧结果。WAIT表示尚未确认或失效，不是训练类别。
+
+匹配、类别投票和目标选择全部结束才原子发布，\code{cvp_cell_label} 在显示帧首锁存，更新过程中不临时清空。文字区域为160×16像素，框左上角显示 Basophil、Eosinophil、Lymphocyte、Monocyte、Neutrophil；顶部或右侧空间不足时限制在屏内。SW1控制标注显隐，标注在主板打包和双网口分流之前完成。连续确认能抑制孤立跳变，也会增加切换等待；持续错误类别仍可能被确认。\cite{yoloreport}
+
+\lead{上位机函数与协议}
+上位机主要入口及输入输出关系见下表。
+
+\begin{table}[htbp]\centering\small
+\caption{上位机主要入口与数据关系}
+\begin{tabularx}{\linewidth}{|L{3.5cm}|Y|}
+\hline\tablehead 入口 & 输入和输出\\\hline
+\code{mode_changed} & 输入所选模式，切换参数面板并提交模式设置\\\hline
+\code{edge_changed} & 输入阈值、线宽和联动状态，校验并更新模式参数\\\hline
+\code{send_thresholds} & 合并连续滑动事件，提交当前模式参数\\\hline
+\code{submit} / \code{snapshot} & 提交请求 / 读取控制线程状态快照\\\hline
+\code{update} & 获取图像和状态，刷新预览、确认值与错误信息\\\hline
+\end{tabularx}
+\end{table}
+命令解析在 RGMII 接收侧检查以太类型、IPv4/UDP、端口和魔数；命令事件跨域进入配置控制器。16 B 控制包携带魔数、请求号、配置号、操作码、地址和 32 bit 参数，均采用大端编码。SET、COMMIT、GET 和时间同步各有明确语义，配置应答与视频状态经 UDP 6002 返回。
+
+
+
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}
+\node[box,text width=10.7cm] (a) at (0,0) {CSI-2 RAW10 → 行帧规整 / 异步FIFO → Bayer插值};
+\node[box,text width=10.7cm] (b) at (0,-1.45) {\code{cvp_advanced}：白平衡 / 数字增益 → clean RGB\\校正前色彩统计用于AWB，校正后亮度统计用于AE};
+\node[box,text width=4.6cm] (v) at (-3,-3.65) {视频主路：七模式\\持续输出720p30 RGB};
+\node[box,text width=4.6cm] (y) at (3,-3.65) {识别支路：全帧RGB160\\15 Hz检测 / 分类 / 跟踪};
+\node[box,text width=10.7cm] (o) at (0,-5.9) {帧首锁存完整结果 → 单框与英文全称叠加\\四像素打包 → 跨域 → ETHA / ETHB镜像};
+\draw[flow] (a)--(b);
+\draw[flow] (b.south) -- ++(0,-.3) -| (v.north);
+\draw[flow] (b.south) -- ++(0,-.3) -| (y.north);
+\draw[flow] (v.south) -- ++(0,-.35) -| (o.north west);
+\draw[ctrl] (y.south) -- ++(0,-.35) -| (o.north east);
+\end{tikzpicture}
+\caption{当前主板视频与识别并行通路，虚线传递框和类别结果}
+\end{figure}
+
+\lead{模型资产与部署绑定}
+活动权重位于\path{hardware/mainboard/user_source/hdl_source/yolo/model/}，\path{active_model.json}记录模型身份与ROM哈希。训练冻结资产位于\path{yolo/wbc_bccd/frozen/}，包括量化权重、数据审计、阈值协议与工程试验策略。最终候选bit和物理摘要位于\path{hardware/mainboard/reports/yolo_wbc_bccd15/current/physical/}，部署状态位于\path{hardware/mainboard/deployment_state.json}。\path{source_hashes.json}中的历史路径通过目录映射定位，不能因移动文件夹而改写历史构建记录。\cite{layout,twosource}
+
+\lead{结果接口与数据身份}
+检测支路携带采样源帧号、配置号和全画面坐标，候选提交由独立commit事件标识。跟踪器拒绝重复、过迟、未来或配置不一致的结果，显示取完整快照。原公共图块桥保留扩展能力，但当前有效网络支路不经过固定ROI图块或CellNet装载器。
+
+诊断结果邮箱携带帧号、目标标识、确认类别、包围框和时间戳，接收背压不阻塞板端确认。PC不依据诊断包补画。背景负样本通过objectness损失训练拒识，没有第六个背景类型；低分候选被阈值删除。无检测、尚未确认与五类有效结果具有不同控制语义。\cite{interface,yolortl}

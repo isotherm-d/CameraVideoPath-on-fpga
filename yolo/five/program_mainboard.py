@@ -1,7 +1,7 @@
 """Source/report/model-bound TD6.2 programming of joint-YOLO PH1P35 SRAM."""
 import argparse,datetime,hashlib,json,re,socket,subprocess,time
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard'
 BUILD=BOARD/'td_project/camera_to_dsi_display_Runs/phy_1';REPORT=BOARD/'reports/yolo_single15/current'
 OUT=BOARD/'reports/yolo_single15/programming';TD=Path('C:/Anlogic/TD_6.2.1_Engineer_6.2.168.116/bin/td_commands_prompt.exe')
 FROZEN=BASE/'five/frozen'
@@ -11,8 +11,8 @@ def read(p):return json.loads(p.read_text(encoding='utf8'))
 def check(r):
  for name,want in r['source_hashes'].items():assert sha(REPO/name)==want,'Simulation source mismatch '+name
 def main(args):
- assert REPO.name=='CameraVideoPath-on-fpga-yolo'
- assert subprocess.check_output(['git','branch','--show-current'],cwd=REPO,text=True).strip()=='experiment/yolo160-w4a4'
+ assert Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],cwd=REPO,text=True).strip()).resolve()==REPO.resolve(),'Unexpected repository root'
+ assert subprocess.check_output(['git','branch','--show-current'],cwd=REPO,text=True).strip()=='main','Program only from the published main branch'
  result=read(BUILD/'build_result.json');assert result['place_and_route'] and min(result['SWNS'],result['HWNS'])>=0
  assert result['slice']<=21216 and result['eram']<=108 and result['dsp']<=40
  assert result['project']=='td_project/camera_to_dsi_display.al'

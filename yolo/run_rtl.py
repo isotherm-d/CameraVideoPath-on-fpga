@@ -1,7 +1,7 @@
 import argparse,hashlib,json,re,shutil,subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
-HDL=ROOT.parent/'08_csi_dsi_cs500_7cun/user_source/hdl_source/yolo'
+HDL=ROOT.parent/'hardware/mainboard/user_source/hdl_source/yolo'
 MS=Path(r'C:/modeltech64_2020.4/win64')
 def main(args):
  out=ROOT/'tmp'/f'rtl_v{args.vector}';out.mkdir(parents=True,exist_ok=True)

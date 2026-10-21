@@ -1,11 +1,11 @@
 # 安路 TD 编译产物(可由 syn_1/phy_1 重新生成, 且当前是合并前旧工程的产物)
-08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display_Runs/
-08_csi_dsi_cs500_7cun/td_project/log/
-08_csi_dsi_cs500_7cun/td_project/*.log
-08_csi_dsi_cs500_7cun/td_project/*.logw
-08_csi_dsi_cs500_7cun/td_project/*.timingsummary
-08_csi_dsi_cs500_7cun/td_project/bw_*.log*
-08_csi_dsi_cs500_7cun/td_project/.lock.f
+hardware/mainboard/td_project/camera_to_dsi_display_Runs/
+hardware/mainboard/td_project/log/
+hardware/mainboard/td_project/*.log
+hardware/mainboard/td_project/*.logw
+hardware/mainboard/td_project/*.timingsummary
+hardware/mainboard/td_project/bw_*.log*
+hardware/mainboard/td_project/.lock.f
 
 # 系统杂项
 yolo/data/
@@ -18,20 +18,45 @@ __pycache__/
 *.pyc
 
 # Local ModelSim regression output.
-08_csi_dsi_cs500_7cun/td_project/v24_regression/
-08_csi_dsi_cs500_7cun/td_project/v25_regression/
-08_csi_dsi_cs500_7cun/td_project/v26_regression/
-08_csi_dsi_cs500_7cun/td_project/v27_regression/
-08_csi_dsi_cs500_7cun/tools/captures/
-08_csi_dsi_cs500_7cun/td_*.log
-08_csi_dsi_cs500_7cun/td_*.logw
+hardware/mainboard/td_project/v24_regression/
+hardware/mainboard/td_project/v25_regression/
+hardware/mainboard/td_project/v26_regression/
+hardware/mainboard/td_project/v27_regression/
+hardware/mainboard/tools/captures/
+hardware/mainboard/td_*.log
+hardware/mainboard/td_*.logw
 
 # 资源优化回归的本地仿真工作目录(可由 tools/run_v26_regression.ps1 + tb_a_* 重建)
-08_csi_dsi_cs500_7cun/td_project/a_opt_regression/
-08_csi_dsi_cs500_7cun/td_project/v26_regression_base/
-08_csi_dsi_cs500_7cun/td_project/syntax_check/
+hardware/mainboard/td_project/a_opt_regression/
+hardware/mainboard/td_project/v26_regression_base/
+hardware/mainboard/td_project/syntax_check/
 
 # Reproducible CellNet ModelSim and isolated physical build outputs.
-08_csi_dsi_cs500_7cun/td_project/cellnet32*_Runs/
-08_csi_dsi_cs500_7cun/td_project/cellnet32*_sim/
-08_csi_dsi_cs500_7cun/td_project/cellnet32*_regression/
+hardware/mainboard/td_project/cellnet32*_Runs/
+hardware/mainboard/td_project/cellnet32*_sim/
+hardware/mainboard/td_project/cellnet32*_regression/
+
+# Disposable outputs for the reorganized project.
+*.log
+*.logw
+*.pyo
+*.aux
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.wlf
+*.vcd
+*.vvp
+**/*_Runs/
+**/.lock.f
+**/*.hpf
+.pytest_cache/
+.mypy_cache/
+build/
+
+# Local immutable image vectors; keep dataset pixels outside public commits.
+yolo/wbc_bccd/frozen/camera_val.npz
+yolo/wbc_bccd/frozen/rtl_vectors.zip
+yolo/wbc_bccd/frozen/data_manifest.json

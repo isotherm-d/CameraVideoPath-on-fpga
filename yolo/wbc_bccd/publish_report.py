@@ -1,7 +1,7 @@
 """Publish only after the exact accepted bit has a successful SRAM record."""
 import datetime,hashlib,json,re
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun';HOME=BASE/'wbc_bccd';REPORT=BOARD/'reports/yolo_wbc_bccd15'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard';HOME=BASE/'wbc_bccd';REPORT=BOARD/'reports/yolo_wbc_bccd15'
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 def save(p,v):p.write_text(json.dumps(v,ensure_ascii=False,indent=2),encoding='utf8')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()

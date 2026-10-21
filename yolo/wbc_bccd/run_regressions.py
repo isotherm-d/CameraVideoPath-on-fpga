@@ -3,7 +3,7 @@ import json,subprocess,sys
 from pathlib import Path
 BASE=Path(__file__).resolve().parents[1];sys.path.insert(0,str(BASE))
 from wbcatt.run_regressions import hashes
-BOARD=BASE.parent/'08_csi_dsi_cs500_7cun';OUT=BASE/'tmp/wbc_bccd_regression';OUT.mkdir(exist_ok=True)
+BOARD=BASE.parent/'hardware/mainboard';OUT=BASE/'tmp/wbc_bccd_regression';OUT.mkdir(exist_ok=True)
 before=hashes()
 for cmd,file in [([sys.executable,str(BASE/'five/run_legacy_tracks.py')],'legacy_console.log'),
  (['powershell.exe','-NoProfile','-NonInteractive','-File',str(BOARD/'tools/run_v29_regression.ps1'),'-OutputDir',str(OUT/'video')],'video_regression.log'),

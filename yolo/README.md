@@ -3,9 +3,9 @@
 当前主工程模型为 **WBCAtt+ + BCCD 联合训练版** `wbc_bccd160_devcam_20261021`，已接入 PH1P35 主板项目。它是面向本板资源设计的定点 YOLO-style 检测器，不是完整移植的 Ultralytics YOLO。
 
 - 训练、数据审计、权重冻结与复现：[wbc_bccd/README.md](wbc_bccd/README.md)
-- 当前板端验证和资源时序：[主板报告](../08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/README.md)
-- 两来源技术文档：[官方格式报告](../docs/README_1021_WBCAtt与BCCD两来源重训.md)
-- 最终候选 bit：[camera_to_dsi_display.bit](../08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/current/physical/camera_to_dsi_display.bit)
+- 当前板端验证和资源时序：[主板报告](../hardware/mainboard/reports/yolo_wbc_bccd15/README.md)
+- 两来源技术文档：[官方格式报告](../docs/reports/README_1021_WBCAtt与BCCD两来源重训.md)
+- 最终候选 bit：[camera_to_dsi_display.bit](../hardware/mainboard/reports/yolo_wbc_bccd15/current/physical/camera_to_dsi_display.bit)
 
 ## 主板行为
 

@@ -1,0 +1,20 @@
+% !TEX program = xelatex
+% Main document. The heading hierarchy follows the supplied DOCX template.
+\documentclass[UTF8,fontset=fandol,zihao=-4]{ctexart}
+\usepackage{reportstyle}
+\hypersetup{pdftitle={基于安路FPGA的双板实时图像处理系统},pdfauthor={}}
+\begin{document}
+\worktitle{基于安路 FPGA 的双板实时图像处理系统}
+\abstractheading
+本作品基于安路FPGA，设计并实现了一套集相机采集、图像处理、白细胞检测分类与实时显示于一体的双板系统。系统由PH1P35相机主板和EG4D20显示子板组成：主板负责采集和处理图像，并通过千兆以太网将视频分别发送至PC和显示子板；子板完成图像接收与缓存，通过HDMI连接显示器。系统支持$1280\times720$分辨率、30帧每秒的视频输出，将图像采集与显示终端分离，便于灵活连接和独立调试。
+
+在图像处理方面，系统通过彩色重建、自动白平衡和自动曝光调节画面的色彩与亮度，并提供灰度、二值化、边缘、卡通、素描等多种显示模式。在白细胞识别方面，主板从完整画面中提取图像，利用量化神经网络检测白细胞位置并判断其类型，在视频中显示目标框和英文类别名称。识别结果经过跨帧确认与保持，用于减轻短时漏检和类别跳变对观察的影响。
+
+图像处理、细胞识别及框与文字叠加均在FPGA内完成，PC上位机负责视频预览、图像保存和参数设置。用户可在运行过程中切换显示模式，调整曝光和白平衡等参数，PC与HDMI端接收相同的板端标注画面。作品形成了从相机输入到双端显示的完整处理链路，面向血涂片图像中的白细胞检测与分类，为血液细胞形态观察和血检辅助分析提供实验平台。
+
+\input{sections/01_overview}
+\input{sections/02_design}
+\input{sections/03_results}
+\input{sections/04_summary}
+\input{sections/05_references}
+\end{document}

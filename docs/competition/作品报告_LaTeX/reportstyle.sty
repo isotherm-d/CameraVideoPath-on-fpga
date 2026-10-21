@@ -1,0 +1,60 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{reportstyle}[2026/10/17 Competition report template]
+\RequirePackage[a4paper,top=2.54cm,bottom=2.54cm,left=3.175cm,right=3.175cm,headheight=34pt,headsep=12pt]{geometry}
+\RequirePackage{amsmath,amssymb,graphicx,array,tabularx,longtable,booktabs}
+\RequirePackage[table]{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\RequirePackage{fancyhdr,enumitem,caption,needspace}
+\RequirePackage[hidelinks,unicode]{hyperref}
+\RequirePackage{url}
+\urlstyle{same}
+\ctexset{
+ section={name={第,部分},number=\chinese{section},format=\heiti\zihao{4},aftername=\quad,beforeskip=18pt,afterskip=10pt},
+ subsection={format=\heiti\zihao{-4},beforeskip=13pt,afterskip=6pt},
+ subsubsection={format=\heiti\zihao{-4},beforeskip=10pt,afterskip=5pt}
+}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+\linespread{1.45}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{2pt}
+\setlength{\emergencystretch}{1.5em}
+\widowpenalty=10000
+\clubpenalty=10000
+\AddToHook{cmd/section/before}{\Needspace{6\baselineskip}}
+\AddToHook{cmd/subsection/before}{\Needspace{5\baselineskip}}
+\AddToHook{cmd/subsubsection/before}{\Needspace{5\baselineskip}}
+\setlength{\floatsep}{10pt}
+\setlength{\textfloatsep}{12pt}
+\renewcommand{\arraystretch}{1.25}
+\arrayrulecolor{black!25}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\captionsetup{font=small,labelsep=quad,skip=6pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\includegraphics[height=10mm]{images/template_header.png}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[C]{\includegraphics[height=10mm]{images/template_header.png}}\fancyfoot[C]{\small\thepage}}
+\newcommand{\worktitle}[1]{\begin{center}{\heiti\fontsize{18}{27}\selectfont #1\par}\end{center}\vspace{4pt}}
+\newcommand{\abstractheading}{\pdfbookmark[1]{摘要}{abstract}\noindent{\heiti\zihao{4}摘要}\par\vspace{5pt}}
+\newcommand{\lead}[1]{\par\needspace{3\baselineskip}\noindent\textbf{#1}\quad}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\tablehead}{\rowcolor{black!8}}
+\setlist[enumerate]{nosep,leftmargin=2em,itemsep=2pt}
+\tikzset{
+ box/.style={draw=black!55,rounded corners=2pt,fill=black!3,align=center,font=\small,inner sep=6pt,minimum height=13mm},
+ flow/.style={-{Stealth[length=2mm]},draw=black!70,line width=.65pt},
+ ctrl/.style={flow,dashed},
+ lab/.style={font=\footnotesize,fill=white,inner sep=2pt}
+}
+\makeatletter
+\renewenvironment{thebibliography}[1]
+ {\small\list{\@biblabel{\@arabic\c@enumiv}}{\settowidth\labelwidth{\@biblabel{#1}}\leftmargin\labelwidth\advance\leftmargin\labelsep\usecounter{enumiv}\setlength{\itemsep}{5pt}\setlength{\parsep}{0pt}}\sloppy}
+ {\endlist}
+\makeatother

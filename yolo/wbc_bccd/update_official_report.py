@@ -1,7 +1,7 @@
 """Update the existing official-format LaTeX only from a programmed new release."""
 import datetime,hashlib,json,re,shutil,zipfile
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;CVP=REPO.parent;DOC=CVP/'作品报告_LaTeX';REPORT=REPO/'08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;CVP=REPO/'docs/competition';DOC=CVP/'作品报告_LaTeX';REPORT=REPO/'hardware/mainboard/reports/yolo_wbc_bccd15'
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def pct(v):return f'{100*v:.2f}'
@@ -11,7 +11,7 @@ def replace(text,old,new):
 if __name__=='__main__':
  s=read(REPORT/'current/summary.json');program=read(REPORT/'programming/programming.json');a=s['repair_acceptance'];m=a['validation'];test=s['reused_TEST_regression']['metrics'];physical=s['build']['physical']
  assert s['build']['phase']=='timing_pass_programmed_SRAM' and program['program_sram_success'] and program['bit_sha256']==physical['bit_sha256'] and a['gate_passed']
- tmp=CVP/'tmp/official_report_wbc_bccd_20261021';tmp.mkdir(exist_ok=True,parents=True);backup=tmp/'before_two_source.zip';assert not backup.exists()
+ tmp=REPO/'build/official_report_wbc_bccd_20261021';tmp.mkdir(exist_ok=True,parents=True);backup=tmp/'before_two_source.zip';assert not backup.exists()
  before=read(DOC/'release_manifest.json');protected=before['original_template_hashes']
  for n,w in protected.items():assert sha(CVP/n)==w,n
  with zipfile.ZipFile(backup,'w',zipfile.ZIP_DEFLATED) as z:

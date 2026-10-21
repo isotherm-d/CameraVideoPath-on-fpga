@@ -1,9 +1,31 @@
-# Keep release artifacts and frozen verification models byte-exact for SHA256.
-releases/** -text
-08_csi_dsi_cs500_7cun/tools/sim/gold_v*/** -text
+# Keep the released Windows source bytes reproducible after folder moves.
+hardware/** text=auto eol=crlf whitespace=cr-at-eol
+hardware/mainboard/tools/sim/gold_v*/** -text whitespace=cr-at-eol
+hardware/mainboard/user_source/constraints_source/timing.sdc text eol=lf
+hardware/mainboard/user_source/hdl_source/advanced/cvp_ae_control.v text eol=lf
+hardware/mainboard/user_source/hdl_source/classify/cvp_cell_label.v text eol=lf
+hardware/mainboard/user_source/hdl_source/classify/cvp_cell_tracks.v -text whitespace=cr-at-eol
+hardware/mainboard/user_source/hdl_source/yolo/cvp_yolo_tracks.v text eol=lf
+hardware/mainboard/user_source/hdl_source/yolo/cvp_yolo160_detector.v text eol=lf
 
-# This controller is built and hashed with LF line endings on Windows too.
-08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v text eol=lf
+# Historical snapshots and delivered documents retain their original bytes.
+old/releases/** -text whitespace=cr-at-eol,-blank-at-eol
+old/cellnet32/** -text whitespace=cr-at-eol
+old/cellnet32/classify/cellnet32_core.v text eol=crlf whitespace=cr-at-eol
+old/cellnet32/classify/cellnet32_params.vh text eol=crlf whitespace=cr-at-eol
+yolo/wbc_bccd/frozen/** -text whitespace=cr-at-eol,-blank-at-eol
+yolo/wbc_bccd/frozen/*.json text eol=crlf whitespace=cr-at-eol,-blank-at-eol
+yolo/wbc_bccd/frozen/postprocess_sources/yolo/wbc_bccd/run_all_vectors.py text eol=crlf
+yolo/wbc_bccd/frozen/postprocess_sources/yolo/wbc_bccd/run_tests.py text eol=crlf
+docs/competition/** -text whitespace=cr-at-eol,-blank-at-eol
+docs/history/** -text whitespace=cr-at-eol,-blank-at-eol
+docs/hardware/**/*.svg -text whitespace=cr-at-eol,-blank-at-eol
+docs/hardware/v27_v34_assets_20261013/v34_critical_path_excerpt.txt -text whitespace=cr-at-eol,-blank-at-eol
 
-# Keep the mixed-EOL cell tracking RTL identical to the routed source snapshot.
-08_csi_dsi_cs500_7cun/user_source/hdl_source/classify/cvp_cell_tracks.v -text whitespace=cr-at-eol
+*.bit -text
+*.png -text
+*.pdf -text
+*.docx -text
+*.npz -text
+*.pt -text
+*.zip -text

@@ -1,0 +1,312 @@
+{
+  "input_size": 32,
+  "cfg": {
+    "c1": 6,
+    "c2": 12,
+    "c3": 24,
+    "in_ch": 3,
+    "head": "gap"
+  },
+  "weights": 3527,
+  "wrom_words": 928,
+  "wrom_bytes": 3712,
+  "gap_count": 64,
+  "pw": [
+    4,
+    6,
+    6,
+    6
+  ],
+  "pa": [
+    8,
+    6,
+    6,
+    4
+  ],
+  "shifts": [
+    6,
+    6,
+    8
+  ],
+  "calibration_percentile": 0.999,
+  "calibration_activation_maxima": [
+    3.333761692047119,
+    3.34165096282959,
+    8.11514949798584
+  ],
+  "fc_logit_scale": 65536.0,
+  "metrics": {
+    "validation": {
+      "blood_nearest": {
+        "count": 1032,
+        "accuracy": 0.9777131782945736,
+        "macro_recall": 0.9802735097817065,
+        "recall": {
+          "basophil": 0.9836065573770492,
+          "eosinophil": 0.9871794871794872,
+          "lymphocyte": 0.9836065573770492,
+          "monocyte": 0.986013986013986,
+          "neutrophil": 0.960960960960961
+        },
+        "confusion_matrix": [
+          [
+            120,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            308,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            120,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            141,
+            0
+          ],
+          [
+            6,
+            0,
+            2,
+            5,
+            320
+          ]
+        ]
+      },
+      "raabin_nearest": {
+        "count": 1454,
+        "accuracy": 0.9181568088033012,
+        "macro_recall": 0.9054331323133648,
+        "recall": {
+          "basophil": 1.0,
+          "eosinophil": 0.7570093457943925,
+          "lymphocyte": 0.9250720461095101,
+          "monocyte": 0.9125,
+          "neutrophil": 0.9325842696629213
+        },
+        "confusion_matrix": [
+          [
+            30,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            81,
+            9,
+            10,
+            6
+          ],
+          [
+            0,
+            6,
+            321,
+            17,
+            3
+          ],
+          [
+            0,
+            0,
+            6,
+            73,
+            1
+          ],
+          [
+            4,
+            30,
+            15,
+            11,
+            830
+          ]
+        ]
+      }
+    },
+    "test": {
+      "blood_test": {
+        "count": 2061,
+        "accuracy": 0.9723435225618632,
+        "macro_recall": 0.9708683404259869,
+        "recall": {
+          "basophil": 0.9795081967213115,
+          "eosinophil": 0.9823717948717948,
+          "lymphocyte": 0.9753086419753086,
+          "monocyte": 0.9471830985915493,
+          "neutrophil": 0.96996996996997
+        },
+        "confusion_matrix": [
+          [
+            239,
+            0,
+            2,
+            3,
+            0
+          ],
+          [
+            8,
+            613,
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            237,
+            6,
+            0
+          ],
+          [
+            8,
+            0,
+            6,
+            269,
+            1
+          ],
+          [
+            9,
+            1,
+            7,
+            3,
+            646
+          ]
+        ]
+      },
+      "raabin_testa": {
+        "count": 4339,
+        "accuracy": 0.8849965429822539,
+        "macro_recall": 0.8961952684807315,
+        "recall": {
+          "basophil": 0.9550561797752809,
+          "eosinophil": 0.8291925465838509,
+          "lymphocyte": 0.9593810444874274,
+          "monocyte": 0.8760683760683761,
+          "neutrophil": 0.8612781954887218
+        },
+        "confusion_matrix": [
+          [
+            85,
+            0,
+            3,
+            1,
+            0
+          ],
+          [
+            0,
+            267,
+            12,
+            39,
+            4
+          ],
+          [
+            0,
+            4,
+            992,
+            38,
+            0
+          ],
+          [
+            3,
+            3,
+            23,
+            205,
+            0
+          ],
+          [
+            1,
+            241,
+            55,
+            72,
+            2291
+          ]
+        ]
+      },
+      "raabin_testb": {
+        "count": 2119,
+        "accuracy": 0.6319018404907976,
+        "macro_recall": 0.6802675963634868,
+        "recall": {
+          "basophil": null,
+          "eosinophil": null,
+          "lymphocyte": 0.7364864864864865,
+          "monocyte": null,
+          "neutrophil": 0.624048706240487
+        },
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            23,
+            2,
+            109,
+            12,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            102,
+            8,
+            316,
+            315,
+            1230
+          ]
+        ]
+      }
+    },
+    "crop_policy": {
+      "source_crop_size": 480,
+      "network_input_size": 32,
+      "raabin": "exact native center 480x480, symmetric edge padding only if smaller",
+      "blood": "64px low-resolution proxy: bilinear upscale to 575 then center crop480; no new detail",
+      "location": "image center only; no detector, mask, bbox or test labels used",
+      "sampler": "center nearest: floor((2*k+1)*480/64) = 7+15*k",
+      "camera_crop": {
+        "x0": 400,
+        "y0": 120,
+        "width": 480,
+        "height": 480
+      },
+      "camera_detection": {
+        "x0": 320,
+        "y0": 40,
+        "width": 640,
+        "height": 640
+      }
+    }
+  },
+  "vector_count": 72,
+  "numpy_integer_crosscheck": true,
+  "hardware_validated": false
+}

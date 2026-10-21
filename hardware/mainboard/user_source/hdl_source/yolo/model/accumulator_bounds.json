@@ -1,0 +1,52 @@
+[
+  {
+    "layer": 0,
+    "signed_bits": 32,
+    "maximum_absolute_bound_including_bias_and_rounding": 405875
+  },
+  {
+    "layer": 1,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 1898
+  },
+  {
+    "layer": 2,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 2492
+  },
+  {
+    "layer": 3,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 2191
+  },
+  {
+    "layer": 4,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 4642
+  },
+  {
+    "layer": 5,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 6205
+  },
+  {
+    "layer": 6,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 10476
+  },
+  {
+    "layer": 7,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 2651
+  },
+  {
+    "layer": 8,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 5456
+  },
+  {
+    "layer": 9,
+    "signed_bits": 24,
+    "maximum_absolute_bound_including_bias_and_rounding": 127633
+  }
+]

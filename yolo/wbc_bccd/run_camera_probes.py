@@ -28,7 +28,7 @@ def main(name):
   save(folder/'expected_boxes.json',{'probe':n,'boxes_global720p':bb.tolist(),'classes':c.tolist(),'scores':s.tolist()})
  save(out/'vectors/manifest.json',{'vectors':len(images),'model_weights':name,'purpose':'Development probes, not independent camera accuracy data'})
  subprocess.run([sys.executable,str(BASE/'wbc_bccd/run_all_vectors.py'),'--name',alias],cwd=BASE.parent,check=True)
- dest=BASE.parent/'08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/development_probes';dest.mkdir(parents=True)
+ dest=BASE.parent/'hardware/mainboard/reports/yolo_wbc_bccd15/development_probes';dest.mkdir(parents=True)
  for j,(n,x) in enumerate(images):
   src=BASE/f'tmp/five_v{j}';r=json.loads((src/'results.json').read_text(encoding='utf8'));assert r['model']==alias and r['status']=='PASS'
   target=dest/f'v{j}_{n}';target.mkdir()

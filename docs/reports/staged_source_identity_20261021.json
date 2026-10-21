@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "staged_files_roundtrip_checked": 245,
+  "local_pixel_assets_not_committed": [
+    "yolo/wbc_bccd/frozen/camera_val.npz",
+    "yolo/wbc_bccd/frozen/data_manifest.json",
+    "yolo/wbc_bccd/frozen/rtl_vectors.zip"
+  ],
+  "errors": []
+}

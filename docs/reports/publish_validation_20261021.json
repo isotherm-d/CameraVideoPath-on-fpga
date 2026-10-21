@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "release": "v2026.10.21",
+  "checked_local": "2026-10-21T17:06:22.560321+08:00",
+  "repository": "isotherm-d/CameraVideoPath-on-fpga",
+  "parent_commit": "5f889b69b16f41eeb3b62bc1f9b979e511718a18",
+  "local_project": {
+    "status": "PASS",
+    "TD_file_references": 131,
+    "released_source_manifest_entries": 203,
+    "unchanged_source_byte_hashes": 202,
+    "TD_project_changes_only_paths": true,
+    "Python_files_parsed": 99,
+    "current_document_links": 41,
+    "scope": "published_files",
+    "omitted_private_frozen_assets": [],
+    "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+    "official_pdf_sha256": "e8cc2aa9c3245824d91d68dec97741f05775bd59d091090a1b0e4f35d403da08",
+    "errors": []
+  },
+  "exported_git_candidate": {
+    "status": "PASS",
+    "TD_file_references": 131,
+    "released_source_manifest_entries": 203,
+    "unchanged_source_byte_hashes": 202,
+    "TD_project_changes_only_paths": true,
+    "Python_files_parsed": 99,
+    "current_document_links": 41,
+    "scope": "published_files",
+    "omitted_private_frozen_assets": [
+      "camera_val.npz",
+      "data_manifest.json",
+      "rtl_vectors.zip"
+    ],
+    "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+    "official_pdf_sha256": "e8cc2aa9c3245824d91d68dec97741f05775bd59d091090a1b0e4f35d403da08",
+    "errors": []
+  },
+  "Python_unit_tests": {
+    "passed": 38,
+    "failed": 0,
+    "network_sockets_mocked": true
+  },
+  "candidate_files_before_validation_record": 957,
+  "private_pixel_assets_not_committed": [
+    "yolo/wbc_bccd/frozen/camera_val.npz",
+    "yolo/wbc_bccd/frozen/data_manifest.json",
+    "yolo/wbc_bccd/frozen/rtl_vectors.zip"
+  ],
+  "candidate_source_model_bit_and_document_hash_checks_passed": true,
+  "git_whitespace_check_passed": true,
+  "FPGA_RTL_regression_rerun": false,
+  "place_and_route_rerun": false,
+  "board_programming_performed": false,
+  "scope": "Directory/path reorganization, report update and release-file verification; existing hardware implementation retained."
+}

@@ -1,7 +1,7 @@
 """Collect only source-matched joint-YOLO evidence; never use old CellNet proof."""
-import argparse,datetime,hashlib,json,re,shutil,zipfile
+import argparse,datetime,hashlib,json,re,shutil,subprocess,zipfile
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard'
 HDL=BOARD/'user_source/hdl_source/yolo';DEST=BOARD/'reports/yolo_single15/current'
 FULL_NAMES=['Basophil','Eosinophil','Lymphocyte','Monocyte','Neutrophil']
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -116,7 +116,7 @@ def main(args):
  original=REPO.parent/'tmp/yolo_research_20261020/copy_20261020_161147';copy=read(original/'copy_result.json');pins=read(original/'copied_file_hashes.json')
  checked={k:sha(Path(copy['source'])/k)==v for k,v in pins.items() if Path(k).suffix in ['.v','.sv','.vh','.al','.sdc','.adc','.hex','.py','.ps1','.md']}
  save(DEST/'original_checkout_check.json',{'files_checked':len(checked),'all_match':all(checked.values()),'mismatches':[k for k,v in checked.items() if not v]})
- summary={'recorded_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'branch':'experiment/yolo160-w4a4','model':chosen['run'],
+ summary={'recorded_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'branch':subprocess.check_output(['git','branch','--show-current'],cwd=REPO,text=True).strip(),'model':chosen['run'],
  'classes':active['protocol']['classes'],'detector_region':[0,0,1279,719],'input_rgb':[160,160],'video_fps':30,'YOLO_Hz_default':15,'inference_interval_frames':2,
  'display_atomic_snapshot':True,'hold_last_result_on_skipped_frames':True,'held_missed_detections':2,'third_miss_retires':True,
  'max_display_cells':1,'full_English_names':FULL_NAMES,'selection_policy':'keep identity; otherwise nearest center',

@@ -1,0 +1,97 @@
+% !TEX program = xelatex
+% 编译方式:xelatex 技术文档合集.tex(中文文档,xeCJK 指定 Windows 中文字体)
+% 六章合集(与六个分册共享 body_ch1~ch6 正文),封面/摘要/目录 + 六章
+\documentclass[11pt,a4paper]{report}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{xeCJK}
+\setCJKmainfont{SimSun}[BoldFont=SimHei]
+\setCJKsansfont{SimHei}
+\setCJKmonofont{FangSong}
+\setlength{\parindent}{2em}
+\usepackage{indentfirst}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,
+  pdftitle={技术文档——安路 FPGA 双板实时视频系统}}
+
+\titleformat{\chapter}[block]{\centering\LARGE\bfseries}{第\,\thechapter\,章}{0.8em}{}
+\titlespacing*{\chapter}{0pt}{-10pt}{26pt}
+\renewcommand{\contentsname}{目\hspace{0.5em}录}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\setcounter{tocdepth}{2}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 安路 FPGA 双板实时视频系统(相机推流 + HDMI 回显)}
+\fancyhead[R]{\small 第\thepage\ 页}
+
+\newcommand{\oneline}[1]{%
+  \begin{center}\fbox{\parbox{0.94\textwidth}{\textbf{一句话概括:}#1}}\end{center}}
+
+\begin{document}
+
+% ============================ 封面 ============================
+\begin{titlepage}
+\centering
+\vspace*{2.5cm}
+{\huge\bfseries 基于安路 FPGA 的实时图像处理系统\\[8pt]及其在血细胞形态学检测中的应用\par}
+\vspace{22pt}
+{\LARGE 技术文档\par}
+\vspace{36pt}
+{\small 全国大学生嵌入式芯片与系统设计竞赛 2026 FPGA 赛道(安路科技)\quad DEMO\par}
+\vspace{4pt}
+{\small 文档日期:2026 年 10 月 14 日\par}
+\vfill
+\end{titlepage}
+
+% ============================ 摘要 ============================
+\pagenumbering{Roman}
+\chapter*{摘要}
+\addcontentsline{toc}{chapter}{摘要}
+
+本文档阐述安路 FPGA 双板实时视频系统的设计与实现。相机主板(安路 PH1P35,
+MLKPAI-F02)以 SC500CS MIPI 摄像头输入 1280$\times$720@30fps,经自研 ISP——4:1
+位宽变换、RAW 域坏点检测与修复(同色对角两级判据)、BGGR 双线性去马赛克与色彩
+校正——完成像素处理,并承载自动曝光(AE)与自动白平衡(AWB)两个 3A 闭环
+(AWB 回注数字增益帧内生效,AE 以固定点 PID 联合调节传感器曝光与 FPGA 数字增益),提供七种实时
+风格化模式后打包为千兆 UDP 码流(1920 包/帧)推流;板内以 128\,bit 公共像素流
+接口贯穿算法挂接点。显示子板(安路 EG4D20,MLKPAI-F01)经镜像网口接收同一码流,
+由帧重组器完成丢包容忍(缺口白名单、小缺口冻结延展、跟踪-丢弃至下一帧头)与顺序光栅重建,DDR1
+三缓冲解耦 30fps 写与 60Hz 读,最终以 HDMI 720p60 实时回显并叠加 OSD。PC 上位机
+(Python GUI)收图预览,并经 UDP 6001/6002 命令-状态链路运行时控制曝光、模拟增益
+与白平衡。主板当前基线为 v38(PID Q10 系数 6/3/1),自适应两/四帧统计与
+曝光优先分配均纳入闭环;42 项 RTL、两组包校验、38 项 Python 回归和 460 帧视频
+链路模型通过,当前源码已完成上板验证。布线后 Slice 为 10944/21216 (51.58\%),Setup WNS
++0.119\,ns、Hold WNS +0.020\,ns、TNS 均为 0。v29 曾完成纯资源优化与逐位差分
+验证;v30 后主板本地 DDR/DSI 支路已裁剪,ETHB 镜像仍驱动子板 HDMI。显示子板通过 8 场景
+记分板、全分辨率逐字节比对与 DDR 仲裁压力扫描等仿真回归并上板验证。文档进一步
+给出"级联检测"应用设计:FPGA 实时框选 Giemsa 染色白细胞并裁剪上传,板端 LeNet
+轻量网络完成五分类,将商用形态学分析仪"检出—分类"链路中的检出半程移入千元级
+国产 FPGA。
+
+\vspace{1em}
+\noindent\textbf{关键词:}\ FPGA;MIPI CSI-2;ISP;自动曝光;自动白平衡;坏点检测;
+去马赛克;千兆 UDP;帧重组;DDR 三缓冲;HDMI;血细胞形态学检测
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{body_ch1}
+\input{body_ch2}
+\input{body_ch3}
+\input{body_ch4}
+\input{body_ch5}
+\input{body_ch6}
+
+\end{document}

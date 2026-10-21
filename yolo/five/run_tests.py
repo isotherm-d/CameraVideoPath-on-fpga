@@ -5,7 +5,7 @@ import numpy as np
 BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;sys.path.insert(0,str(BASE))
 from export import writehex
 from five.calibrate import predict
-HDL=REPO/'08_csi_dsi_cs500_7cun/user_source/hdl_source';YOLO=HDL/'yolo'
+HDL=REPO/'hardware/mainboard/user_source/hdl_source';YOLO=HDL/'yolo'
 MS=Path('C:/modeltech64_2020.4/win64')
 def main(args):
  kind='unit' if args.unit else 'stream_paced' if args.stream and args.paced else 'stream_burst' if args.stream else 'v'+str(args.vector)

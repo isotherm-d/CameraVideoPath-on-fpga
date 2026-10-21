@@ -1,0 +1,42 @@
+%%!TEX program = xelatex
+%% 编译方式:xelatex 01_主板相机工程.tex(中文文档,xeCJK 指定 Windows 中文字体)
+\documentclass[11pt,a4paper]{report}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{xeCJK}
+\setCJKmainfont{SimSun}[BoldFont=SimHei]
+\setCJKsansfont{SimHei}
+\setCJKmonofont{FangSong}
+\setlength{\parindent}{2em} % 段首缩进两个汉字
+\usepackage{indentfirst} % 标题后首段也缩进
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,pdftitle={主板相机工程:采集与推流——安路 FPGA 双板实时视频系统}}
+
+\titleformat{\chapter}[block]{\centering\LARGE\bfseries}{第\,\thechapter\,章}{0.8em}{}
+\titlespacing*{\chapter}{0pt}{-10pt}{26pt}
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small 安路 FPGA 双板实时视频系统(相机推流 + HDMI 回显)}
+\fancyhead[R]{\small 第\thepage\ 页}
+
+\newcommand{\oneline}[1]{
+  \begin{center}\fbox{\parbox{0.94\textwidth}{\textbf{一句话概括:}#1}}\end{center}}
+
+\begin{document}
+
+\setcounter{chapter}{1}
+
+\input{body_ch2}
+
+\end{document}

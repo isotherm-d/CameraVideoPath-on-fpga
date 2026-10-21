@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "released_source_entries_checked": 203,
+  "active_model_assets_checked": 10,
+  "TD_project_non_path_settings_unchanged": true,
+  "original_template_hashes_verified": true,
+  "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+  "pages": 24,
+  "pdf_sha256": "e8cc2aa9c3245824d91d68dec97741f05775bd59d091090a1b0e4f35d403da08",
+  "xelatex_warnings_or_missing_glyphs": false,
+  "hardware_regressions_rerun_this_task": false,
+  "all_pages_visually_reviewed": true,
+  "template_headings_preserved": true,
+  "abstract_revision": "Natural-language system overview; training data, metrics and deployment logs removed from abstract only",
+  "abstract_revision_checked_local": "2026-10-21T16:18:50.175175+08:00",
+  "overview_revision": "Blood testing application; ISP and lightweight FPGA model deployment emphasized; requested performance rows omitted",
+  "overview_revision_checked_local": "2026-10-21T16:41:12.051679+08:00",
+  "mechanical_revision": "Brief V10 microscope camera support design and CAD deliverables; physical fit/focus not represented as verified",
+  "mechanical_revision_checked_local": "2026-10-21T16:52:12.095052+08:00",
+  "mechanical_source_hashes": {
+    "README_中文.md": "eb5a2e5f1c12e27cdb79ca1f4a4a7acf27cd97b8b02e755f1a86bf446ac84ad3",
+    "V10_Release.json": "839f926c52e9d933f10e81a465a96f94ca2a0759e1f40c8dc43be74c472f3bfa",
+    "Fit_Verification.json": "5a7b33e565cc4ffc0c4af532093364dd4ce0fd83c081e12882ef3952d39f7502",
+    "Native_File_Readback.json": "ea746e786c5e5cc4f1eb1e76b86aad68e6a5a05717e4f5d9a0ca58b609c80368"
+  }
+}

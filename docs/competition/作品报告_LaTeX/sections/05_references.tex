@@ -1,0 +1,22 @@
+\section{参考文献}
+\begin{thebibliography}{99}
+\setlength{\itemsep}{2pt}\raggedright
+\bibitem{repo} 项目组. camera processing unit当前主工程与系统拓扑[CP]. 2026-10-21. 项目根目录\path{README.md}.
+\bibitem{layout} 项目组. 工程目录映射与检查脚本[CP]. \path{tools/project_layout.json}, \path{tools/check_project_layout.py}. 历史构建路径按映射查找现存文件.
+\bibitem{rtl} 项目组. 主板采集与ISP实现[CP]. \path{hardware/mainboard/user_source/hdl_source/}下\path{isp2/cvp_proc.v}及\path{isp2/cvp_demosaic.v}.
+\bibitem{interface} 项目组. 公共像素流与结果接口[CP]. 同一RTL目录下\path{common/cvp_pixel_defs.vh}, \path{advanced/cvp_advanced.v}, \path{yolo/cvp_yolo_tracks.v}.
+\bibitem{pid} 项目组. 定点PID、数字增益及帧统计[CP]. 同一RTL目录下\path{advanced/cvp_ae_control.v}, \path{advanced/cvp_gain11.v}, \path{advanced/cvp_frame_stats.v}；历史回归说明见\path{old/releases/v38-candidate/README.md}.
+\bibitem{resource} 项目组. 当前两来源模型最终物理实现摘要[R]. TD 6.2.168116, 2026-10-21. \path{hardware/mainboard/reports/yolo_wbc_bccd15/current/physical/build_result.json}.
+\bibitem{timing} 项目组. 主板构建与源码身份清单[R]. 同目录\path{source_hashes.json}及上级\path{summary.json}. 原始布线日志已清理，本文引用保留摘要.
+\bibitem{hdmistart} 项目组. HDMI网络收流及显示架构说明[R]. \path{hardware/hdmi/doc/}下《架构文档\_网口收流HDMI输出.md》；\path{docs/design_notes/body_ch5.tex}.
+\bibitem{hdmicolor} 项目组. 子板显示历史调试与验证说明[R]. \path{hardware/hdmi/doc/}下《handoff\_网口收流调试交接.md》；\path{docs/design_notes/body_ch5.tex}. 历史仿真结果不作为本次重跑结论.
+\bibitem{gui} 项目组. 图像控制上位机[CP]. \path{hardware/mainboard/tools/cam_gui_v27.py}, \path{hardware/mainboard/tools/v27_client.py}.
+\bibitem{yolortl} 项目组. 单尺度量化检测与板端集成实现[CP]. \path{yolo/model.py}；\path{hardware/mainboard/user_source/hdl_source/}下\path{yolo/}、\path{design_top_wrapper.v}及\path{classify/cvp_cell_label.v}.
+\bibitem{yoloreport} 项目组. 15 Hz检测分类验证摘要[R]. \path{hardware/mainboard/reports/yolo_wbc_bccd15/current/summary.json}；同目录各\path{five_*/results.json}.
+\bibitem{training} 项目组. 两来源冻结数据与模型审计[R]. \path{yolo/wbc_bccd/frozen/data_manifest.json}, \path{data_audit.json}, \path{protocol.json}, \path{test_regression.json}.
+\bibitem{programming} 项目组. 主板部署与Flash操作摘要[R]. \path{hardware/mainboard/deployment_state.json}；\path{hardware/mainboard/reports/yolo_wbc_bccd15/}下\path{programming/programming.json}与\path{programming_flash_20261021/}.
+\bibitem{wbcatt} TSUTSUI S, PANG W, HE S, et al. WBCAtt+: Fine-Grained Pixel-Level Morphological Annotations for White Blood Cell Images[J/OL]. Medical Image Analysis, 2026[2026-10-21]. \url{https://github.com/apple2373/wbcattplus}.
+\bibitem{datarepo} TSUTSUI S, et al. WBCAtt+ Dataset[DS/OL]. Hugging Face, 2026[2026-10-21]. DOI:10.57967/hf/8143. \url{https://huggingface.co/datasets/apple2373/wbcattplus}. 下载与来源按本项目冻结数据清单记录.
+\bibitem{twosource} 项目组. WBCAtt+与BCCD两来源训练及主板部署报告[R]. \path{docs/reports/}下《README\_1021\_WBCAtt与BCCD两来源重训.md》；\path{hardware/mainboard/reports/yolo_wbc_bccd15/README.md}；\path{yolo/wbc_bccd/frozen/}.
+\bibitem{mechanical} 项目组. 显微镜摄像头支架V10结构设计与配合检查[R]. \path{MicroscopeSupport_V10/}设计包中的中文说明、\path{V10_Release.json}及\path{Fit_Verification.json}；装配模型与打印分件.
+\end{thebibliography}

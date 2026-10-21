@@ -1,19 +1,21 @@
 """Verify the YOLO experiment, then optionally program PH1P35 SRAM with TD6.2."""
 import argparse,datetime,hashlib,json,re,socket,subprocess,time
 from pathlib import Path
-REPO=Path(__file__).resolve().parents[1];BOARD=REPO/'08_csi_dsi_cs500_7cun'
+REPO=Path(__file__).resolve().parents[1];BOARD=REPO/'hardware/mainboard'
 BUILD=BOARD/'td_project/camera_to_dsi_display_Runs/phy_1'
 REPORT=BOARD/'reports/yolo160/current';OUT=BOARD/'reports/yolo160/programming'
 TD=Path('C:/Anlogic/TD_6.2.1_Engineer_6.2.168.116/bin/td_commands_prompt.exe')
 if __name__=='__main__' and len(json.loads((BOARD/'user_source/hdl_source/yolo/model/active_model.json').read_text(encoding='utf8'))['protocol']['classes'])==5:
  import runpy
- runpy.run_path(str(REPO/'yolo/five/program_mainboard.py'),run_name='__main__')
+ active=json.loads((BOARD/'user_source/hdl_source/yolo/model/active_model.json').read_text(encoding='utf8'))
+ entry='wbc_bccd' if active['run'].startswith('wbc_bccd') else 'five'
+ runpy.run_path(str(REPO/'yolo'/entry/'program_mainboard.py'),run_name='__main__')
  raise SystemExit(0)
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main(args):
- assert REPO.name=='CameraVideoPath-on-fpga-yolo','Only the separate experiment checkout is allowed'
+ assert Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],cwd=REPO,text=True).strip()).resolve()==REPO.resolve(),'Unexpected repository root'
  branch=subprocess.check_output(['git','branch','--show-current'],cwd=REPO,text=True).strip()
- assert branch=='experiment/yolo160-w4a4','Unexpected experiment branch'
+ assert branch=='main','Program only from the published main branch'
  result=json.loads((BUILD/'build_result.json').read_text())
  assert result['place_and_route'] and min(result['SWNS'],result['HWNS'])>=0,'Final physical timing must pass'
  assert result['slice']<=21216 and result['eram']<=108 and result['dsp']<=40,'Resource overflow'

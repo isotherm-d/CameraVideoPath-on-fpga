@@ -1,12 +1,14 @@
 """Collect source-matched experiment evidence, without accessing any hardware."""
-import argparse,datetime,hashlib,json,re,shutil,zipfile
+import argparse,datetime,hashlib,json,re,shutil,subprocess,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent;REPO=ROOT.parent
-BOARD=REPO/'08_csi_dsi_cs500_7cun';HDL=BOARD/'user_source/hdl_source/yolo'
+BOARD=REPO/'hardware/mainboard';HDL=BOARD/'user_source/hdl_source/yolo'
 RUN=ROOT/'runs/s160_w0075_intqat';DEST=BOARD/'reports/yolo160/current'
 if __name__=='__main__' and len(json.loads((HDL/'model/active_model.json').read_text(encoding='utf8'))['protocol']['classes'])==5:
  import runpy
- runpy.run_path(str(ROOT/'five/collect_report.py'),run_name='__main__')
+ active=json.loads((HDL/'model/active_model.json').read_text(encoding='utf8'))
+ entry='wbc_bccd' if active['run'].startswith('wbc_bccd') else 'five'
+ runpy.run_path(str(ROOT/entry/'collect_report.py'),run_name='__main__')
  raise SystemExit(0)
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def save(p,v):p.write_text(json.dumps(v,ensure_ascii=False,indent=2),encoding='utf8')
@@ -83,7 +85,7 @@ def main(args):
  active['assets']={str(p.relative_to(HDL)):sha(p) for p in list((HDL/'model').glob('*'))+list(HDL.glob('*.vh')) if p.is_file() and p.name!='active_model.json'}
  active['status']='RTL_verified_'+status['phase'];active['test_result']='yolo/frozen/test_result.json';active['checkpoint_sha256']=sha(frozen/'detector.pt')
  save(HDL/'model/active_model.json',active)
- summary={'updated_at':datetime.datetime.now().astimezone().isoformat(),'branch':'experiment/yolo160-w4a4','model':'s160_w0075_intqat',
+ summary={'updated_at':datetime.datetime.now().astimezone().isoformat(),'branch':subprocess.check_output(['git','branch','--show-current'],cwd=REPO,text=True).strip(),'model':'s160_w0075_intqat',
  'cadence_default':10,'video_fps':30,'detector_region':[320,40,959,679],'detector_input':[160,160],
  'classifier_crop':[400,120,879,599],'classifier_input':[32,32],'RTL_integer_vectors':len(results),
  'RTL_cycles':max(v['cycles'] for v in results),'full720p30_tests':['burst','paced_4444_clocks_per_row'],

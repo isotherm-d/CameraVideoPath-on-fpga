@@ -1,0 +1,112 @@
+[
+  {
+    "layer": 0,
+    "cin": 3,
+    "cout": 8,
+    "groups": 1,
+    "kernel": 3,
+    "wbase": 0,
+    "mbase": 0,
+    "input_dim": 160,
+    "pool": true
+  },
+  {
+    "layer": 1,
+    "cin": 8,
+    "cout": 8,
+    "groups": 1,
+    "kernel": 3,
+    "wbase": 0,
+    "mbase": 8,
+    "input_dim": 80,
+    "pool": true
+  },
+  {
+    "layer": 2,
+    "cin": 8,
+    "cout": 8,
+    "groups": 1,
+    "kernel": 3,
+    "wbase": 72,
+    "mbase": 16,
+    "input_dim": 40,
+    "pool": true
+  },
+  {
+    "layer": 3,
+    "cin": 8,
+    "cout": 16,
+    "groups": 2,
+    "kernel": 3,
+    "wbase": 144,
+    "mbase": 24,
+    "input_dim": 20,
+    "pool": true
+  },
+  {
+    "layer": 4,
+    "cin": 16,
+    "cout": 24,
+    "groups": 3,
+    "kernel": 3,
+    "wbase": 288,
+    "mbase": 40,
+    "input_dim": 10,
+    "pool": false
+  },
+  {
+    "layer": 5,
+    "cin": 24,
+    "cout": 40,
+    "groups": 5,
+    "kernel": 3,
+    "wbase": 720,
+    "mbase": 64,
+    "input_dim": 10,
+    "pool": false
+  },
+  {
+    "layer": 6,
+    "cin": 40,
+    "cout": 80,
+    "groups": 10,
+    "kernel": 3,
+    "wbase": 1800,
+    "mbase": 104,
+    "input_dim": 10,
+    "pool": false
+  },
+  {
+    "layer": 7,
+    "cin": 80,
+    "cout": 24,
+    "groups": 3,
+    "kernel": 1,
+    "wbase": 5400,
+    "mbase": 184,
+    "input_dim": 10,
+    "pool": false
+  },
+  {
+    "layer": 8,
+    "cin": 24,
+    "cout": 40,
+    "groups": 5,
+    "kernel": 3,
+    "wbase": 5640,
+    "mbase": 208,
+    "input_dim": 10,
+    "pool": false
+  },
+  {
+    "layer": 9,
+    "cin": 40,
+    "cout": 30,
+    "groups": 4,
+    "kernel": 3,
+    "wbase": 6720,
+    "mbase": 248,
+    "input_dim": 10,
+    "pool": false
+  }
+]

@@ -2,8 +2,8 @@
 import re
 from pathlib import Path
 REPO=Path(__file__).resolve().parents[2]
-assert REPO.name=='CameraVideoPath-on-fpga-yolo'
-p=REPO/'08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display.al';text=p.read_text(encoding='utf8')
+assert (REPO/'hardware/mainboard/td_project/camera_to_dsi_display.al').is_file(),'Run from a project checkout'
+p=REPO/'hardware/mainboard/td_project/camera_to_dsi_display.al';text=p.read_text(encoding='utf8')
 disabled={'cellnet32_core.v','cvp_cellnet32.v','cvp_roi_rgb32.v','cvp_center_classifier.v','cvp_center_window.v','cvp_class_confirm.v'}
 enabled={'cvp_cell_tracks.v','cvp_cell_label.v'}
 def rewrite(m):

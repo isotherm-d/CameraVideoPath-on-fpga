@@ -1,0 +1,40 @@
+{
+  "model": "center480_20261020",
+  "input_size": [
+    32,
+    32,
+    3
+  ],
+  "class_names": [
+    "BAS",
+    "EOS",
+    "LYM",
+    "MON",
+    "NEU"
+  ],
+  "source": "C:\\Users\\cqm87\\Desktop\\2026\\cellnet\\runs\\center480_20261020",
+  "rom_sha256": "6e7ec7a51cf09f3e281b3e64c92beac369311d8f2fe25e15fee8a44be3f3defd",
+  "input_layout": "uint8 planar RGB; ch*1024+y*32+x",
+  "normalization": "raw uint8 input; trained x/256",
+  "crop": {
+    "source_crop_size": 480,
+    "network_input_size": 32,
+    "raabin": "exact native center 480x480, symmetric edge padding only if smaller",
+    "blood": "64px low-resolution proxy: bilinear upscale to 575 then center crop480; no new detail",
+    "location": "image center only; no detector, mask, bbox or test labels used",
+    "sampler": "center nearest: floor((2*k+1)*480/64) = 7+15*k",
+    "camera_crop": {
+      "x0": 400,
+      "y0": 120,
+      "width": 480,
+      "height": 480
+    },
+    "camera_detection": {
+      "x0": 320,
+      "y0": 40,
+      "width": 640,
+      "height": 640
+    }
+  },
+  "hardware_camera_accuracy_validated": false
+}

@@ -7,7 +7,7 @@ from model import Detector,decode
 from train import iou,nms
 import torch
 ROOT=Path(__file__).resolve().parent
-HDL=ROOT.parent/'08_csi_dsi_cs500_7cun/user_source/hdl_source/yolo'
+HDL=ROOT.parent/'hardware/mainboard/user_source/hdl_source/yolo'
 def writehex(p,words,digits):p.write_text(''.join(f'{int(v):0{digits}x}\n' for v in words),encoding='ascii')
 def integer(x,d,collect=False):
  a=x.transpose(2,0,1).astype(np.int64);features=[]

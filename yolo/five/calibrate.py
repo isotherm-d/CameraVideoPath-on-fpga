@@ -80,7 +80,7 @@ def main(args):
          'numpy_QAT_exact_vectors':len(selection),'selected':best,'thresholds':choices}
  (run/'integer_validation.json').write_text(json.dumps(result,indent=2))
  if args.activate:
-  hdl=BASE.parent/'08_csi_dsi_cs500_7cun/user_source/hdl_source/yolo'
+  hdl=BASE.parent/'hardware/mainboard/user_source/hdl_source/yolo'
   (hdl/'yolo160_threshold.vh').write_text(f'`define YOLO_SCORE_THRESHOLD {best["score_q16"]}\n`define YOLO_NMS_Q8 103\n')
   assert json.loads((run/'vectors/manifest.json').read_text())['indices']==selection
   for j,i in enumerate(selection):

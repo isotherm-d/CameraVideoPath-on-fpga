@@ -3,7 +3,7 @@ import argparse,datetime,hashlib,json,re,shutil,zipfile
 from pathlib import Path
 import fitz
 from PIL import Image,ImageDraw
-BASE=Path(__file__).resolve().parents[1];CVP=BASE.parent.parent;DOC=CVP/'作品报告_LaTeX';TMP=CVP/'tmp/official_report_wbc_bccd_20261021'
+BASE=Path(__file__).resolve().parents[1];CVP=BASE.parent/'docs/competition';DOC=CVP/'作品报告_LaTeX';TMP=BASE.parent/'build/official_report_wbc_bccd_20261021'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main(reviewed):
  pending=json.loads((TMP/'pending_release.json').read_text(encoding='utf8'));log=(DOC/'main.log').read_text(encoding='utf8',errors='replace')
@@ -22,9 +22,9 @@ def main(reviewed):
  for n,w in pending['protected'].items():assert sha(CVP/n)==w,n
  print('PDF_RENDERED_FOR_REVIEW',len(pdf),'pages',flush=True)
  if not reviewed:return
- program=pending['programming'];state=json.loads((BASE.parent/'08_csi_dsi_cs500_7cun/deployment_state.json').read_text(encoding='utf8'));assert state['bit_sha256']==program['bit_sha256']
- shutil.copy2(DOC/'main.pdf',CVP/'作品报告.pdf');manifest={'recorded_local':datetime.datetime.now().astimezone().isoformat(),'pages':len(pdf),'model':pending['model'],'bit_sha256':program['bit_sha256'],'bit_path':state['bit_path'],'programmed_SRAM':True,'current_training_sources':['WBCAtt+','BCCD'],'live_camera_validated':False,'HDMI_validated':False,'pdf_sha256':sha(DOC/'main.pdf'),'template_and_heading_hierarchy_preserved':True,'original_template_hashes':pending['protected'],'programming_record':str(BASE.parent/'08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/programming/programming.json'),'pdf_checks':{'xelatex_two_pass':True,'overfull_or_missing_glyphs':False,'unresolved_references':False,'all_pages_visually_reviewed':True},'files':{}}
- manifest.update(release_scope=state['release_scope'],original_1percent_artificial_background_gate_passed=False,threshold_uses_provided_development_frames=True,source_summary=str(BASE.parent/'08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/current/summary.json'),programming_record_sha256=sha(Path(manifest['programming_record'])),programming_log_sha256=sha(Path(manifest['programming_record']).with_name('program_jtag.log')))
+ program=pending['programming'];state=json.loads((BASE.parent/'hardware/mainboard/deployment_state.json').read_text(encoding='utf8'));assert state['bit_sha256']==program['bit_sha256']
+ shutil.copy2(DOC/'main.pdf',CVP/'作品报告.pdf');manifest={'recorded_local':datetime.datetime.now().astimezone().isoformat(),'pages':len(pdf),'model':pending['model'],'bit_sha256':program['bit_sha256'],'bit_path':state['bit_path'],'programmed_SRAM':True,'current_training_sources':['WBCAtt+','BCCD'],'live_camera_validated':False,'HDMI_validated':False,'pdf_sha256':sha(DOC/'main.pdf'),'template_and_heading_hierarchy_preserved':True,'original_template_hashes':pending['protected'],'programming_record':str(BASE.parent/'hardware/mainboard/reports/yolo_wbc_bccd15/programming/programming.json'),'pdf_checks':{'xelatex_two_pass':True,'overfull_or_missing_glyphs':False,'unresolved_references':False,'all_pages_visually_reviewed':True},'files':{}}
+ manifest.update(release_scope=state['release_scope'],original_1percent_artificial_background_gate_passed=False,threshold_uses_provided_development_frames=True,source_summary=str(BASE.parent/'hardware/mainboard/reports/yolo_wbc_bccd15/current/summary.json'),programming_record_sha256=sha(Path(manifest['programming_record'])),programming_log_sha256=sha(Path(manifest['programming_record']).with_name('program_jtag.log')))
  for p in DOC.rglob('*'):
   if p.is_file() and p.name!='release_manifest.json' and (p.suffix in ['.tex','.sty','.png','.md'] or p.name in ['main.pdf','模板.pdf']):manifest['files'][p.relative_to(DOC).as_posix()]=sha(p)
  (DOC/'release_manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf8')

@@ -10,11 +10,11 @@
 
 当前源码在独立副本 `CameraVideoPath-on-fpga-yolo` 的 `experiment/yolo160-w4a4` 分支。YOLO完成全帧定位和五分类；**当前每帧最多显示一个细胞框，框左上角显示英文全称**。原主工程目录没有修改；仍使用副本中的原 `camera_to_dsi_display.al`。
 
-**单框全称版已于2026-10-21 00:53成功下载主板SRAM，用户随后反馈“已上板完成验证”**：Basophil、Eosinophil、Lymphocyte、Monocyte、Neutrophil；优先锁定原目标身份，目标消失后才重新选择最靠近中心的细胞。单框选择和17941个全称文字像素测试、14张整网对拍、720p30到单框全称OSD及回归通过；最终19018 Slice、94 ERAM、36 DSP，setup +0.133ns、hold +0.020ns。见 [单框全称记录](../../08_csi_dsi_cs500_7cun/reports/yolo_single15/README.md)。用户未提供量化实拍准确率或帧率统计。
+**单框全称版已于2026-10-21 00:53成功下载主板SRAM，用户随后反馈“已上板完成验证”**：Basophil、Eosinophil、Lymphocyte、Monocyte、Neutrophil；优先锁定原目标身份，目标消失后才重新选择最靠近中心的细胞。单框选择和17941个全称文字像素测试、14张整网对拍、720p30到单框全称OSD及回归通过；最终19018 Slice、94 ERAM、36 DSP，setup +0.133ns、hold +0.020ns。见 [单框全称记录](../../hardware/mainboard/reports/yolo_single15/README.md)。用户未提供量化实拍准确率或帧率统计。
 
-上版多框15Hz保持版已于2026-10-21 00:23成功下载主板SRAM：19669 Slice、94 ERAM、36 DSP，setup +0.100ns、hold +0.020ns；[旧15Hz证据](../../08_csi_dsi_cs500_7cun/reports/yolo_five15/README.md)保留，不能当作当前单框版的下载记录。
+上版多框15Hz保持版已于2026-10-21 00:23成功下载主板SRAM：19669 Slice、94 ERAM、36 DSP，setup +0.100ns、hold +0.020ns；[旧15Hz证据](../../hardware/mainboard/reports/yolo_five15/README.md)保留，不能当作当前单框版的下载记录。
 
-2026-10-21 00:00（北京时间）成功下载的是上一版10Hz bit：19433 Slice、94 ERAM、36 DSP，setup +0.102ns、hold +0.020ns；[旧报告和下载证据](../../08_csi_dsi_cs500_7cun/reports/yolo_five/README.md)完整保留，不能用于证明15Hz新版已下载或已通过实拍。
+2026-10-21 00:00（北京时间）成功下载的是上一版10Hz bit：19433 Slice、94 ERAM、36 DSP，setup +0.102ns、hold +0.020ns；[旧报告和下载证据](../../hardware/mainboard/reports/yolo_five/README.md)完整保留，不能用于证明15Hz新版已下载或已通过实拍。
 
 ## 板端链路
 
@@ -79,7 +79,7 @@
 
 BCCD TEST只计算定位：71个目标中检出63个，召回88.73%，精确率71.59%，仍有误检；BCCD没有五类标签，不能给它计算五分类准确率。该测试集在前一版单类实验中已使用过，本轮没有再用于训练或阈值选择。**不能宣称本版全面提高准确率。** 实拍、多细胞遮挡、连续性和HDMI效果尚待验证。
 
-冻结权重、量化权重、数据清单、阈值、逐图测试结果和14张RTL向量压缩包在 [frozen](frozen/)。`test_opened:false` 是训练/选择冻结当时的状态；后续打开记录在 `five_class_test_result.json`。
+冻结权重、量化权重、数据清单、阈值、逐图测试结果和14张RTL向量压缩包在 [frozen](frozen)。`test_opened:false` 是训练/选择冻结当时的状态；后续打开记录在 `five_class_test_result.json`。
 
 ## RTL与资源证据
 
@@ -92,7 +92,7 @@ BCCD TEST只计算定位：71个目标中检出63个，召回88.73%，精确率7
 
 当前单框全称版整机最终 **19018/21216 Slice、94/108 ERAM、36/40 DSP**，setup +0.133ns、hold +0.020ns，构建445.4秒。00:53下载bit SHA256为 `60d25f6ff3056fea9c2f621ace6666f2d9cb29771813617c2aa542433ed77ff6`，用户已反馈上板完成验证。下载后GUI添加9个旧模块AutoExcluded属性，.al原样保留；RTL/ROM/约束仍匹配构建，工程字节差异有独立记录，重新下载仍执行严格哈希检查。
 
-上版多框15Hz保持版最终19669 Slice、94 ERAM、36 DSP，setup +0.100ns、hold +0.020ns，耗时594.2秒。该旧bit SHA256为 `ee38f0ef0fe0b80e1e74f823b490233ca96d7a46018507e4e60c710fd7cb2ccd`；旧[下载日志](../../08_csi_dsi_cs500_7cun/reports/yolo_five15/programming/README.md)保留，不作为当前单框版证据。
+上版多框15Hz保持版最终19669 Slice、94 ERAM、36 DSP，setup +0.100ns、hold +0.020ns，耗时594.2秒。该旧bit SHA256为 `ee38f0ef0fe0b80e1e74f823b490233ca96d7a46018507e4e60c710fd7cb2ccd`；旧[下载日志](../../hardware/mainboard/reports/yolo_five15/programming/README.md)保留，不作为当前单框版证据。
 
 更早的10Hz整机为19433 Slice、94 ERAM、36 DSP，setup +0.102ns、hold +0.020ns；旧bit完整保留。首轮跨帧匹配关键路径−1.160ns已通过多拍调度修正；第二轮gate setup −0.423ns属于历史布线前估计。多框15Hz同次构建gate setup −0.021ns、最终+0.100ns均为旧版记录。
 
@@ -120,7 +120,7 @@ python yolo/five/prepare.py --geometry fullframe
 python yolo/five/train.py --name another_run --geometry fullframe --epochs 250 --qat-epochs 60
 
 # 原.al物理构建与证据核验：
-python 08_csi_dsi_cs500_7cun/tools/build_cellnet32.py --route
+python hardware/mainboard/tools/build_cellnet32.py --route
 python yolo/five/collect_report.py --physical
 python yolo/five/program_mainboard.py
 python yolo/five/program_mainboard.py --program

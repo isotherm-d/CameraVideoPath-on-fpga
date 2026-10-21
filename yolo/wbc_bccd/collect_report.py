@@ -1,7 +1,7 @@
 """Collect the isolated repair with source-bound simulation and physical proof."""
 import argparse,datetime,hashlib,json,re,shutil,zipfile
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun';HOME=BASE/'wbc_bccd';HDL=BOARD/'user_source/hdl_source/yolo'
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard';HOME=BASE/'wbc_bccd';HDL=BOARD/'user_source/hdl_source/yolo'
 DEST=BOARD/'reports/yolo_wbc_bccd15/current';FROZEN=HOME/'frozen';NAMES=['Basophil','Eosinophil','Lymphocyte','Monocyte','Neutrophil']
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def read(p):return json.loads(p.read_text(encoding='utf8'))

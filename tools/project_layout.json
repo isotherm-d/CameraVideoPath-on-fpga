@@ -1,0 +1,16 @@
+{
+  "project_name": "camera processing unit",
+  "baseline_commit": "5f889b69b16f41eeb3b62bc1f9b979e511718a18",
+  "mainboard": "hardware/mainboard",
+  "hdmi": "hardware/hdmi",
+  "official_report": "docs/competition/作品报告_LaTeX",
+  "source_locations": {
+    "user_source/hdl_source/classify/cellnet32_core.v": "old/cellnet32/classify/cellnet32_core.v",
+    "user_source/hdl_source/classify/cellnet32_params.vh": "old/cellnet32/classify/cellnet32_params.vh",
+    "user_source/hdl_source/classify/cvp_cellnet32.v": "old/cellnet32/classify/cvp_cellnet32.v",
+    "user_source/hdl_source/classify/cvp_center_classifier.v": "old/cellnet32/classify/cvp_center_classifier.v",
+    "user_source/hdl_source/classify/cvp_center_window.v": "old/cellnet32/classify/cvp_center_window.v",
+    "user_source/hdl_source/classify/cvp_class_confirm.v": "old/cellnet32/classify/cvp_class_confirm.v",
+    "user_source/hdl_source/classify/cvp_roi_rgb32.v": "old/cellnet32/classify/cvp_roi_rgb32.v"
+  }
+}

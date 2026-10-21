@@ -1,7 +1,7 @@
 """Check the original default tracking schedule remains compatible."""
 import hashlib,json,re,subprocess
 from pathlib import Path
-BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'08_csi_dsi_cs500_7cun';MS=Path('C:/modeltech64_2020.4/win64')
+BASE=Path(__file__).resolve().parents[1];REPO=BASE.parent;BOARD=REPO/'hardware/mainboard';MS=Path('C:/modeltech64_2020.4/win64')
 OUT=BASE/'tmp/five_legacy_tracks';OUT.mkdir(parents=True,exist_ok=True)
 src=BOARD/'user_source/hdl_source/classify/cvp_cell_tracks.v';tests=['tb_tracks','tb_temporal','tb_temporal5'];files=[src]+[BOARD/'sim/cellnet32'/(n+'.sv') for n in tests]
 def hashes():return {str(p.relative_to(REPO)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
