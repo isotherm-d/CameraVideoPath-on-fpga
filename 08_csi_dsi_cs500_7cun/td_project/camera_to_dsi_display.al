@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Project Version="3" Minor="2" Path="C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga/08_csi_dsi_cs500_7cun/td_project">
+<Project Version="3" Minor="2" Path="C:/Users/cqm87/Desktop/2026/cvp/CameraVideoPath-on-fpga-yolo/08_csi_dsi_cs500_7cun/td_project">
     <Project_Created_Time></Project_Created_Time>
     <TD_Encoding>UTF-8</TD_Encoding>
     <TD_Version>6.2.168116</TD_Version>
@@ -382,63 +382,180 @@
                     <Attr Name="CompileOrder" Val="54"/>
                 </FileInfo>
             </File>
-                    <File Path="../user_source/hdl_source/detect/det_color_feat.v">
+            <File Path="../user_source/hdl_source/detect/det_color_feat.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="200"/>
+                    <Attr Name="CompileOrder" Val="55"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/det_cid_filter.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="201"/>
+                    <Attr Name="CompileOrder" Val="56"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/det_bin_open3.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="202"/>
+                    <Attr Name="CompileOrder" Val="57"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/det_wbc20.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="203"/>
+                    <Attr Name="CompileOrder" Val="58"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/det_roi_bridge.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="204"/>
+                    <Attr Name="CompileOrder" Val="59"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/u_roi_pixfill.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="205"/>
+                    <Attr Name="CompileOrder" Val="60"/>
                 </FileInfo>
             </File>
             <File Path="../user_source/hdl_source/detect/cvp_box_overlay.v">
                 <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="206"/>
+                    <Attr Name="CompileOrder" Val="61"/>
                 </FileInfo>
             </File>
-</Verilog>
+            <File Path="../user_source/hdl_source/classify/cvp_center_window.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="67"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_class_confirm.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="68"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_center_classifier.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="69"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cellnet32_core.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="62"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_cell_tracks.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="63"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_roi_rgb32.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="64"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_cellnet32.v">
+                <FileInfo>
+                    <Attr Name="AutoExcluded" Val="true"/>
+                    <Attr Name="UsedInSyn" Val="false"/>
+                    <Attr Name="UsedInP&R" Val="false"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="65"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/classify/cvp_cell_label.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="66"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/yolo/yolo160_first.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="70"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/yolo/yolo160_core.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="71"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/yolo/yolo160_boxes.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="72"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/yolo/cvp_yolo160_detector.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="73"/>
+                </FileInfo>
+            </File>
+            <File Path="../user_source/hdl_source/yolo/cvp_yolo_tracks.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="74"/>
+                </FileInfo>
+            </File>
+        </Verilog>
         <System_Verilog>
             <File Path="../user_source/hdl_source/mipi_dphy_rx/mipi_dphy_rx_ph1p_mipiio_wrapper.sv">
                 <FileInfo>

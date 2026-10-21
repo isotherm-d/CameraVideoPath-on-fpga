@@ -1,0 +1,28 @@
+{
+  "status": "agent_attempt_failed",
+  "recorded_local_date": "2026-10-21",
+  "tool": "TD6.2",
+  "device": "PH1P35MDG324",
+  "spi_flash_id": "c8 65 18",
+  "candidate_model": "wbc_bccd160_devcam_20261021",
+  "candidate_bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+  "command_options": {
+    "mode": "program_spi",
+    "verify": true,
+    "speed": 7,
+    "cable": 0,
+    "flash_size_Mbit": 128
+  },
+  "logged_phases": [
+    "PH1P35 chip validation success",
+    "SPI sector erase started",
+    "page program and verify phase started"
+  ],
+  "error": "PRG-8000 get tdo buffer failed",
+  "tcl_catch": 1,
+  "elapsed_seconds": 438.230888,
+  "tool_attempt_flash_contents": "unknown; write/verify did not return success",
+  "raw_local_log_sha256": "cde2b80e2521c1acfdedb02aba6a7199480370eef5229b44abcdcddfc783e700",
+  "user_later_reported_manual_flash_success": true,
+  "manual_bit_identity_independently_verified": false
+}

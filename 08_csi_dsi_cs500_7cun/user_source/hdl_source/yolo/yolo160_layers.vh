@@ -1,0 +1,9 @@
+1: begin dim<=80;cin<=8;cout<=8;ng<=1;ig<=1;rw<=80;odim<=40;pool_en<=1;kernel_one<=0;weight_base<=0;meta_base<=8;end
+2: begin dim<=40;cin<=8;cout<=8;ng<=1;ig<=1;rw<=40;odim<=20;pool_en<=1;kernel_one<=0;weight_base<=72;meta_base<=16;end
+3: begin dim<=20;cin<=8;cout<=16;ng<=2;ig<=1;rw<=20;odim<=10;pool_en<=1;kernel_one<=0;weight_base<=144;meta_base<=24;end
+4: begin dim<=10;cin<=16;cout<=24;ng<=3;ig<=2;rw<=20;odim<=10;pool_en<=0;kernel_one<=0;weight_base<=288;meta_base<=40;end
+5: begin dim<=10;cin<=24;cout<=40;ng<=5;ig<=3;rw<=30;odim<=10;pool_en<=0;kernel_one<=0;weight_base<=720;meta_base<=64;end
+6: begin dim<=10;cin<=40;cout<=80;ng<=10;ig<=5;rw<=50;odim<=10;pool_en<=0;kernel_one<=0;weight_base<=1800;meta_base<=104;end
+7: begin dim<=10;cin<=80;cout<=24;ng<=3;ig<=10;rw<=100;odim<=10;pool_en<=0;kernel_one<=1;weight_base<=5400;meta_base<=184;end
+8: begin dim<=10;cin<=24;cout<=40;ng<=5;ig<=3;rw<=30;odim<=10;pool_en<=0;kernel_one<=0;weight_base<=5640;meta_base<=208;end
+9: begin dim<=10;cin<=40;cout<=30;ng<=4;ig<=5;rw<=50;odim<=10;pool_en<=0;kernel_one<=0;weight_base<=6720;meta_base<=248;end

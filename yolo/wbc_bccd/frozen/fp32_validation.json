@@ -1,0 +1,17 @@
+{
+  "previous_stages": [
+    {
+      "run": "wbc_bccd160_20261021",
+      "FP32": 120,
+      "QAT": 80
+    },
+    {
+      "run": "wbc_bccd160_camera_20261021",
+      "QAT": 60
+    },
+    {
+      "run": "wbc_bccd160_objectmax_20261021",
+      "objectness_only_QAT": 40
+    }
+  ]
+}

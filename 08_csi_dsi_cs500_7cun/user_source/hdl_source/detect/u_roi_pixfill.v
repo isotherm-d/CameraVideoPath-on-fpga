@@ -48,6 +48,12 @@ module u_roi_pixfill #(
     input  wire        i_rd_inc             // bridge 每收 1 字节：读地址+1
 );
 
+    reg box_toggle_d;
+    always @(posedge i_clk or negedge i_rst_n)
+        if (!i_rst_n) box_toggle_d <= 0;
+        else box_toggle_d <= i_box_toggle;
+    wire box_commit = i_box_toggle ^ box_toggle_d;
+
     /* ---------------- 灰度：g = (R + 2G + B) >> 2 ---------------- */
     wire [9:0] w_gray = ({2'b0, i_pix_rgb[23:16]} +
                          {1'b0, i_pix_rgb[15:8], 1'b0} +
@@ -102,7 +108,7 @@ module u_roi_pixfill #(
             for (ki = 0; ki < N_BOX; ki = ki + 1) begin
                 r_x0[ki] <= 12'd0; r_y0[ki] <= 12'd0; r_en[ki] <= 1'b0;
             end
-        end else if (i_box_toggle) begin
+        end else if (box_commit) begin
             /* 新框快照：锁存坐标、清全部捕获标志（帧 N+2 行流过时重捕获） */
             r_captured <= {N_BOX{1'b0}};
             for (ki = 0; ki < N_BOX; ki = ki + 1) begin

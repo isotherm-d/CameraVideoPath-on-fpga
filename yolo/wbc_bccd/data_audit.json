@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "sources": [
+    "WBCAtt",
+    "BCCD"
+  ],
+  "all_samples_checked": 20950,
+  "counts": {
+    "train": {
+      "samples": 12516,
+      "positive_images": 6225,
+      "objects": 6235,
+      "BCCD_rows": 475,
+      "WBCAtt_rows": 12041
+    },
+    "val": {
+      "samples": 2229,
+      "positive_images": 1096,
+      "objects": 1097,
+      "BCCD_rows": 209,
+      "WBCAtt_rows": 2020
+    },
+    "test": {
+      "samples": 6205,
+      "positive_images": 3085,
+      "objects": 3088,
+      "BCCD_rows": 171,
+      "WBCAtt_rows": 6034
+    }
+  },
+  "all_input_hashes_match_manifest": true,
+  "parent_split_isolation": true,
+  "cross_split_RGB160_duplicates": 0,
+  "BCCD_class_loss_masked": true,
+  "no_Raabin_rows": true,
+  "npz_sha256": "00fc5808450b7e31c7931106640eb7b8746ae5b6b33580e0c6e7679899201bf6",
+  "manifest_sha256": "ec0eb0405d4030996e3a6dd6742dff65f1caeb05e9b599876a171e0d9e5c9884"
+}

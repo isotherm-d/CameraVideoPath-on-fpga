@@ -7,6 +7,7 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0,
  input cfg_clk,i_cam_done,i_ae_done,i_iic_error,i_cfg_error,
  output sensor_req,output [15:0] sensor_exp_cfg,sensor_gain_cfg,
  output o_valid,o_sof,o_eof,output [23:0] o_rgb,output [31:0] o_frame_id,
+ output reg [11:0] o_x,o_y,output reg [15:0] o_cfg_id,
  output [1535:0] status_data,output status_valid,input status_ready,
  input [127:0] i_sensor_diagnostics,
  input i_net_overflow,input i_net_tx_done,input [31:0] i_net_tx_fid,input net_clk,net_rst_n,
@@ -187,6 +188,11 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0,
  cvp_osd_stream osd(.clk(clk),.rst_n(rst_n),.i_valid(fv),.i_sof(fs),.i_eol(fl),.i_eof(fe),.i_rgb(frgb),
  .i_x(fx),.i_y(fy),.i_frame_id(ff),.i_cfg_id(fc),.i_mode(fm),.i_en(fosd),.i_ae(fae),.i_wb(fwb),
  .o_valid(o_valid),.o_sof(o_sof),.o_eol(),.o_eof(o_eof),.o_rgb(o_rgb),.o_frame_id(o_frame_id));
+ reg [11:0] osd_x1,osd_y1;reg [15:0] osd_cfg1;
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin osd_x1<=0;osd_y1<=0;osd_cfg1<=0;o_x<=0;o_y<=0;o_cfg_id<=0;end
+  else begin osd_x1<=fx;osd_y1<=fy;osd_cfg1<=fc;o_x<=osd_x1;o_y<=osd_y1;o_cfg_id<=osd_cfg1;end
+ end
  reg [63:0] process_tick,last_capture,last_process,last_eof,last_tx_tick;
  reg [31:0] last_fid,sensor_errors,last_tx_fid;reg [15:0] last_cfg;reg [7:0] last_mode;
  wire [31:0] stream_errors,stream_bad_fid,stream_bad_pixels;

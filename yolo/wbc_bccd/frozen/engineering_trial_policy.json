@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-21T03:26:56.730013+00:00",
+  "scope": "Reversible mainboard SRAM experiment requested by user; not production/camera accuracy acceptance",
+  "programming_authorization": "User requested WBCAtt+BCCD retraining, bit generation and board programming. User did not supply a1% or2% statistical limit.",
+  "original_1percent_gate_passed": false,
+  "original_failed_checks": [
+    "procedural_final_FP_at_most_001"
+  ],
+  "original_acceptance_sha256": "61719f4185be16d322c69e5154f39f3cfef6da1d8eefac2b51e8155bf2564743",
+  "engineering_trial_bound": "Both1024-image artificial stress regressions<=2%; this was a post-result engineering choice, not a pretraining accuracy claim.",
+  "residual_risk": "18/1024 and8/1024 artificial backgrounds still produce boxes; source negative crops have nonzero FP. Actual camera classification and HDMI unvalidated.",
+  "unrelaxed_requirements": "All uniform and provided room probes empty, provided cell development localizes, source/augmented VAL metrics pass, exact RTL/source/bit identity, setup/hold>=0, resources fit, correct PH1P35 chip, SRAM only.",
+  "checkpoint_sha256": "3d129883fef9823c89f854d4a5a8ffcfaebe030ff459d2e466f963e913c05654",
+  "quantized_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+  "threshold_q16": 52020,
+  "source_hashes": {
+    "yolo/wbc_bccd/export_board_trial.py": "f8610cceef08b1c07f961867ca7fa6c0bb347a4103b38971d2cefc6069ff2186"
+  }
+}

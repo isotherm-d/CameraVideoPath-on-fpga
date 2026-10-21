@@ -305,6 +305,13 @@ wire camera_group_valid, camera_group_sof;
 wire        w_clean_valid, w_clean_sof, w_clean_eof;
 wire [23:0] w_clean_rgb;
 wire [31:0] w_clean_frame_id;
+wire [15:0] w_clean_cfg, adv_cfg;
+wire w_res_valid,w_res_ready;
+wire [31:0] w_res_frame;
+wire [15:0] w_res_roi16;
+wire [11:0] adv_x,adv_y;
+wire [63:0] cnn_ticks,w_res_tick,w_res_bbox;
+wire [7:0] w_res_class;
 wire [11:0] w_clean_x, w_clean_y;           /* pixfill 裁剪寻址用 */
 
 // v13b: 组缓冲吸收 raw10 行突发(齿轮箱 4 拍/组跟不上背靠背突发, 实测丢 5/8)
@@ -368,201 +375,51 @@ cvp_advanced #(.V27(1)) advanced(
  .legacy_valid(legacy_valid),.legacy_cmd(legacy_cmd),.legacy_value(legacy_value),
  .cfg_clk(S_24m_clk),.i_cam_done(S_cam_cfg_done),.i_ae_done(S_ae_cfg_done),.i_iic_error(iic_error),.i_cfg_error(cfg_error),
  .sensor_req(S_ae_req),.sensor_exp_cfg(S_ae),.sensor_gain_cfg(S_ag),
- .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),
+ .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),.o_x(adv_x),.o_y(adv_y),.o_cfg_id(adv_cfg),
  .i_sensor_diagnostics(sensor_diagnostics),.status_data(adv_status),.status_valid(adv_status_valid),.status_ready(adv_status_ready),
  .i_net_overflow(net_overflow),.i_net_tx_done(net_tx_done),.i_net_tx_fid(net_tx_fid),.net_clk(S_gmii_125m),.net_rst_n(S_gmii_lock),
- .time_ticks(),.result_done_tick(64'd0),
- /* detect 框 → GUI 画框：bridge 描述符直通 result 口，class=0=已检出白细胞 */
- .result_valid(w_res_valid),.result_ready(w_res_ready),.result_frame(w_res_frame),.result_roi(w_res_roi16),.result_class(8'd0),.result_bbox(w_res_bbox),.result_score(32'd100),.result_format(7'd0),
- /* ---- detect 组接入（2026-10-10，详见 detect/README.md）----
-  * clean 流（AWB 后、风格化前）→ det_color_feat（HSV 紫窗分类）
-  * → det_wbc20（CCL+簇合并 → 逐细胞框 ≤10）→ det_roi_bridge
-  * （框 → V26 roi 块流，帧号透传）。分类核未接入前 roi_valid 悬空
-  * 于 w_roi_valid（调试可见），result_* 保持安全常量。 */
- .clean_pixel(),.clean_valid(w_clean_valid),.clean_sof(w_clean_sof),.clean_eol(),.clean_eof(w_clean_eof),.clean_rgb(w_clean_rgb),.clean_x(w_clean_x),.clean_y(w_clean_y),.clean_frame_id(w_clean_frame_id),.clean_cfg_id()
+ .time_ticks(cnn_ticks),.result_done_tick(w_res_tick),
+ // Completed CNN predictions also enter the existing diagnostic status channel.
+ .result_valid(w_res_valid),.result_ready(w_res_ready),.result_frame(w_res_frame),.result_roi(w_res_roi16),.result_class(w_res_class),.result_bbox(w_res_bbox),.result_score(32'd0),.result_format(7'd0),
+ .clean_pixel(),.clean_valid(w_clean_valid),.clean_sof(w_clean_sof),.clean_eol(),.clean_eof(w_clean_eof),.clean_rgb(w_clean_rgb),.clean_x(w_clean_x),.clean_y(w_clean_y),.clean_frame_id(w_clean_frame_id),.clean_cfg_id(w_clean_cfg)
 );
 
-/* ---------------- detect 白细胞检测链（detect/ 目录，2026-10-10） ---------------- */
-/* w_clean_* 已前移声明（cvp_proc 之前）；此处只留例化 */
-localparam N_BOX_W = 5;                // 检测框数上限（与 det_wbc20 N_OUT 一致）
-
-wire        w_det_valid, w_det_fs;
-wire [2:0]  w_det_cid;
-wire        w_cc_valid;                     /* det_color_feat → cid 滤波 → det_wbc20 */
-wire [2:0]  w_cc_cid;
+// Joint YOLO detection/classification. All five boxes have independent types.
+localparam N_BOX_W = 5;
 wire [N_BOX_W*48-1:0] w_det_box_xy;
-wire        w_det_box_tog;
-wire        w_roi_valid;                // 调试观测点（ILA/仿真）
-wire [63:0] w_roi_bbox;
-wire [3:0]  w_roi_rd_sel;
-wire [7:0]  w_pixfill_data;
-wire        w_pixfill_rst, w_pixfill_inc;
-wire [N_BOX_W-1:0] w_pixfill_cap;
-wire        w_res_valid;                    /* bridge 描述符 → GUI 画框 */
-wire        w_res_ready;
-wire [31:0] w_res_frame;
-wire [15:0] w_res_roi16;
+wire [N_BOX_W*3-1:0] w_det_classes;
+wire w_det_commit;
+wire [N_BOX_W*48-1:0] w_track_boxes;
+wire [N_BOX_W*3-1:0] w_track_classes;
+wire [N_BOX_W-1:0] w_track_known;
+wire [31:0] w_detect_frame;
+wire [15:0] w_detect_cfg;
+wire yolo_busy;wire [31:0] yolo_aborts;
+// Full 1280x720 RGB maps to RGB160. Video remains 30fps; YOLO runs at 15Hz.
+cvp_yolo160_detector #(.FRAME_INTERVAL(2)) u_yolo160(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_valid(w_clean_valid),
+ .i_x(w_clean_x),.i_y(w_clean_y),.i_rgb(w_clean_rgb),
+ .i_frame(w_clean_frame_id),.i_cfg(w_clean_cfg),
+ .o_boxes(w_det_box_xy),.o_classes(w_det_classes),.o_scores(),.o_commit(w_det_commit),
+ .o_frame(w_detect_frame),.o_cfg(w_detect_cfg),.o_busy(yolo_busy),.o_aborts(yolo_aborts));
 
-det_color_feat #(
-    .HUE_CB (10'd700),                  // 白细胞紫色窗 246°（宽窗实测最优）
-    .HUE_BM (10'd996),                  // 349.5°（ISP 联合仿真重标定，见 docs）
-    .HUE_MR (10'd1010),                 // 354.5°（随 BM 同步抬，防 RED 拦截）
-    .S_MIN  (8'd100)                    // 饱和度门限（31 张全量回归冻结参数）
-) u_det_color (
-    .i_clk         (S_100m_clk),
-    .i_rst_n       (S_rst_n),
-    .i_valid       (adv_valid),          /* C-2：改接显示流（clean 抽头板上实测无数据） */
-    .i_rgb         (adv_rgb),
-    .i_frame_start (adv_sof),
-    .o_valid       (w_cc_valid),
-    .o_frame_start (w_det_fs),
-    .o_hue         (),
-    .o_sat         (),
-    .o_val         (),
-    .o_cid         (w_cc_cid)
-);
-
-/* 3x3 多数表决：杀 S_MIN=100 细碎噪点的孤立紫像素（真实帧联仿产物，
- * 标签预算治理——见 detect/README.md 与 tb_det_newlink 诊断记录） */
-det_cid_filter #(
-    .IMG_W (1280),
-    .WBC_CID (3'd5)
-) u_cid_filter (
-    .i_clk       (S_100m_clk),
-    .i_rst_n     (S_rst_n),
-    .i_valid     (w_cc_valid),
-    .i_cid       (w_cc_cid),
-    .o_valid     (w_det_valid),
-    .o_cid       (w_det_cid)
-);
-
-/* 开运算（3x3）：9979dd7 只入了模块文件与 TB，wrapper 从未例化
- * （板上链=未经 open3 的链，与仿真验证链不一致，本提交修正） */
-wire        w_open_valid, w_open_bin;
-det_bin_open3 #(
-    .IMG_W (1280)
-) u_open3 (
-    .i_clk       (S_100m_clk),
-    .i_rst_n     (S_rst_n),
-    .i_valid     (w_det_valid),
-    .i_bin       (w_det_cid == 3'd5),
-    .o_valid     (w_det_open_valid),
-    .o_bin       (w_open_bin)
-);
-wire [2:0] w_det_cid_open = (w_det_open_valid && w_open_bin) ? 3'd5 : 3'd0;
-
-det_wbc20 #(
-    .IMG_W (1280), .IMG_H (720),
-    .WBC_CID (3'd5),
-    .MIN_AREA (12'd400),
-    .N_OUT (N_BOX_W),
-    .COORD_ADJ (12'd0),
-    .ENABLE_FOV (1'b0),                 // 实时相机全画幅（拍屏图才需 FOV 掩膜）
-    .COMPACT_PCT (37),
-    .MAX_AREA_PCT (15),
-    .MERGE_GAP (12'd2),
-    .SEED_MIN (256),
-    .MERGE_MAXWH (128)
-) u_det_wbc (
-    .i_clk        (S_100m_clk),
-    .i_rst_n      (S_rst_n),
-    .i_valid      (w_det_open_valid),
-    .i_cid        (w_det_cid_open),
-    .o_box_xy     (w_det_box_xy),
-    .o_box_text   (),
-    .o_box_color  (),
-    .o_frame_done (),
-    .o_box_toggle (w_det_box_tog)
-);
-
-
-det_roi_bridge #(
-    .N_BOX (N_BOX_W),
-    .BLK_BYTES (1024)
-) u_det_roi (
-    .i_clk        (S_100m_clk),
-    .i_rst_n      (S_rst_n),
-    .i_box_xy     (w_det_box_xy),
-    .i_box_toggle (w_det_box_tog),
-    .i_frame_id   (w_clean_frame_id),
-    .i_pix_en     (1'b1),               // pixfill 供真实灰度（2026-10-10 起）
-    .i_pix_data   (w_pixfill_data),
-    .o_pix_req    (w_pixfill_inc),
-    .i_captured   (w_pixfill_cap),     // TEST bisect: 强制 captured=1 屏蔽 pixfill 门控
-    .o_blk_start  (w_pixfill_rst),
-    .o_valid      (w_roi_valid),
-    .i_ready      (1'b1),               // patch_bridge 侧恒收（分类未接，块内容弃）
-    .o_data       (),
-    .o_sop        (),
-    .o_eop        (),
-    .o_frame_id   (),
-    .o_roi_id     (w_roi_rd_sel),
-    .o_cfg_id     (),
-    .o_bbox       (w_roi_bbox),
-    .o_width      (),
-    .o_height     (),
-    .o_channels   (),
-    .o_format     (),
-    /* 结果描述符 → GUI 画框（检测阶段 class=0 = "已检出白细胞"） */
-    .o_desc_valid (w_res_valid),
-    .i_desc_ready (w_res_ready),
-    .o_desc_frame (w_res_frame),
-    .o_desc_roi   (w_res_roi16),
-    .o_desc_bbox  (w_res_bbox)
-);
-
-/* ROI 像素填充：clean 流过时按框快照裁 32x32 灰度小图到每框 1KB 缓存，
- * 供 bridge 块发送真实像素（分类核的输入图）。 */
-u_roi_pixfill #(
-    .N_BOX (N_BOX_W),
-    .IMG_W (1280),
-    .IMG_H (720)
-) u_roi_fill (
-    .i_clk        (S_100m_clk),
-    .i_rst_n      (S_rst_n),
-    .i_pix_valid  (w_clean_valid),
-    .i_pix_x      (w_clean_x),
-    .i_pix_y      (w_clean_y),
-    .i_pix_rgb    (w_clean_rgb),
-    .i_box_xy     (w_det_box_xy),
-    .i_box_toggle (w_det_box_tog),
-    .o_captured   (w_pixfill_cap),
-    .i_rd_sel     (w_roi_rd_sel[3:0]),
-    .o_rd_data    (w_pixfill_data),
-    .i_rd_rst     (w_pixfill_rst),
-    .i_rd_inc     (w_pixfill_inc)
-);
-// 1像素/拍 -> 96bit 组(4像素), 驱动网口观测口语义信号 S_awb_*
-/* ---- C-2：检测框视频叠加（框烤进像素，GUI/DSI/副板 HDMI 免计算可见）----
- * 常量测试框 (100,100)-(300,250) 常开=叠加通路自检；检测框 det_wbc20 直驱。 */
+cvp_yolo_tracks #(.N(N_BOX_W),.DETECT_TTL(5),.SINGLE_TARGET(1)) u_yolo_tracks(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_commit(w_det_commit),.i_boxes(w_det_box_xy),.i_classes(w_det_classes),
+ .i_detect_frame(w_detect_frame),.i_detect_cfg(w_detect_cfg),.i_frame(w_clean_frame_id),.i_cfg(w_clean_cfg),.i_ticks(cnn_ticks),
+ .o_boxes(w_track_boxes),.o_classes(w_track_classes),.o_known(w_track_known),
+ .o_result_valid(w_res_valid),.i_result_ready(w_res_ready),.o_result_frame(w_res_frame),
+ .o_result_roi(w_res_roi16),.o_result_class(w_res_class),.o_result_bbox(w_res_bbox),.o_result_tick(w_res_tick));
 wire [23:0] w_ovl_rgb;
-wire        w_ovl_valid, w_ovl_sof;
-cvp_box_overlay #(
-    .N_BOX (N_BOX_W),
-    .IMG_W (1280),
-    .IMG_H (720)
-) u_box_overlay (
-    .i_clk        ( S_100m_clk   ),
-    .i_rst_n      ( S_rst_n      ),
-    .i_valid      ( adv_valid    ),
-    .i_sof        ( adv_sof      ),
-    .i_rgb        ( adv_rgb      ),
-    .o_valid      ( w_ovl_valid  ),
-    .o_sof        ( w_ovl_sof    ),
-    .o_rgb        ( w_ovl_rgb    ),
-    .i_box_xy     ( w_det_box_xy ),
-    .i_box_toggle ( w_det_box_tog),
-    .i_test_box   ( {12'd0, 12'd0, 12'd1279, 12'd719} ),
-    .i_test_en    ( 1'b0         ),   /* DIAG 完成：自检框关闭 */
-    /* 诊断：原始分类标记（白点 = det_color_feat 判定为紫的像素） */
-    .i_mark_valid ( w_cc_valid ),
-    .i_mark_cid   ( w_cc_cid   ),
-    .i_mark_en    ( 1'b0           ),   /* 诊断标记关闭（交付态） */
-    .i_sw1_n      ( I_sw1_box      )    /* SW1：识别框开关（overlay 内部防抖翻转） */
-);
+wire w_ovl_valid,w_ovl_sof;
+wire [31:0] w_ovl_frame;
+cvp_cell_label #(.N(1),.FULL_NAMES(1)) u_cell_label(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_valid(adv_valid),.i_sof(adv_sof),.i_rgb(adv_rgb),
+ .i_x(adv_x),.i_y(adv_y),.i_frame(adv_frame_id),.i_sw1_n(I_sw1_box),
+ .i_boxes(w_track_boxes[47:0]),.i_classes(w_track_classes[2:0]),.i_known(w_track_known[0]),
+ .o_valid(w_ovl_valid),.o_sof(w_ovl_sof),.o_rgb(w_ovl_rgb),.o_frame(w_ovl_frame));
 
 pack_4 u_pack4 (
-    .I_frame_id(adv_frame_id),.O_frame_id(pack_frame_id),
+    .I_frame_id(w_ovl_frame),.O_frame_id(pack_frame_id),
     .I_clk         ( S_100m_clk   ),
     .I_rst_n       ( S_rst_n      ),
     .I_valid       ( w_ovl_valid  ),

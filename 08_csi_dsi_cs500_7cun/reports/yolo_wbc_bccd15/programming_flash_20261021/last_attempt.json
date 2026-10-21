@@ -1,0 +1,6 @@
+{
+  "stage": "program_spi",
+  "flash_write_attempted": true,
+  "result": "not_verified",
+  "error": "program_spi_verify"
+}

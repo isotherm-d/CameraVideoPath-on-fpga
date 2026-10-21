@@ -54,6 +54,12 @@ module cvp_box_overlay #(
     /* SW1 板载按键（R10，低有效，PULLUP）——识别框开关 */
     input  wire        i_sw1_n
 );
+    reg box_toggle_d;
+    always @(posedge i_clk or negedge i_rst_n)
+        if (!i_rst_n) box_toggle_d <= 0;
+        else box_toggle_d <= i_box_toggle;
+    wire box_commit = i_box_toggle ^ box_toggle_d;
+
     /* ---- x/y 光栅计数（sof 归零；行宽由 IMG_W 参数决定，流上无 eol） ---- */
     reg [11:0] r_x, r_y;
     wire w_last_col = (r_x == IMG_W-1);
@@ -90,7 +96,7 @@ module cvp_box_overlay #(
     reg [11:0] v_x0, v_y0, v_x1, v_y1;
     integer k1;
     always @(posedge i_clk) begin
-        if (i_box_toggle) begin
+        if (box_commit) begin
             for (k1 = 0; k1 < N_BOX; k1 = k1 + 1) begin
                 v_slot = i_box_xy[k1*48 +: 48];
                 v_x0 = v_slot[47:36]; v_y0 = v_slot[35:24];

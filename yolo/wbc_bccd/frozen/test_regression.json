@@ -1,0 +1,126 @@
+{
+  "metrics": {
+    "BCCD": {
+      "images": 171,
+      "objects": 71,
+      "TP": 70,
+      "FP": 9,
+      "recall": 0.9859154929577465,
+      "precision": 0.8860759493670886,
+      "F1": 0.9333333333333333,
+      "FP_per_image": 0.05263157894736842,
+      "negative_images": 103,
+      "false_positive_negative_images": 7
+    },
+    "five_classes": {
+      "BAS": {
+        "TP": 322,
+        "FP": 21,
+        "objects": 338,
+        "recall": 0.9526627218934911,
+        "precision": 0.9387755102040817,
+        "F1": 0.9456681350954479
+      },
+      "EOS": {
+        "TP": 874,
+        "FP": 71,
+        "objects": 895,
+        "recall": 0.976536312849162,
+        "precision": 0.9248677248677248,
+        "F1": 0.95
+      },
+      "LYM": {
+        "TP": 339,
+        "FP": 126,
+        "objects": 352,
+        "recall": 0.9630681818181818,
+        "precision": 0.7290322580645161,
+        "F1": 0.8298653610771114
+      },
+      "MON": {
+        "TP": 424,
+        "FP": 75,
+        "objects": 437,
+        "recall": 0.9702517162471396,
+        "precision": 0.8496993987975952,
+        "F1": 0.905982905982906
+      },
+      "NEU": {
+        "TP": 960,
+        "FP": 91,
+        "objects": 995,
+        "recall": 0.964824120603015,
+        "precision": 0.9134157944814463,
+        "F1": 0.9384164222873901
+      }
+    },
+    "joint_macro_F1": 0.913986564888571,
+    "joint_correct_recall": 0.9675174013921114,
+    "confusion_gt_pred_miss": [
+      [
+        322,
+        0,
+        8,
+        4,
+        0,
+        4
+      ],
+      [
+        1,
+        874,
+        1,
+        5,
+        5,
+        9
+      ],
+      [
+        0,
+        1,
+        339,
+        11,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        7,
+        424,
+        1,
+        4
+      ],
+      [
+        2,
+        4,
+        0,
+        20,
+        960,
+        9
+      ]
+    ],
+    "objective": 0.9129944789171452,
+    "WBCAtt": {
+      "images": 6034,
+      "objects": 3017,
+      "TP": 2991,
+      "FP": 312,
+      "recall": 0.9913821677162744,
+      "precision": 0.9055404178019982,
+      "F1": 0.9465189873417722,
+      "FP_per_image": 0.05170699370235333,
+      "negative_images": 3017,
+      "false_positive_negative_images": 84
+    },
+    "acquired_negative_image_FP_rate": 0.029166666666666667,
+    "static_single_cell": {
+      "correct": 2921,
+      "objects": 3017,
+      "correct_recall": 0.9681803115677826,
+      "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+    }
+  },
+  "threshold_q16": 52020,
+  "weights_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+  "reused_TEST_not_new_untouched": true,
+  "used_for_selection": false
+}

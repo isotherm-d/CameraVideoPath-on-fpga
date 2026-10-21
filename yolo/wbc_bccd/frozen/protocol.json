@@ -1,0 +1,108 @@
+{
+  "experiment": "WBCAtt+ and BCCD only, camera-background repair, RGB160 15Hz single-cell FPGA",
+  "acquired_training_sources": [
+    "WBCAtt+ PBC-Normal",
+    "BCCD"
+  ],
+  "excluded_source": "No Raabin image or Raabin-trained initialization. Previous Raabin+BCCD model is preserved for rollback/comparison only.",
+  "initialization": "WBCAtt-only seed20261021 FP32 checkpoint; its original initialization was random, warmstart=None",
+  "split": "Keep existing author WBCAtt and frozen BCCD scene splits; all derived crops follow parents; audit decoded/raw and actual RGB160 duplicates across the two sources before training",
+  "duplicates": "Exact cross-split duplicates exclude lower priority entire parent group, TEST > VAL > TRAIN; within same split prefer original positive over derived negative; conflicting typed labels excluded. No performance-based exclusions.",
+  "sampling_probabilities": {
+    "WBCAtt_positive": 0.4,
+    "WBCAtt_negative": 0.1,
+    "BCCD": 0.2,
+    "procedural_empty": 0.3
+  },
+  "BCCD_labels": "WBC box/objectness only; five-class labels remain -1 and class loss is masked",
+  "mosaic": "Only typed WBCAtt positive slots, 30%; never replaces negative/BCCD slots",
+  "augmentation": "50% of acquired batches use camera_augment.py with gain0.43..1.15 and gamma0.80..1.45, per-channel variation, blur/noise, 40% dark-surround panels. Other 50% mild; mosaic typed positives only.",
+  "negative_loss": "2*mean positive objectness BCE +0.5*mean negative BCE +2.0*maximum-anchor BCE on each empty image; do not dilute a single false box across20 anchors",
+  "checkpoint_selection": "VAL only at objectness0.85; same gate-aware 0.55 natural jointF1+0.20 BCCD localizationF1+0.25 fixed cameraVAL jointF1-0.3 proceduralVAL_FP-0.1 acquired_negative_FP",
+  "final_threshold": "Explicit DEVELOPMENT calibration: public and fixed camera-augmented VAL plus provided room/cell screenshots, same grid0.40..0.95 step0.025, no TEST. Screenshots never train weights or supply cell type.",
+  "FP32_epochs": 120,
+  "QAT_epochs": 80,
+  "seed": 2026102186,
+  "procedural_VAL_seed": 2026102182,
+  "procedural_check_seed": 2026102183,
+  "gate": {
+    "WBCAtt_VAL_joint_macro_F1_min": 0.88,
+    "BCCD_VAL_localization_recall_min": 0.85,
+    "BCCD_VAL_localization_precision_min": 0.75,
+    "procedural_check_image_FP_rate_max": 0.01,
+    "uniform_black_gray_white_color_probes_no_boxes": true,
+    "user_empty_scene_development_probe_no_boxes": true,
+    "historical_unlabelled_cell_development_probe_localizes": true,
+    "RTL_and_hardware": "Exact integer vectors including all five classes and empty inputs; full720p schedule; all regression sources matched; final setup/hold>=0; source/model/bit hashes match; TD6.2 chip PH1P35MDG324"
+  },
+  "test_policy": "WBCAtt and BCCD TEST have already been examined in previous experiments; evaluate selected frozen model only as reused regression. Never claim a new untouched test or use TEST to select weights/thresholds.",
+  "camera_probes": "User screenshots contain OSD, not raw clean RGB; historical cell type unknown. Development checks are not camera accuracy measurement.",
+  "runtime": "All detection/classification/background rejection/tracking/overlay in FPGA; unchanged 15Hz, single cell box, English full names; original .al only; SRAM only",
+  "name": "wbc_bccd160_devcam_20261021",
+  "side": 160,
+  "width": 0.075,
+  "classes": [
+    "BAS",
+    "EOS",
+    "LYM",
+    "MON",
+    "NEU"
+  ],
+  "channels": [
+    8,
+    8,
+    8,
+    16,
+    24,
+    40,
+    80,
+    24,
+    40,
+    30
+  ],
+  "fields": 10,
+  "geometry": "fullframe",
+  "wide_head": false,
+  "first_last_weights": 8,
+  "hidden_weights": 4,
+  "hidden_activations": 4,
+  "input_scale": 0.00390625,
+  "hidden_scale": 0.25,
+  "logit_scale": 0.00390625,
+  "data_file": "wbc_bccd160.npz",
+  "fp32_epochs": 0,
+  "qat_epochs": 40,
+  "warmstart_sha256": "82940559052ae67249ebeeea5a2886903a3cb75be187fd957acd18b8b830dde4",
+  "warmstart_training_source": "WBCAtt+ only",
+  "data_manifest_sha256": "ec0eb0405d4030996e3a6dd6742dff65f1caeb05e9b599876a171e0d9e5c9884",
+  "previous_stage": {
+    "model": "wbc_bccd160_20261021",
+    "FP32_epochs": 120,
+    "QAT_epochs": 80
+  },
+  "camera_repair": "Only WBCAtt+BCCD pixels. More underexposed positive cells and rectangular photographed-panel geometry; no screenshot pixel used for training; screenshots development-only and have influenced augmentation design.",
+  "natural_replay": "Extra16 typed natural WBCAtt images per batch, true-box/type loss weighted0.5; no teacher or pseudo label",
+  "camera_VAL_seed": 2026102181,
+  "training_stages": [
+    {
+      "run": "wbc_bccd160_20261021",
+      "FP32": 120,
+      "QAT": 80
+    },
+    {
+      "run": "wbc_bccd160_camera_20261021",
+      "QAT": 60
+    },
+    {
+      "run": "wbc_bccd160_objectmax_20261021",
+      "objectness_only_QAT": 40
+    }
+  ],
+  "frozen_parameters": "All first9 layers, final-head bbox filters and all five class filters remain byte-identical; train only head channels4,14,24, weights and bias; no weight decay",
+  "detection_score": "sigmoid_LUT(objectness)*255; five-type argmax independent",
+  "extra_procedural_check_seed": 2026102185,
+  "training_run": "wbc_bccd160_objectmax_20261021",
+  "deployment_only_alias": true,
+  "procedural_VAL_screening_limit": 0.02,
+  "procedural_final_limit": 0.01
+}

@@ -1,20 +1,26 @@
 # CameraVideoPath-on-fpga
 
-安路 FPGA 双板实时视频系统。主板把相机图像编码为 UDP 千兆以太网流，子板接收后在本地重组、缓存并输出 HDMI 显示；上位机 Python GUI 同时完成收图与曝光/白平衡控制。
+## 当前主板识别版本
 
-当前版本：**v38 候选**（主板相机工程，PID 6/3/1）+ **v28**（HDMI_OUT 子板回显工程）。v38 已完成仿真、综合和布线，尚待上板验证；历史版本的板测结论不作为 v38 的板测结论。
+主工程采用 **WBCAtt+ + BCCD 联合训练的 FPGA YOLO-style 检测与五分类**，模型 `wbc_bccd160_devcam_20261021`。最终候选 bit：[camera_to_dsi_display.bit](08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/current/physical/camera_to_dsi_display.bit)，SHA-256 `5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58`。
 
-当前主板源码为 [v38 PID 6/3/1 候选](releases/v38-candidate/README.md)：Q10 系数 Kp=6、Ki=3、Kd=1，曝光优先、达到上限后使用 FPGA 数字增益。大误差用两帧平均、接近目标用四帧平均；仅数字增益变化取消两帧等待，传感器曝光变化保留两帧生效保护。保留高光保护目标、传感器成组提交、短帧残尾丢弃及原生 CSI 帧起点修复。
+720p 全帧图像在 FPGA 内以 15 Hz 运行检测与分类，视频输出保持 30 fps；最多显示一个细胞框，在框左上角标出英文全称，跳过推理的帧沿用上一结果，短漏检也会暂时保留。识别、后处理、框选、文字叠加均在主板完成，PC 和 HDMI 接收的都是板端叠加结果。模型是面向本板实现的 YOLO-style 检测器，不是完整移植的 Ultralytics YOLO。
+
+物理实现使用 19016/21216 Slice、94/108 ERAM、35/40 DSP，setup/hold WNS 为 +0.102/+0.020 ns。WBCAtt+ 已使用 TEST 联合 macro-F1 为 91.40%；该 TEST 曾在前期实验中使用，结果不是独立盲测。两组程序化空场景误检分别为 1.76% 与 0.78%，原 1% 门槛未通过，当前仅作为工程试验版记录。阈值使用过开发图校准，详见[两来源技术报告](docs/README_1021_WBCAtt与BCCD两来源重训.md)及[部署验证记录](08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/README.md)。
+
+用户反馈实拍效果较前版更好，并表示已自行完成 Flash 烧录；本机 TD6.2 的 Flash 操作未通过 TDO 读回校验，手动烧录使用的文件哈希及冷启动未由本机独立核实，记录见 `08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/programming_flash_20261021/`。SRAM 构建与候选 bit 的资源、时序和哈希记录保留在本仓库。
+
+CellNet32、中心640/固定480分类及单 WBCAtt 模型是更早的原型实验，不属于当前主工程；本次发布以 WBCAtt+ 与 BCCD 联合训练及活动硬件树为准。`yolo/five/` 中保留的共享模块供部分训练脚本复用。
 
 主板本地 DDR→DSI 支路自 v30 起已裁掉，7 寸屏背光关闭；ETHA 向 PC 发流，ETHB 镜像到 HDMI_OUT 子板。v30 裁剪阶段的 Slice 从 70.73% 降到 49.60%、PLL 从 4 降到 2，该阶段用户已反馈上板功能无误。v38 加入后续流修复和 PID 后的资源结果见下表。[裁剪说明](08_csi_dsi_cs500_7cun/V30网络输出与DSI裁剪说明.md)
 
 ## 系统拓扑
 
 ```
- SC500CS MIPI          自研 ISP/分类            千兆 UDP                 RGMII 点对点
+ SC500CS MIPI        ISP + FPGA YOLO识别/叠加       千兆 UDP                 RGMII 点对点
 ┌──────────┐   ┌─────────────────────┐   ┌──────────────┐   ┌─────────────────────┐
 │  主板    │   │  08_csi_dsi_cs500_7cun │   │ ETHA → PC    │   │  子板 HDMI_OUT       │
-│ PH1P35   ├──►│  相机 + ISP 工程(v38)  ├──►│ ETHB ────────┼──►│  EG4D20 (MLKPAI-F01)│
+│ PH1P35   ├──►│  相机 + ISP + YOLO     ├──►│ ETHB ────────┼──►│  EG4D20 (MLKPAI-F01)│
 │ MLKPAI-F02│  │                     │   │  (镜像TX)     │   │  → HDMI 720p60      │
 └──────────┘   └─────────────────────┘   └──────────────┘   └─────────────────────┘
 ```
@@ -23,9 +29,10 @@
 
 | 目录 | 内容 |
 | --- | --- |
-| `08_csi_dsi_cs500_7cun/` | 主板相机工程（v38 候选）：MIPI 接收、ISP、PID AE、边缘/素描、分类、UDP 发送、上位机脚本 |
+| `08_csi_dsi_cs500_7cun/` | 主板相机与 FPGA 识别工程：MIPI、ISP、PID AE、YOLO 检测/分类/叠加、UDP 发送和上位机工具 |
 | `HDMI_OUT/` | 子板 HDMI 回显工程（v28）：网口收流 → 帧重组 → DDR 三缓冲 → HDMI |
-| `releases/` | 各版本比特流与发布记录 |
+| `yolo/wbc_bccd/` | WBCAtt+ 与 BCCD 训练、导出、测试和冻结模型 |
+| `releases/` | 历史版本比特流与发布记录 |
 | `HDMI_OUT/tools/sim/` | ModelSim 全链路仿真环境（Python 向量注入 + 记分板回归） |
 
 ## HDMI_OUT 子板工程（v28 新增）
@@ -67,60 +74,39 @@
 - 偶发丢包根因为 RGMII 采样相位随电源状态漂移（CRC 偶发全错），诊断 LED：LED2=crc_bad、LED3=crc_ok；可用 `tools/sim/sweep_cphase.sh` 配合盲扫 CPHASE 求稳定采样点。
 - 详细调试交接见 `HDMI_OUT/doc/`。
 
-## 主板相机工程（v38 候选）
+## 主板相机工程（当前：WBCAtt+ + BCCD）
 
-基于 MLKPAI-F02 / PH1P35 和 SC500CS 的 1280×720@30fps 相机图像处理工程。
+- 最终候选 bit：[camera_to_dsi_display.bit](08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/current/physical/camera_to_dsi_display.bit)
+- 主工程：[TD 6.2 项目文件](08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display.al)
+- 模型、训练和复现说明：[yolo/wbc_bccd/README.md](yolo/wbc_bccd/README.md)
+- 两来源正式技术报告：[docs/README_1021_WBCAtt与BCCD两来源重训.md](docs/README_1021_WBCAtt与BCCD两来源重训.md)
+- 完整测试、资源、时序与部署记录：[本轮报告](08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/README.md)
 
-- [v38 比特流：PID 6/3/1](releases/v38-candidate/camera_network_only_v38_pid631_candidate.bit)
-- [v38 发布记录与闭环对比](releases/v38-candidate/README.md)
-- [构建清单与 SHA256](releases/v38-candidate/manifest.json)
-- [主板工程说明](08_csi_dsi_cs500_7cun/README.md)
-- [阈值操作、白平衡与 I2C 说明](08_csi_dsi_cs500_7cun/V27优化与阈值说明.md)
-- [统一像素流与分类接口](08_csi_dsi_cs500_7cun/V26开发与接口说明.md)
-- [队友挂接示例](08_csi_dsi_cs500_7cun/V26队友挂接示例.md)
+### 板端行为与资源
 
-### 加载与查看图像
+主板接收 1280×720 相机帧，在 FPGA 中下采样为 160×160 RGB 输入，每两帧执行一次 YOLO-style 推理。HDMI/PC 视频仍为 30fps，最多保留一个细胞框，标签为 Basophil、Eosinophil、Lymphocyte、Monocyte 或 Neutrophil。非推理帧沿用上一次完整框；短漏检保持两帧，第三次漏检撤框。PC 只收图和下发相机参数，不运行识别或补画算法。
 
-1. 在 TD BitWriter 中选择 PROGRAM_SRAM，加载上面的 v38 比特流；SRAM 配置断电后丢失。
-2. 板端 ETHA 接 PC，电脑接收网卡设置为 `192.168.1.100/24`，板端为 `192.168.1.66`。
-3. 在 `08_csi_dsi_cs500_7cun/tools/` 双击 `打开收图窗口.bat`，或运行 `python cam_gui_v27.py`。脚本名 v27 表示沿用的协议/GUI 入口，硬件构建号以状态区为准；v38 显示“硬件 v38”。只打开一个收图程序。
-4. 视频 UDP 6000、控制 UDP 6001、状态 UDP 6002。AE 默认目标亮度 112，高光保护时目标可降低到 32～112；以状态区实际目标判断收敛。
-
-BitWriter 出现 `PRG-8000 Connect server failed` 时，参考 [本机端口冲突排查记录](08_csi_dsi_cs500_7cun/doc/BitWriter_PRG8000端口冲突_20261013.md)；该记录中的 6555 是本机替代端口示例，不代表所有电脑都需要修改。
-
-### 资源与验证
-
-PH1P35MDG324，Anlogic TD 6.2.168116，100MHz 图像处理时钟，布线后结果：
-
-| 指标 | v38 |
+| 指标 | 当前候选实现 |
 |---|---:|
-| Slice | 10944 / 21216（51.58%） |
-| LUT6 / FF | 8807 / 11035 |
-| ERAM20K / DSP / PLL | 51 / 16 / 2 |
-| Setup WNS / Hold WNS | +0.119 ns / +0.020 ns |
-| Setup TNS / Hold TNS | 0 / 0 |
+| 主板资源 | 19016 / 21216 Slice，94 / 108 ERAM，35 / 40 DSP |
+| 时序 | Setup WNS +0.102ns；Hold WNS +0.020ns |
+| 视频/推理 | 30fps 视频；15Hz 推理 |
+| 显示 | 每帧最多一个框，框左上角显示英文全称 |
+| bit SHA-256 | `5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58` |
 
-[资源报告](releases/v38-candidate/resource_report.txt)、[时序报告](releases/v38-candidate/timing_report.txt)。42 项 RTL、两组网络包完整性校验和 38 项 Python 测试通过；视频 RTL 链路模型运行 460 帧，帧序/长度和非黑输出检查通过。闭环模型中 6/3/1 对亮场及暗转亮更快，暗场相同，极暗场略慢；仿真结果不替代实机验证。
+训练和门槛结果按试验数据解释：WBCAtt+ TEST 联合 macro-F1 为 91.40%，但该测试集曾参与前期实验；程序化空场景两组误检率为 1.76% 和 0.78%，原定 1% 门槛未通过。不能把开发截图校准或程序化场景结果称为独立实拍准确率。
 
 ### 构建与回归
 
-TD 6.2.168116 打开 `08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display.al`，顶层为 `design_top_wrapper`，器件为 `PH1P35MDG324`。运行综合、布局布线及比特流生成。`camera_to_dsi_display_Runs/` 是可重建的本地产物，GitHub 提供的候选比特流和验证报告在 `releases/v38-candidate/`。
+在 TD 6.2.168116 中打开 `08_csi_dsi_cs500_7cun/td_project/camera_to_dsi_display.al`，目标器件为 `PH1P35MDG324`。最终构建的 bit、构建摘要及 203 项源文件哈希清单位于 `08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/current/physical/`。本地已通过 42 项视频 RTL、2 项包完整性和 38 项 Python 回归；训练数据及含像素的原始向量没有随发布提交。
 
-在主板工程目录运行（ModelSim/TD 安装在其他路径时通过脚本参数指定）：
-
-```powershell
-.\tools\run_v29_regression.ps1 -OutputDir "$env:TEMP\cvp_v38_regression" -Python python -ModelSimDir 'C:\modeltech64_2020.4\win64' -TdRoot 'C:\Anlogic\TD_6.2.1_Engineer_6.2.168.116'
-```
-
-`run_v29_regression.ps1` 是延续到 v38 的回归入口，包含冻结历史实现的差分测试与当前 AE 闭环/完整视频链路测试。Python 测试在 `tools/` 目录运行：
-
-```powershell
-python -m unittest test_v26_protocol test_v26_client test_gui_commands test_camera_tools test_v27_quality
-```
+用户表示已自行把较好版本烧入 Flash。自动 Flash 尝试的 TDO 校验失败仍单独留档；本仓库不把本机失败日志标记为成功，也没有对用户手动烧录的 bit 身份或断电冷启动作独立验证。SRAM 下载记录和用户反馈见 `08_csi_dsi_cs500_7cun/reports/yolo_wbc_bccd15/`。
 
 ## 版本历史
 
-- **v38 候选**：PID 默认 Q10 系数改为 6/3/1，启用滤波测量微分；仿真和布线通过，尚待上板。
+- **2026-10-21 WBCAtt+ + BCCD 主线试验版**：160×160全帧 YOLO-style 检测/五分类，15Hz 推理、单框全称显示；物理时序通过。用户报告实拍较前版更好并已自行烧录 Flash，手动烧录哈希未独立核验；原1%程序化背景误检门槛未通过，详见本轮报告。
+
+- **v38 视频平台基线**：PID 默认 Q10 系数改为 6/3/1，启用滤波测量微分；识别主线已由当前 YOLO-style 版本接管。历史 bit 与报告仍保留在 `releases/v38-candidate/`。
 - **v37 候选**：大误差两帧平均、接近目标四帧平均；纯 FPGA 数字增益取消两帧等待。
 - **v36 候选**：短帧残尾丢弃和真实包帧号/偏移、原生 CSI 起点、AE 高光保护目标、SC500CS group hold 成组提交。
 - **v35 候选**：PID 算术路径分段，改善时序；历史 v34/v35 差分测试保留。

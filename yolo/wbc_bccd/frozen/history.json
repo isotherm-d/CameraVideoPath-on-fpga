@@ -1,0 +1,164 @@
+[
+  {
+    "phase": "qat",
+    "epoch": 1,
+    "loss": 0.5432199813489832,
+    "WBCAtt_VAL_macro_F1": 0.8767378492201361,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.8969072164948454,
+    "BCCD_VAL_F1": 0.9456521739130435,
+    "camera_VAL_macro_F1": 0.7770183789378835,
+    "procedural_VAL_FP": 0.03125,
+    "VAL_eligible": false,
+    "objective": 0.8520675676825941,
+    "best": [
+      0,
+      0.8520675676825941
+    ],
+    "seconds": 22.34760490001645
+  },
+  {
+    "phase": "qat",
+    "epoch": 5,
+    "loss": 0.447424803766133,
+    "WBCAtt_VAL_macro_F1": 0.887732761505504,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.925531914893617,
+    "BCCD_VAL_F1": 0.9613259668508287,
+    "camera_VAL_macro_F1": 0.7870554682853178,
+    "procedural_VAL_FP": 0.01953125,
+    "VAL_eligible": false,
+    "objective": 0.867715731630511,
+    "best": [
+      0,
+      0.867715731630511
+    ],
+    "seconds": 52.45157220005058
+  },
+  {
+    "phase": "qat",
+    "epoch": 10,
+    "loss": 0.3864052886111777,
+    "WBCAtt_VAL_macro_F1": 0.8961767390183525,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7975266851523723,
+    "procedural_VAL_FP": 0.015625,
+    "VAL_eligible": false,
+    "objective": 0.8773942609491285,
+    "best": [
+      0,
+      0.8773942609491285
+    ],
+    "seconds": 90.10449810000136
+  },
+  {
+    "phase": "qat",
+    "epoch": 15,
+    "loss": 0.35849057166063586,
+    "WBCAtt_VAL_macro_F1": 0.8992908675213128,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.8004744025269682,
+    "procedural_VAL_FP": 0.015625,
+    "VAL_eligible": false,
+    "objective": 0.8799322222227154,
+    "best": [
+      0,
+      0.8799322222227154
+    ],
+    "seconds": 127.91838060005102
+  },
+  {
+    "phase": "qat",
+    "epoch": 20,
+    "loss": 0.3743991276047488,
+    "WBCAtt_VAL_macro_F1": 0.8995854368831923,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7958889580366447,
+    "procedural_VAL_FP": 0.015625,
+    "VAL_eligible": false,
+    "objective": 0.8789478742491683,
+    "best": [
+      0,
+      0.8799322222227154
+    ],
+    "seconds": 165.63357120001456
+  },
+  {
+    "phase": "qat",
+    "epoch": 25,
+    "loss": 0.37005156279562684,
+    "WBCAtt_VAL_macro_F1": 0.8998680711797771,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7980738319862247,
+    "procedural_VAL_FP": 0.01171875,
+    "VAL_eligible": false,
+    "objective": 0.8808214165996848,
+    "best": [
+      0,
+      0.8808214165996848
+    ],
+    "seconds": 202.9920501000015
+  },
+  {
+    "phase": "qat",
+    "epoch": 30,
+    "loss": 0.3640386547075365,
+    "WBCAtt_VAL_macro_F1": 0.9004987814656598,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7980738319862247,
+    "procedural_VAL_FP": 0.01171875,
+    "VAL_eligible": false,
+    "objective": 0.8811683072569203,
+    "best": [
+      0,
+      0.8811683072569203
+    ],
+    "seconds": 240.75983090000227
+  },
+  {
+    "phase": "qat",
+    "epoch": 35,
+    "loss": 0.36541216336869325,
+    "WBCAtt_VAL_macro_F1": 0.9017748697184922,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7980738319862247,
+    "procedural_VAL_FP": 0.01171875,
+    "VAL_eligible": false,
+    "objective": 0.8818701557959783,
+    "best": [
+      0,
+      0.8818701557959783
+    ],
+    "seconds": 278.5823482000269
+  },
+  {
+    "phase": "qat",
+    "epoch": 40,
+    "loss": 0.3577954707844031,
+    "WBCAtt_VAL_macro_F1": 0.9017748697184922,
+    "BCCD_VAL_recall": 1.0,
+    "BCCD_VAL_precision": 0.9354838709677419,
+    "BCCD_VAL_F1": 0.9666666666666667,
+    "camera_VAL_macro_F1": 0.7980738319862247,
+    "procedural_VAL_FP": 0.01171875,
+    "VAL_eligible": false,
+    "objective": 0.8818701557959783,
+    "best": [
+      0,
+      0.8818701557959783
+    ],
+    "seconds": 315.40723670000443
+  }
+]

@@ -1,0 +1,5731 @@
+{
+  "selection": "Public/fixed-augmented VAL and provided DEVELOPMENT screenshots; weight fixed, TEST not used; 256-image procedural VAL screening<=2%, both larger1024-image final regressions still<=1%",
+  "selected": {
+    "threshold": 0.8,
+    "score_q16": 52020,
+    "metrics": {
+      "BCCD": {
+        "images": 209,
+        "objects": 87,
+        "TP": 87,
+        "FP": 6,
+        "recall": 1.0,
+        "precision": 0.9354838709677419,
+        "F1": 0.9666666666666667,
+        "FP_per_image": 0.028708133971291867,
+        "negative_images": 123,
+        "false_positive_negative_images": 5
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 108,
+          "FP": 11,
+          "objects": 121,
+          "recall": 0.8925619834710744,
+          "precision": 0.907563025210084,
+          "F1": 0.9
+        },
+        "EOS": {
+          "TP": 304,
+          "FP": 34,
+          "objects": 308,
+          "recall": 0.987012987012987,
+          "precision": 0.8994082840236687,
+          "F1": 0.9411764705882353
+        },
+        "LYM": {
+          "TP": 107,
+          "FP": 45,
+          "objects": 109,
+          "recall": 0.981651376146789,
+          "precision": 0.7039473684210527,
+          "F1": 0.8199233716475096
+        },
+        "MON": {
+          "TP": 133,
+          "FP": 21,
+          "objects": 144,
+          "recall": 0.9236111111111112,
+          "precision": 0.8636363636363636,
+          "F1": 0.8926174496644296
+        },
+        "NEU": {
+          "TP": 312,
+          "FP": 26,
+          "objects": 328,
+          "recall": 0.9512195121951219,
+          "precision": 0.9230769230769231,
+          "F1": 0.9369369369369369
+        }
+      },
+      "joint_macro_F1": 0.8981308457674224,
+      "joint_correct_recall": 0.9544554455445544,
+      "confusion_gt_pred_miss": [
+        [
+          108,
+          0,
+          5,
+          5,
+          0,
+          3
+        ],
+        [
+          0,
+          304,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          107,
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          6,
+          133,
+          1,
+          2
+        ],
+        [
+          4,
+          2,
+          0,
+          7,
+          312,
+          3
+        ]
+      ],
+      "objective": 0.9146265513867892,
+      "WBCAtt": {
+        "images": 2020,
+        "objects": 1010,
+        "TP": 1000,
+        "FP": 101,
+        "recall": 0.9900990099009901,
+        "precision": 0.9082652134423251,
+        "F1": 0.9474182851729038,
+        "FP_per_image": 0.05,
+        "negative_images": 1010,
+        "false_positive_negative_images": 35
+      },
+      "acquired_negative_image_FP_rate": 0.0353045013239188,
+      "static_single_cell": {
+        "correct": 962,
+        "objects": 1010,
+        "correct_recall": 0.9524752475247524,
+        "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+      }
+    },
+    "camera_metrics": {
+      "BCCD": {
+        "images": 150,
+        "objects": 87,
+        "TP": 78,
+        "FP": 7,
+        "recall": 0.896551724137931,
+        "precision": 0.9176470588235294,
+        "F1": 0.9069767441860465,
+        "FP_per_image": 0.04666666666666667,
+        "negative_images": 64,
+        "false_positive_negative_images": 2
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 24,
+          "FP": 7,
+          "objects": 40,
+          "recall": 0.6,
+          "precision": 0.7741935483870968,
+          "F1": 0.676056338028169
+        },
+        "EOS": {
+          "TP": 39,
+          "FP": 7,
+          "objects": 40,
+          "recall": 0.975,
+          "precision": 0.8478260869565217,
+          "F1": 0.9069767441860465
+        },
+        "LYM": {
+          "TP": 35,
+          "FP": 18,
+          "objects": 40,
+          "recall": 0.875,
+          "precision": 0.660377358490566,
+          "F1": 0.7526881720430108
+        },
+        "MON": {
+          "TP": 34,
+          "FP": 12,
+          "objects": 40,
+          "recall": 0.85,
+          "precision": 0.7391304347826086,
+          "F1": 0.7906976744186046
+        },
+        "NEU": {
+          "TP": 35,
+          "FP": 13,
+          "objects": 40,
+          "recall": 0.875,
+          "precision": 0.7291666666666666,
+          "F1": 0.7954545454545454
+        }
+      },
+      "joint_macro_F1": 0.7843746948260752,
+      "joint_correct_recall": 0.835,
+      "confusion_gt_pred_miss": [
+        [
+          24,
+          1,
+          11,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          39,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          3,
+          0,
+          35,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          34,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          2,
+          35,
+          2
+        ]
+      ],
+      "objective": 0.8180303096340664,
+      "WBCAtt": {
+        "images": 264,
+        "objects": 200,
+        "TP": 196,
+        "FP": 28,
+        "recall": 0.98,
+        "precision": 0.875,
+        "F1": 0.9245283018867925,
+        "FP_per_image": 0.10606060606060606,
+        "negative_images": 64,
+        "false_positive_negative_images": 2
+      },
+      "acquired_negative_image_FP_rate": 0.03125
+    },
+    "procedural_VAL_FP_rate": 0.015625,
+    "development_cell_IoU50": true,
+    "development_room_empty": true,
+    "uniform_empty": true,
+    "objective": 0.8751810220795428,
+    "VAL_feasible": true
+  },
+  "choices": [
+    {
+      "threshold": 0.4,
+      "score_q16": 26010,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 25,
+          "recall": 1.0,
+          "precision": 0.7767857142857143,
+          "F1": 0.8743718592964824,
+          "FP_per_image": 0.11961722488038277,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 47,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.6967741935483871,
+            "F1": 0.782608695652174
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 534,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.3635280095351609,
+            "F1": 0.5318221447253705
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 87,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.5515463917525774,
+            "F1": 0.7062706270627063
+          },
+          "MON": {
+            "TP": 134,
+            "FP": 54,
+            "objects": 144,
+            "recall": 0.9305555555555556,
+            "precision": 0.7127659574468085,
+            "F1": 0.8072289156626506
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 452,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.40992167101827676,
+            "F1": 0.5740402193784278
+          }
+        },
+        "joint_macro_F1": 0.6803941204962658,
+        "joint_correct_recall": 0.9584158415841584,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            134,
+            1,
+            1
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.733709393355843,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1004,
+          "FP": 1138,
+          "recall": 0.994059405940594,
+          "precision": 0.46872082166199813,
+          "F1": 0.6370558375634517,
+          "FP_per_image": 0.5633663366336633,
+          "negative_images": 1010,
+          "false_positive_negative_images": 44
+        },
+        "acquired_negative_image_FP_rate": 0.0441306266548985
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 32,
+          "recall": 0.9195402298850575,
+          "precision": 0.7142857142857143,
+          "F1": 0.8040201005025126,
+          "FP_per_image": 0.21333333333333335,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 12,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.6666666666666666,
+            "F1": 0.631578947368421
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 29,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.5735294117647058,
+            "F1": 0.7222222222222222
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 24,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5932203389830508,
+            "F1": 0.7070707070707071
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 37,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.4788732394366197,
+            "F1": 0.6126126126126126
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 44,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.4430379746835443,
+            "F1": 0.5882352941176471
+          }
+        },
+        "joint_macro_F1": 0.652343956678322,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.6915967998255791,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 117,
+          "recall": 0.98,
+          "precision": 0.6261980830670927,
+          "F1": 0.7641325536062378,
+          "FP_per_image": 0.4431818181818182,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "acquired_negative_image_FP_rate": 0.0625
+      },
+      "procedural_VAL_FP_rate": 0.05078125,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.6925296896363334,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.42500000000000004,
+      "score_q16": 27636,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 19,
+          "recall": 1.0,
+          "precision": 0.8207547169811321,
+          "F1": 0.9015544041450777,
+          "FP_per_image": 0.09090909090909091,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 37,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.7448275862068966,
+            "F1": 0.8120300751879699
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 465,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.3961038961038961,
+            "F1": 0.5658627087198516
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 83,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.5631578947368421,
+            "F1": 0.7157190635451505
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 45,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.7471910112359551,
+            "F1": 0.8260869565217391
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 374,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.4563953488372093,
+            "F1": 0.6181102362204725
+          }
+        },
+        "joint_macro_F1": 0.7075618080390367,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.7608815380903611,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 968,
+          "recall": 0.9930693069306931,
+          "precision": 0.5088787417554541,
+          "F1": 0.6729285474672928,
+          "FP_per_image": 0.4792079207920792,
+          "negative_images": 1010,
+          "false_positive_negative_images": 43
+        },
+        "acquired_negative_image_FP_rate": 0.04324801412180053
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 27,
+          "recall": 0.9195402298850575,
+          "precision": 0.7476635514018691,
+          "F1": 0.8247422680412371,
+          "FP_per_image": 0.18,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 12,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.6666666666666666,
+            "F1": 0.631578947368421
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 25,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.609375,
+            "F1": 0.75
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 22,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6140350877192983,
+            "F1": 0.7216494845360825
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 34,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5,
+            "F1": 0.6296296296296297
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 42,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.45454545454545453,
+            "F1": 0.5982905982905983
+          }
+        },
+        "joint_macro_F1": 0.6662297319649463,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7075334927878335,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 106,
+          "recall": 0.98,
+          "precision": 0.6490066225165563,
+          "F1": 0.7808764940239044,
+          "FP_per_image": 0.4015151515151515,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "acquired_negative_image_FP_rate": 0.0625
+      },
+      "procedural_VAL_FP_rate": 0.05078125,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.7164681318295423,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.45,
+      "score_q16": 29261,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 16,
+          "recall": 1.0,
+          "precision": 0.8446601941747572,
+          "F1": 0.9157894736842105,
+          "FP_per_image": 0.07655502392344497,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 33,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.7659574468085106,
+            "F1": 0.8244274809160306
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 427,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.4166666666666667,
+            "F1": 0.5865384615384616
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 82,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.5661375661375662,
+            "F1": 0.7181208053691275
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 44,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.751412429378531,
+            "F1": 0.8286604361370716
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 338,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.4815950920245399,
+            "F1": 0.6408163265306123
+          }
+        },
+        "joint_macro_F1": 0.7197127020982608,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.7736576847935579,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 888,
+          "recall": 0.9930693069306931,
+          "precision": 0.5304071919619249,
+          "F1": 0.6914856945880731,
+          "FP_per_image": 0.4396039603960396,
+          "negative_images": 1010,
+          "false_positive_negative_images": 43
+        },
+        "acquired_negative_image_FP_rate": 0.04324801412180053
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 26,
+          "recall": 0.9195402298850575,
+          "precision": 0.7547169811320755,
+          "F1": 0.8290155440414507,
+          "FP_per_image": 0.17333333333333334,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 12,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.6666666666666666,
+            "F1": 0.631578947368421
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 24,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.6190476190476191,
+            "F1": 0.7572815533980582
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 32,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5151515151515151,
+            "F1": 0.6415094339622641
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 40,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.4666666666666667,
+            "F1": 0.6086956521739131
+          }
+        },
+        "joint_macro_F1": 0.6751815384331629,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7150817401156492,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 99,
+          "recall": 0.98,
+          "precision": 0.6644067796610169,
+          "F1": 0.7919191919191919,
+          "FP_per_image": 0.375,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "acquired_negative_image_FP_rate": 0.0625
+      },
+      "procedural_VAL_FP_rate": 0.046875,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.7294079640869963,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.47500000000000003,
+      "score_q16": 30887,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 13,
+          "recall": 1.0,
+          "precision": 0.87,
+          "F1": 0.93048128342246,
+          "FP_per_image": 0.06220095693779904,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 22,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.8307692307692308,
+            "F1": 0.8605577689243028
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 352,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.4642313546423135,
+            "F1": 0.6321243523316062
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 77,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.5815217391304348,
+            "F1": 0.7303754266211604
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 39,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.7732558139534884,
+            "F1": 0.8417721518987342
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 272,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.5358361774744027,
+            "F1": 0.687089715536105
+          }
+        },
+        "joint_macro_F1": 0.7503838830623818,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.7995350543899175,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 726,
+          "recall": 0.9930693069306931,
+          "precision": 0.5801041064198958,
+          "F1": 0.7323840817816721,
+          "FP_per_image": 0.3594059405940594,
+          "negative_images": 1010,
+          "false_positive_negative_images": 43
+        },
+        "acquired_negative_image_FP_rate": 0.04324801412180053
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 21,
+          "recall": 0.9195402298850575,
+          "precision": 0.7920792079207921,
+          "F1": 0.851063829787234,
+          "FP_per_image": 0.14,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 11,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.6857142857142857,
+            "F1": 0.64
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.6610169491525424,
+            "F1": 0.7878787878787878
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 31,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5230769230769231,
+            "F1": 0.6476190476190476
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 34,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5072463768115942,
+            "F1": 0.6422018348623854
+          }
+        },
+        "joint_macro_F1": 0.6909083551246757,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7327049975234432,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 87,
+          "recall": 0.98,
+          "precision": 0.6925795053003534,
+          "F1": 0.8115942028985508,
+          "FP_per_image": 0.32954545454545453,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "acquired_negative_image_FP_rate": 0.0625
+      },
+      "procedural_VAL_FP_rate": 0.046875,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.7531471797377909,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.5,
+      "score_q16": 32512,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 12,
+          "recall": 1.0,
+          "precision": 0.8787878787878788,
+          "F1": 0.9354838709677419,
+          "FP_per_image": 0.05741626794258373,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 18,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.8571428571428571,
+            "F1": 0.8744939271255061
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 316,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.49114331723027377,
+            "F1": 0.6566200215285253
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 75,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.5879120879120879,
+            "F1": 0.7353951890034365
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 35,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.7916666666666666,
+            "F1": 0.8525641025641025
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 241,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.5657657657657658,
+            "F1": 0.711211778029445
+          }
+        },
+        "joint_macro_F1": 0.766057003650203,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.8120070150649769,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 649,
+          "recall": 0.9930693069306931,
+          "precision": 0.6071428571428571,
+          "F1": 0.7535687453042825,
+          "FP_per_image": 0.3212871287128713,
+          "negative_images": 1010,
+          "false_positive_negative_images": 43
+        },
+        "acquired_negative_image_FP_rate": 0.04324801412180053
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 21,
+          "recall": 0.9195402298850575,
+          "precision": 0.7920792079207921,
+          "F1": 0.851063829787234,
+          "FP_per_image": 0.14,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 10,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7058823529411765,
+            "F1": 0.6486486486486487
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.6964285714285714,
+            "F1": 0.8125
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 30,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.53125,
+            "F1": 0.6538461538461539
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 33,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5147058823529411,
+            "F1": 0.6481481481481481
+          }
+        },
+        "joint_macro_F1": 0.6999970111812217,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7390670567630254,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 81,
+          "recall": 0.98,
+          "precision": 0.7075812274368231,
+          "F1": 0.8218029350104822,
+          "FP_per_image": 0.3068181818181818,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "acquired_negative_image_FP_rate": 0.0625
+      },
+      "procedural_VAL_FP_rate": 0.046875,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.7650400775842854,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.525,
+      "score_q16": 34138,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 11,
+          "recall": 1.0,
+          "precision": 0.8877551020408163,
+          "F1": 0.9405405405405406,
+          "FP_per_image": 0.05263157894736842,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 13,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.8925619834710744,
+            "F1": 0.8925619834710744
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 252,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.547576301615799,
+            "F1": 0.7052023121387283
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 71,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.601123595505618,
+            "F1": 0.7456445993031359
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 33,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8012048192771084,
+            "F1": 0.8580645161290322
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 180,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.6356275303643725,
+            "F1": 0.7639902676399026
+          }
+        },
+        "joint_macro_F1": 0.7930927357363746,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.8324490283971365,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 513,
+          "recall": 0.9930693069306931,
+          "precision": 0.6616094986807388,
+          "F1": 0.7941409342834521,
+          "FP_per_image": 0.25396039603960396,
+          "negative_images": 1010,
+          "false_positive_negative_images": 43
+        },
+        "acquired_negative_image_FP_rate": 0.04324801412180053
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 20,
+          "recall": 0.9195402298850575,
+          "precision": 0.8,
+          "F1": 0.8556149732620321,
+          "FP_per_image": 0.13333333333333333,
+          "negative_images": 64,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 10,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7058823529411765,
+            "F1": 0.6486486486486487
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.6964285714285714,
+            "F1": 0.8125
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 28,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5483870967741935,
+            "F1": 0.6666666666666666
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 33,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5147058823529411,
+            "F1": 0.6481481481481481
+          }
+        },
+        "joint_macro_F1": 0.7025611137453243,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7422272716003365,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 79,
+          "recall": 0.98,
+          "precision": 0.7127272727272728,
+          "F1": 0.8252631578947368,
+          "FP_per_image": 0.29924242424242425,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "acquired_negative_image_FP_rate": 0.0546875
+      },
+      "procedural_VAL_FP_rate": 0.04296875,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.7827339647872652,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.55,
+      "score_q16": 35764,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 10,
+          "recall": 1.0,
+          "precision": 0.8969072164948454,
+          "F1": 0.9456521739130435,
+          "FP_per_image": 0.04784688995215311,
+          "negative_images": 123,
+          "false_positive_negative_images": 6
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 12,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.9,
+            "F1": 0.8962655601659751
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 178,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.6314699792960663,
+            "F1": 0.7711757269279393
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 67,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6149425287356322,
+            "F1": 0.7561837455830389
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 27,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.83125,
+            "F1": 0.875
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 135,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.6993318485523385,
+            "F1": 0.8082368082368082
+          }
+        },
+        "joint_macro_F1": 0.8213723681827524,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.8537782611213518,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 383,
+          "recall": 0.9930693069306931,
+          "precision": 0.7236652236652237,
+          "F1": 0.837228714524207,
+          "FP_per_image": 0.1896039603960396,
+          "negative_images": 1010,
+          "false_positive_negative_images": 39
+        },
+        "acquired_negative_image_FP_rate": 0.03971756398940865
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 17,
+          "recall": 0.9195402298850575,
+          "precision": 0.8247422680412371,
+          "F1": 0.8695652173913043,
+          "FP_per_image": 0.11333333333333333,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.7358490566037735,
+            "F1": 0.8387096774193549
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 23,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5964912280701754,
+            "F1": 0.7010309278350515
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 28,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5555555555555556,
+            "F1": 0.6796116504854369
+          }
+        },
+        "joint_macro_F1": 0.7227457215156687,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7621040702783595,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 65,
+          "recall": 0.98,
+          "precision": 0.7509578544061303,
+          "F1": 0.8503253796095445,
+          "FP_per_image": 0.24621212121212122,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.0390625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8058811612630989,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.5750000000000001,
+      "score_q16": 37389,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 9,
+          "recall": 1.0,
+          "precision": 0.90625,
+          "F1": 0.9508196721311475,
+          "FP_per_image": 0.0430622009569378,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 12,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.9,
+            "F1": 0.8962655601659751
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 158,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.6587473002159827,
+            "F1": 0.7911802853437094
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 65,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.622093023255814,
+            "F1": 0.7615658362989324
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 27,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.83125,
+            "F1": 0.875
+          },
+          "NEU": {
+            "TP": 314,
+            "FP": 114,
+            "objects": 328,
+            "recall": 0.9573170731707317,
+            "precision": 0.7336448598130841,
+            "F1": 0.8306878306878307
+          }
+        },
+        "joint_macro_F1": 0.8309399024992896,
+        "joint_correct_recall": 0.9574257425742574,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            314,
+            1
+          ]
+        ],
+        "objective": 0.8628387927384403,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1003,
+          "FP": 340,
+          "recall": 0.9930693069306931,
+          "precision": 0.7468354430379747,
+          "F1": 0.8525286867828304,
+          "FP_per_image": 0.16831683168316833,
+          "negative_images": 1010,
+          "false_positive_negative_images": 39
+        },
+        "acquired_negative_image_FP_rate": 0.038834951456310676
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 15,
+          "recall": 0.9195402298850575,
+          "precision": 0.8421052631578947,
+          "F1": 0.8791208791208791,
+          "FP_per_image": 0.1,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.7358490566037735,
+            "F1": 0.8387096774193549
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 23,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.5964912280701754,
+            "F1": 0.7010309278350515
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 25,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.5833333333333334,
+            "F1": 0.7
+          }
+        },
+        "joint_macro_F1": 0.7268233914185813,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7678251377292706,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 62,
+          "recall": 0.98,
+          "precision": 0.7596899224806202,
+          "F1": 0.8558951965065502,
+          "FP_per_image": 0.23484848484848486,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.0390625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8132844835098532,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.6000000000000001,
+      "score_q16": 39015,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 9,
+          "recall": 1.0,
+          "precision": 0.90625,
+          "F1": 0.9508196721311475,
+          "FP_per_image": 0.0430622009569378,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 119,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.7193396226415094,
+            "F1": 0.8333333333333334
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 63,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6294117647058823,
+            "F1": 0.7670250896057348
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 27,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.83125,
+            "F1": 0.875
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 86,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.7839195979899497,
+            "F1": 0.859504132231405
+          }
+        },
+        "joint_macro_F1": 0.8469725110340945,
+        "joint_correct_recall": 0.9554455445544554,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.874061618712804,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1001,
+          "FP": 270,
+          "recall": 0.9910891089108911,
+          "precision": 0.7875688434303698,
+          "F1": 0.8776852257781674,
+          "FP_per_image": 0.13366336633663367,
+          "negative_images": 1010,
+          "false_positive_negative_images": 39
+        },
+        "acquired_negative_image_FP_rate": 0.038834951456310676
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 13,
+          "recall": 0.9195402298850575,
+          "precision": 0.8602150537634409,
+          "F1": 0.8888888888888888,
+          "FP_per_image": 0.08666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 12,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.7647058823529411,
+            "F1": 0.8571428571428571
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 19,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.6415094339622641,
+            "F1": 0.7311827956989247
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 21,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.625,
+            "F1": 0.7291666666666666
+          }
+        },
+        "joint_macro_F1": 0.7423737342693898,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7816407806552395,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 52,
+          "recall": 0.98,
+          "precision": 0.7903225806451613,
+          "F1": 0.875,
+          "FP_per_image": 0.19696969696969696,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.0390625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.825990003916698,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.625,
+      "score_q16": 40641,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 9,
+          "recall": 1.0,
+          "precision": 0.90625,
+          "F1": 0.9508196721311475,
+          "FP_per_image": 0.0430622009569378,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 89,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.7741116751269036,
+            "F1": 0.8689458689458689
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 59,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6445783132530121,
+            "F1": 0.7781818181818182
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 25,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8417721518987342,
+            "F1": 0.8807947019867549
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 63,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.832,
+            "F1": 0.887624466571835
+          }
+        },
+        "joint_macro_F1": 0.8631093711372554,
+        "joint_correct_recall": 0.9554455445544554,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.8853574207850164,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1001,
+          "FP": 211,
+          "recall": 0.9910891089108911,
+          "precision": 0.8259075907590759,
+          "F1": 0.900990099009901,
+          "FP_per_image": 0.10445544554455445,
+          "negative_images": 1010,
+          "false_positive_negative_images": 37
+        },
+        "acquired_negative_image_FP_rate": 0.037069726390114736
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 13,
+          "recall": 0.9195402298850575,
+          "precision": 0.8602150537634409,
+          "F1": 0.8888888888888888,
+          "FP_per_image": 0.08666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 11,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.78,
+            "F1": 0.8666666666666667
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.6538461538461539,
+            "F1": 0.7391304347826086
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          }
+        },
+        "joint_macro_F1": 0.7522086037010334,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7885251892573901,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 46,
+          "recall": 0.98,
+          "precision": 0.8099173553719008,
+          "F1": 0.8868778280542986,
+          "FP_per_image": 0.17424242424242425,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.02734375,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8410161418379669,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.65,
+      "score_q16": 42266,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 8,
+          "recall": 1.0,
+          "precision": 0.9157894736842105,
+          "F1": 0.9560439560439561,
+          "FP_per_image": 0.03827751196172249,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 75,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.8026315789473685,
+            "F1": 0.8866279069767442
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 59,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6445783132530121,
+            "F1": 0.7781818181818182
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 23,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8525641025641025,
+            "F1": 0.8866666666666667
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 58,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.8432432432432433,
+            "F1": 0.8939828080229226
+          }
+        },
+        "joint_macro_F1": 0.8690918399696305,
+        "joint_correct_recall": 0.9554455445544554,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.8911124341415216,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1001,
+          "FP": 190,
+          "recall": 0.9910891089108911,
+          "precision": 0.8404701931150294,
+          "F1": 0.9095865515674694,
+          "FP_per_image": 0.09405940594059406,
+          "negative_images": 1010,
+          "false_positive_negative_images": 37
+        },
+        "acquired_negative_image_FP_rate": 0.037069726390114736
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 12,
+          "recall": 0.9195402298850575,
+          "precision": 0.8695652173913043,
+          "F1": 0.8938547486033519,
+          "FP_per_image": 0.08,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8125,
+            "F1": 0.8863636363636364
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.6538461538461539,
+            "F1": 0.7391304347826086
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          }
+        },
+        "joint_macro_F1": 0.7561479976404273,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7927725229293048,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 44,
+          "recall": 0.98,
+          "precision": 0.8166666666666667,
+          "F1": 0.8909090909090909,
+          "FP_per_image": 0.16666666666666666,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.0234375,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8475080799631834,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.675,
+      "score_q16": 43892,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 7,
+          "recall": 1.0,
+          "precision": 0.925531914893617,
+          "F1": 0.9613259668508287,
+          "FP_per_image": 0.03349282296650718,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 305,
+            "FP": 60,
+            "objects": 308,
+            "recall": 0.9902597402597403,
+            "precision": 0.8356164383561644,
+            "F1": 0.9063893016344725
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 57,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6524390243902439,
+            "F1": 0.7838827838827839
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 23,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8525641025641025,
+            "F1": 0.8866666666666667
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 45,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.8739495798319328,
+            "F1": 0.910948905109489
+          }
+        },
+        "joint_macro_F1": 0.8775775314586823,
+        "joint_correct_recall": 0.9554455445544554,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            305,
+            0,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.8986370214259197,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1001,
+          "FP": 160,
+          "recall": 0.9910891089108911,
+          "precision": 0.8621877691645133,
+          "F1": 0.9221556886227545,
+          "FP_per_image": 0.07920792079207921,
+          "negative_images": 1010,
+          "false_positive_negative_images": 37
+        },
+        "acquired_negative_image_FP_rate": 0.037069726390114736
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 80,
+          "FP": 11,
+          "recall": 0.9195402298850575,
+          "precision": 0.8791208791208791,
+          "F1": 0.898876404494382,
+          "FP_per_image": 0.07333333333333333,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7272727272727273,
+            "F1": 0.6575342465753424
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8297872340425532,
+            "F1": 0.896551724137931
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 15,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.6938775510204082,
+            "F1": 0.7640449438202247
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          }
+        },
+        "joint_macro_F1": 0.7631685170028095,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.7991933832502812,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 40,
+          "recall": 0.98,
+          "precision": 0.8305084745762712,
+          "F1": 0.8990825688073395,
+          "FP_per_image": 0.15151515151515152,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.0234375,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8549867422841321,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.7000000000000001,
+      "score_q16": 45518,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 46,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.8685714285714285,
+            "F1": 0.9240121580547113
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 53,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.66875,
+            "F1": 0.7955390334572491
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 23,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8525641025641025,
+            "F1": 0.8866666666666667
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 36,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.896551724137931,
+            "F1": 0.9230769230769231
+          }
+        },
+        "joint_macro_F1": 0.8858589562511101,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9060362287253706,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 133,
+          "recall": 0.9900990099009901,
+          "precision": 0.8826125330979699,
+          "F1": 0.9332711152589828,
+          "FP_per_image": 0.06584158415841584,
+          "negative_images": 1010,
+          "false_positive_negative_images": 36
+        },
+        "acquired_negative_image_FP_rate": 0.03618711385701677
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 79,
+          "FP": 10,
+          "recall": 0.9080459770114943,
+          "precision": 0.8876404494382022,
+          "F1": 0.8977272727272727,
+          "FP_per_image": 0.06666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 3
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.75,
+            "F1": 0.6666666666666666
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8297872340425532,
+            "F1": 0.896551724137931
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7083333333333334,
+            "F1": 0.7727272727272727
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 15,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7,
+            "F1": 0.7777777777777778
+          }
+        },
+        "joint_macro_F1": 0.7701131093145612,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8037098583383746,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 36,
+          "recall": 0.98,
+          "precision": 0.8448275862068966,
+          "F1": 0.9074074074074074,
+          "FP_per_image": 0.13636363636363635,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.0390625
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8647778252143826,
+      "VAL_feasible": true
+    },
+    {
+      "threshold": 0.7250000000000001,
+      "score_q16": 47143,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 43,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.8760806916426513,
+            "F1": 0.9282442748091603
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 51,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6772151898734177,
+            "F1": 0.8014981273408239
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 23,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8525641025641025,
+            "F1": 0.8866666666666667
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 33,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9043478260869565,
+            "F1": 0.9271916790490342
+          }
+        },
+        "joint_macro_F1": 0.8887201495731369,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9080390640507893,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 125,
+          "recall": 0.9900990099009901,
+          "precision": 0.8888888888888888,
+          "F1": 0.936768149882904,
+          "FP_per_image": 0.06188118811881188,
+          "negative_images": 1010,
+          "false_positive_negative_images": 36
+        },
+        "acquired_negative_image_FP_rate": 0.03618711385701677
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 79,
+          "FP": 9,
+          "recall": 0.9080459770114943,
+          "precision": 0.8977272727272727,
+          "F1": 0.9028571428571428,
+          "FP_per_image": 0.06,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.75,
+            "F1": 0.6666666666666666
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8297872340425532,
+            "F1": 0.896551724137931
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 20,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6363636363636364,
+            "F1": 0.7368421052631579
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7083333333333334,
+            "F1": 0.7727272727272727
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7142857142857143,
+            "F1": 0.7865168539325843
+          }
+        },
+        "joint_macro_F1": 0.7718609245455226,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8080347900390086,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 35,
+          "recall": 0.98,
+          "precision": 0.8484848484848485,
+          "F1": 0.9095127610208816,
+          "FP_per_image": 0.13257575757575757,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.03125
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8667884353492377,
+      "VAL_feasible": true
+    },
+    {
+      "threshold": 0.75,
+      "score_q16": 48769,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 37,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.8914956011730205,
+            "F1": 0.9368258859784283
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 49,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6858974358974359,
+            "F1": 0.8075471698113208
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 22,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8580645161290322,
+            "F1": 0.8896321070234113
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 31,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9096209912536443,
+            "F1": 0.9299552906110283
+          }
+        },
+        "joint_macro_F1": 0.8927920906848378,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.91088942282898,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 114,
+          "recall": 0.9900990099009901,
+          "precision": 0.8976660682226212,
+          "F1": 0.9416195856873822,
+          "FP_per_image": 0.05643564356435644,
+          "negative_images": 1010,
+          "false_positive_negative_images": 36
+        },
+        "acquired_negative_image_FP_rate": 0.03618711385701677
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 79,
+          "FP": 9,
+          "recall": 0.9080459770114943,
+          "precision": 0.8977272727272727,
+          "F1": 0.9028571428571428,
+          "FP_per_image": 0.06,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.75,
+            "F1": 0.6666666666666666
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8478260869565217,
+            "F1": 0.9069767441860465
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 19,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6481481481481481,
+            "F1": 0.7446808510638298
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7083333333333334,
+            "F1": 0.7727272727272727
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7142857142857143,
+            "F1": 0.7865168539325843
+          }
+        },
+        "joint_macro_F1": 0.77551367771528,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8105917172578387,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 33,
+          "recall": 0.98,
+          "precision": 0.8558951965065502,
+          "F1": 0.9137529137529138,
+          "FP_per_image": 0.125,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.03125
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8699411912531125,
+      "VAL_feasible": true
+    },
+    {
+      "threshold": 0.775,
+      "score_q16": 50394,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 34,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.8994082840236687,
+            "F1": 0.9411764705882353
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 47,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.6948051948051948,
+            "F1": 0.8136882129277566
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 22,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8580645161290322,
+            "F1": 0.8896321070234113
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 28,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9176470588235294,
+            "F1": 0.9341317365269461
+          }
+        },
+        "joint_macro_F1": 0.8957257054132699,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9129429531388823,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 106,
+          "recall": 0.9900990099009901,
+          "precision": 0.9041591320072333,
+          "F1": 0.945179584120983,
+          "FP_per_image": 0.05247524752475247,
+          "negative_images": 1010,
+          "false_positive_negative_images": 35
+        },
+        "acquired_negative_image_FP_rate": 0.0353045013239188
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 79,
+          "FP": 7,
+          "recall": 0.9080459770114943,
+          "precision": 0.9186046511627907,
+          "F1": 0.9132947976878613,
+          "FP_per_image": 0.04666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.75,
+            "F1": 0.6666666666666666
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8478260869565217,
+            "F1": 0.9069767441860465
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.660377358490566,
+            "F1": 0.7526881720430108
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 13,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.723404255319149,
+            "F1": 0.7816091954022989
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 14,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7142857142857143,
+            "F1": 0.7865168539325843
+          }
+        },
+        "joint_macro_F1": 0.7788915264461214,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8160875078186431,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 31,
+          "recall": 0.98,
+          "precision": 0.8634361233480177,
+          "F1": 0.9180327868852459,
+          "FP_per_image": 0.11742424242424243,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.03125
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8724874027897704,
+      "VAL_feasible": true
+    },
+    {
+      "threshold": 0.8,
+      "score_q16": 52020,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 34,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.8994082840236687,
+            "F1": 0.9411764705882353
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 45,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.7039473684210527,
+            "F1": 0.8199233716475096
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 21,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8636363636363636,
+            "F1": 0.8926174496644296
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 26,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9230769230769231,
+            "F1": 0.9369369369369369
+          }
+        },
+        "joint_macro_F1": 0.8981308457674224,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9146265513867892,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 101,
+          "recall": 0.9900990099009901,
+          "precision": 0.9082652134423251,
+          "F1": 0.9474182851729038,
+          "FP_per_image": 0.05,
+          "negative_images": 1010,
+          "false_positive_negative_images": 35
+        },
+        "acquired_negative_image_FP_rate": 0.0353045013239188,
+        "static_single_cell": {
+          "correct": 962,
+          "objects": 1010,
+          "correct_recall": 0.9524752475247524,
+          "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+        }
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 78,
+          "FP": 7,
+          "recall": 0.896551724137931,
+          "precision": 0.9176470588235294,
+          "F1": 0.9069767441860465,
+          "FP_per_image": 0.04666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8478260869565217,
+            "F1": 0.9069767441860465
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.660377358490566,
+            "F1": 0.7526881720430108
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 12,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7391304347826086,
+            "F1": 0.7906976744186046
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 13,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7291666666666666,
+            "F1": 0.7954545454545454
+          }
+        },
+        "joint_macro_F1": 0.7843746948260752,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8180303096340664,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 28,
+          "recall": 0.98,
+          "precision": 0.875,
+          "F1": 0.9245283018867925,
+          "FP_per_image": 0.10606060606060606,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.03125
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": true,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8751810220795428,
+      "VAL_feasible": true
+    },
+    {
+      "threshold": 0.8250000000000001,
+      "score_q16": 53646,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 31,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.9074626865671642,
+            "F1": 0.9455676516329704
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 45,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.7039473684210527,
+            "F1": 0.8199233716475096
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 21,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8636363636363636,
+            "F1": 0.8926174496644296
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 25,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9258160237388724,
+            "F1": 0.9383458646616541
+          }
+        },
+        "joint_macro_F1": 0.8992908675213128,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9154385666145125,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 97,
+          "recall": 0.9900990099009901,
+          "precision": 0.9115770282588879,
+          "F1": 0.9492168960607499,
+          "FP_per_image": 0.04801980198019802,
+          "negative_images": 1010,
+          "false_positive_negative_images": 35
+        },
+        "acquired_negative_image_FP_rate": 0.0353045013239188
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 77,
+          "FP": 6,
+          "recall": 0.8850574712643678,
+          "precision": 0.927710843373494,
+          "F1": 0.9058823529411765,
+          "FP_per_image": 0.04,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 6,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8666666666666667,
+            "F1": 0.9176470588235294
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.660377358490566,
+            "F1": 0.7526881720430108
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 10,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7727272727272727,
+            "F1": 0.8095238095238095
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 11,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7608695652173914,
+            "F1": 0.813953488372093
+          }
+        },
+        "joint_macro_F1": 0.7939737733581222,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8244213472330384,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 23,
+          "recall": 0.98,
+          "precision": 0.8949771689497716,
+          "F1": 0.9355608591885441,
+          "FP_per_image": 0.08712121212121213,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "acquired_negative_image_FP_rate": 0.03125
+      },
+      "procedural_VAL_FP_rate": 0.015625,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8782188036771942,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.8500000000000001,
+      "score_q16": 55271,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 30,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.9101796407185628,
+            "F1": 0.9470404984423676
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 42,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.7181208053691275,
+            "F1": 0.8294573643410853
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 21,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.8636363636363636,
+            "F1": 0.8926174496644296
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 24,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9285714285714286,
+            "F1": 0.9397590361445783
+          }
+        },
+        "joint_macro_F1": 0.9017748697184922,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.917177368152538,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 92,
+          "recall": 0.9900990099009901,
+          "precision": 0.9157509157509157,
+          "F1": 0.9514747859181731,
+          "FP_per_image": 0.04554455445544554,
+          "negative_images": 1010,
+          "false_positive_negative_images": 34
+        },
+        "acquired_negative_image_FP_rate": 0.03442188879082083
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 76,
+          "FP": 5,
+          "recall": 0.8735632183908046,
+          "precision": 0.9382716049382716,
+          "F1": 0.9047619047619048,
+          "FP_per_image": 0.03333333333333333,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 5,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.8863636363636364,
+            "F1": 0.9285714285714286
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.660377358490566,
+            "F1": 0.7526881720430108
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 10,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7727272727272727,
+            "F1": 0.8095238095238095
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 10,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.7777777777777778,
+            "F1": 0.8235294117647058
+          }
+        },
+        "joint_macro_F1": 0.7980738319862247,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8269552538189286,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 21,
+          "recall": 0.98,
+          "precision": 0.9032258064516129,
+          "F1": 0.9400479616306955,
+          "FP_per_image": 0.07954545454545454,
+          "negative_images": 64,
+          "false_positive_negative_images": 1
+        },
+        "acquired_negative_image_FP_rate": 0.0234375
+      },
+      "procedural_VAL_FP_rate": 0.01171875,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8818701557959783,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.875,
+      "score_q16": 56897,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 29,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.9129129129129129,
+            "F1": 0.9485179407176287
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 39,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.7328767123287672,
+            "F1": 0.8392156862745098
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 19,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.875,
+            "F1": 0.8986486486486487
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 24,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9285714285714286,
+            "F1": 0.9397590361445783
+          }
+        },
+        "joint_macro_F1": 0.9052282623570731,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9195947429995447,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 86,
+          "recall": 0.9900990099009901,
+          "precision": 0.9208103130755064,
+          "F1": 0.9541984732824428,
+          "FP_per_image": 0.04257425742574258,
+          "negative_images": 1010,
+          "false_positive_negative_images": 33
+        },
+        "acquired_negative_image_FP_rate": 0.03353927625772286
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 76,
+          "FP": 5,
+          "recall": 0.8735632183908046,
+          "precision": 0.9382716049382716,
+          "F1": 0.9047619047619048,
+          "FP_per_image": 0.03333333333333333,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 4,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.9069767441860465,
+            "F1": 0.9397590361445783
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 18,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.660377358490566,
+            "F1": 0.7526881720430108
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7906976744186046,
+            "F1": 0.8192771084337349
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.813953488372093,
+            "F1": 0.8433734939759037
+          }
+        },
+        "joint_macro_F1": 0.8062308297250794,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.832665152236127,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 17,
+          "recall": 0.98,
+          "precision": 0.92018779342723,
+          "F1": 0.9491525423728814,
+          "FP_per_image": 0.06439393939393939,
+          "negative_images": 64,
+          "false_positive_negative_images": 0
+        },
+        "acquired_negative_image_FP_rate": 0.015625
+      },
+      "procedural_VAL_FP_rate": 0.01171875,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8858970324352212,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.9,
+      "score_q16": 58522,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 87,
+          "FP": 6,
+          "recall": 1.0,
+          "precision": 0.9354838709677419,
+          "F1": 0.9666666666666667,
+          "FP_per_image": 0.028708133971291867,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 26,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.9212121212121213,
+            "F1": 0.9529780564263323
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 32,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.7697841726618705,
+            "F1": 0.8629032258064516
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 19,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.875,
+            "F1": 0.8986486486486487
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 21,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9369369369369369,
+            "F1": 0.9440242057488654
+          }
+        },
+        "joint_macro_F1": 0.9117108273260597,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9241325384778353,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 73,
+          "recall": 0.9900990099009901,
+          "precision": 0.9319664492078286,
+          "F1": 0.9601536245799328,
+          "FP_per_image": 0.036138613861386136,
+          "negative_images": 1010,
+          "false_positive_negative_images": 28
+        },
+        "acquired_negative_image_FP_rate": 0.02912621359223301
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 76,
+          "FP": 4,
+          "recall": 0.8735632183908046,
+          "precision": 0.95,
+          "F1": 0.9101796407185628,
+          "FP_per_image": 0.02666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 4,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.9069767441860465,
+            "F1": 0.9397590361445783
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 9,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.7906976744186046,
+            "F1": 0.8192771084337349
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.8333333333333334,
+            "F1": 0.8536585365853658
+          }
+        },
+        "joint_macro_F1": 0.8099241168818481,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8368757740328624,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 15,
+          "recall": 0.98,
+          "precision": 0.9289099526066351,
+          "F1": 0.9537712895377128,
+          "FP_per_image": 0.056818181818181816,
+          "negative_images": 64,
+          "false_positive_negative_images": 0
+        },
+        "acquired_negative_image_FP_rate": 0.015625
+      },
+      "procedural_VAL_FP_rate": 0.01171875,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8908270712239048,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.925,
+      "score_q16": 60148,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 86,
+          "FP": 5,
+          "recall": 0.9885057471264368,
+          "precision": 0.945054945054945,
+          "F1": 0.9662921348314607,
+          "FP_per_image": 0.023923444976076555,
+          "negative_images": 123,
+          "false_positive_negative_images": 5
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 304,
+            "FP": 25,
+            "objects": 308,
+            "recall": 0.987012987012987,
+            "precision": 0.9240121580547113,
+            "F1": 0.9544740973312402
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 26,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.8045112781954887,
+            "F1": 0.8842975206611571
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 19,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.875,
+            "F1": 0.8986486486486487
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 21,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9369369369369369,
+            "F1": 0.9440242057488654
+          }
+        },
+        "joint_macro_F1": 0.9162888944779823,
+        "joint_correct_recall": 0.9544554455445544,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            304,
+            0,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9272248259336194,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 1000,
+          "FP": 66,
+          "recall": 0.9900990099009901,
+          "precision": 0.9380863039399625,
+          "F1": 0.9633911368015414,
+          "FP_per_image": 0.032673267326732675,
+          "negative_images": 1010,
+          "false_positive_negative_images": 28
+        },
+        "acquired_negative_image_FP_rate": 0.02912621359223301
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 73,
+          "FP": 4,
+          "recall": 0.8390804597701149,
+          "precision": 0.948051948051948,
+          "F1": 0.8902439024390244,
+          "FP_per_image": 0.02666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.7741935483870968,
+            "F1": 0.676056338028169
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 4,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.9069767441860465,
+            "F1": 0.9397590361445783
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          },
+          "MON": {
+            "TP": 34,
+            "FP": 8,
+            "objects": 40,
+            "recall": 0.85,
+            "precision": 0.8095238095238095,
+            "F1": 0.8292682926829268
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.8333333333333334,
+            "F1": 0.8536585365853658
+          }
+        },
+        "joint_macro_F1": 0.8119223537316863,
+        "joint_correct_recall": 0.835,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            34,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8322938183438877,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 196,
+          "FP": 14,
+          "recall": 0.98,
+          "precision": 0.9333333333333333,
+          "F1": 0.9560975609756097,
+          "FP_per_image": 0.05303030303030303,
+          "negative_images": 64,
+          "false_positive_negative_images": 0
+        },
+        "acquired_negative_image_FP_rate": 0.015625
+      },
+      "procedural_VAL_FP_rate": 0.01171875,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.8937696610028807,
+      "VAL_feasible": false
+    },
+    {
+      "threshold": 0.9500000000000001,
+      "score_q16": 61774,
+      "metrics": {
+        "BCCD": {
+          "images": 209,
+          "objects": 87,
+          "TP": 85,
+          "FP": 4,
+          "recall": 0.9770114942528736,
+          "precision": 0.9550561797752809,
+          "F1": 0.9659090909090909,
+          "FP_per_image": 0.019138755980861243,
+          "negative_images": 123,
+          "false_positive_negative_images": 4
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 108,
+            "FP": 11,
+            "objects": 121,
+            "recall": 0.8925619834710744,
+            "precision": 0.907563025210084,
+            "F1": 0.9
+          },
+          "EOS": {
+            "TP": 303,
+            "FP": 25,
+            "objects": 308,
+            "recall": 0.9837662337662337,
+            "precision": 0.9237804878048781,
+            "F1": 0.9528301886792453
+          },
+          "LYM": {
+            "TP": 107,
+            "FP": 25,
+            "objects": 109,
+            "recall": 0.981651376146789,
+            "precision": 0.8106060606060606,
+            "F1": 0.8879668049792531
+          },
+          "MON": {
+            "TP": 133,
+            "FP": 19,
+            "objects": 144,
+            "recall": 0.9236111111111112,
+            "precision": 0.875,
+            "F1": 0.8986486486486487
+          },
+          "NEU": {
+            "TP": 312,
+            "FP": 21,
+            "objects": 328,
+            "recall": 0.9512195121951219,
+            "precision": 0.9369369369369369,
+            "F1": 0.9440242057488654
+          }
+        },
+        "joint_macro_F1": 0.9166939696112024,
+        "joint_correct_recall": 0.9534653465346534,
+        "confusion_gt_pred_miss": [
+          [
+            108,
+            0,
+            5,
+            5,
+            0,
+            3
+          ],
+          [
+            0,
+            303,
+            0,
+            2,
+            1,
+            2
+          ],
+          [
+            0,
+            0,
+            107,
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            6,
+            133,
+            1,
+            2
+          ],
+          [
+            4,
+            2,
+            0,
+            7,
+            312,
+            3
+          ]
+        ],
+        "objective": 0.9282064734802437,
+        "WBCAtt": {
+          "images": 2020,
+          "objects": 1010,
+          "TP": 999,
+          "FP": 65,
+          "recall": 0.9891089108910891,
+          "precision": 0.9389097744360902,
+          "F1": 0.9633558341369335,
+          "FP_per_image": 0.03217821782178218,
+          "negative_images": 1010,
+          "false_positive_negative_images": 28
+        },
+        "acquired_negative_image_FP_rate": 0.02824360105913504
+      },
+      "camera_metrics": {
+        "BCCD": {
+          "images": 150,
+          "objects": 87,
+          "TP": 69,
+          "FP": 4,
+          "recall": 0.7931034482758621,
+          "precision": 0.9452054794520548,
+          "F1": 0.8625,
+          "FP_per_image": 0.02666666666666667,
+          "negative_images": 64,
+          "false_positive_negative_images": 2
+        },
+        "five_classes": {
+          "BAS": {
+            "TP": 24,
+            "FP": 6,
+            "objects": 40,
+            "recall": 0.6,
+            "precision": 0.8,
+            "F1": 0.6857142857142857
+          },
+          "EOS": {
+            "TP": 39,
+            "FP": 3,
+            "objects": 40,
+            "recall": 0.975,
+            "precision": 0.9285714285714286,
+            "F1": 0.9512195121951219
+          },
+          "LYM": {
+            "TP": 35,
+            "FP": 17,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.6730769230769231,
+            "F1": 0.7608695652173914
+          },
+          "MON": {
+            "TP": 33,
+            "FP": 7,
+            "objects": 40,
+            "recall": 0.825,
+            "precision": 0.825,
+            "F1": 0.825
+          },
+          "NEU": {
+            "TP": 35,
+            "FP": 6,
+            "objects": 40,
+            "recall": 0.875,
+            "precision": 0.8536585365853658,
+            "F1": 0.8641975308641975
+          }
+        },
+        "joint_macro_F1": 0.8174001787981993,
+        "joint_correct_recall": 0.83,
+        "confusion_gt_pred_miss": [
+          [
+            24,
+            1,
+            11,
+            2,
+            1,
+            1
+          ],
+          [
+            0,
+            39,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            3,
+            0,
+            35,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            33,
+            1,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            35,
+            2
+          ]
+        ],
+        "objective": 0.8278051251587393,
+        "WBCAtt": {
+          "images": 264,
+          "objects": 200,
+          "TP": 195,
+          "FP": 10,
+          "recall": 0.975,
+          "precision": 0.9512195121951219,
+          "F1": 0.9629629629629629,
+          "FP_per_image": 0.03787878787878788,
+          "negative_images": 64,
+          "false_positive_negative_images": 0
+        },
+        "acquired_negative_image_FP_rate": 0.015625
+      },
+      "procedural_VAL_FP_rate": 0.0078125,
+      "development_cell_IoU50": false,
+      "development_room_empty": true,
+      "uniform_empty": true,
+      "objective": 0.896545436061616,
+      "VAL_feasible": false
+    }
+  ],
+  "TEST_used_for_selection": false,
+  "screenshots_used_for_development_calibration": true
+}

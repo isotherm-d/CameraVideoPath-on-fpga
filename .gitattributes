@@ -4,3 +4,6 @@ releases/** -text
 
 # This controller is built and hashed with LF line endings on Windows too.
 08_csi_dsi_cs500_7cun/user_source/hdl_source/advanced/cvp_ae_control.v text eol=lf
+
+# Keep the mixed-EOL cell tracking RTL identical to the routed source snapshot.
+08_csi_dsi_cs500_7cun/user_source/hdl_source/classify/cvp_cell_tracks.v -text whitespace=cr-at-eol

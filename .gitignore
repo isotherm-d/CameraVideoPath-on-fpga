@@ -8,6 +8,10 @@
 08_csi_dsi_cs500_7cun/td_project/.lock.f
 
 # 系统杂项
+yolo/data/
+yolo/runs/
+yolo/tmp/
+yolo/*_console.log
 Thumbs.db
 Desktop.ini
 __pycache__/
@@ -26,3 +30,8 @@ __pycache__/
 08_csi_dsi_cs500_7cun/td_project/a_opt_regression/
 08_csi_dsi_cs500_7cun/td_project/v26_regression_base/
 08_csi_dsi_cs500_7cun/td_project/syntax_check/
+
+# Reproducible CellNet ModelSim and isolated physical build outputs.
+08_csi_dsi_cs500_7cun/td_project/cellnet32*_Runs/
+08_csi_dsi_cs500_7cun/td_project/cellnet32*_sim/
+08_csi_dsi_cs500_7cun/td_project/cellnet32*_regression/

@@ -1,0 +1,828 @@
+{
+  "recorded_utc": "2026-10-21T03:37:56.915598+00:00",
+  "model": "wbc_bccd160_devcam_20261021",
+  "classes": [
+    "BAS",
+    "EOS",
+    "LYM",
+    "MON",
+    "NEU"
+  ],
+  "YOLO_Hz_default": 15,
+  "inference_interval_frames": 2,
+  "display_atomic_snapshot": true,
+  "hold_last_result_on_skipped_frames": true,
+  "held_missed_detections": 2,
+  "third_miss_retires": true,
+  "max_display_cells": 1,
+  "full_English_names": [
+    "Basophil",
+    "Eosinophil",
+    "Lymphocyte",
+    "Monocyte",
+    "Neutrophil"
+  ],
+  "standalone_CellNet_in_active_hierarchy": false,
+  "integer_natural_vectors": 14,
+  "natural_class_coverage": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "max_vector_cycles": 3928550,
+  "component_tests": 5,
+  "legacy_track_tests": 3,
+  "video_RTL_tests": 42,
+  "packet_integrity_tests": 2,
+  "python_tests": 38,
+  "development_RTL_probes": {
+    "model": "wbc_bccd160_devcam_20261021",
+    "alias": "wbc_bccd160_devcam_20261021_development_probes",
+    "probes": 5,
+    "exact_10_layer_RTL_replay_pass": true,
+    "camera_accuracy_validated": false
+  },
+  "unchanged_video_regression_snapshot_reused": false,
+  "validation": {
+    "score_q16": 52020,
+    "metrics": {
+      "BCCD": {
+        "images": 209,
+        "objects": 87,
+        "TP": 87,
+        "FP": 6,
+        "recall": 1.0,
+        "precision": 0.9354838709677419,
+        "F1": 0.9666666666666667,
+        "FP_per_image": 0.028708133971291867,
+        "negative_images": 123,
+        "false_positive_negative_images": 5
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 108,
+          "FP": 11,
+          "objects": 121,
+          "recall": 0.8925619834710744,
+          "precision": 0.907563025210084,
+          "F1": 0.9
+        },
+        "EOS": {
+          "TP": 304,
+          "FP": 34,
+          "objects": 308,
+          "recall": 0.987012987012987,
+          "precision": 0.8994082840236687,
+          "F1": 0.9411764705882353
+        },
+        "LYM": {
+          "TP": 107,
+          "FP": 45,
+          "objects": 109,
+          "recall": 0.981651376146789,
+          "precision": 0.7039473684210527,
+          "F1": 0.8199233716475096
+        },
+        "MON": {
+          "TP": 133,
+          "FP": 21,
+          "objects": 144,
+          "recall": 0.9236111111111112,
+          "precision": 0.8636363636363636,
+          "F1": 0.8926174496644296
+        },
+        "NEU": {
+          "TP": 312,
+          "FP": 26,
+          "objects": 328,
+          "recall": 0.9512195121951219,
+          "precision": 0.9230769230769231,
+          "F1": 0.9369369369369369
+        }
+      },
+      "joint_macro_F1": 0.8981308457674224,
+      "joint_correct_recall": 0.9544554455445544,
+      "confusion_gt_pred_miss": [
+        [
+          108,
+          0,
+          5,
+          5,
+          0,
+          3
+        ],
+        [
+          0,
+          304,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          107,
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          6,
+          133,
+          1,
+          2
+        ],
+        [
+          4,
+          2,
+          0,
+          7,
+          312,
+          3
+        ]
+      ],
+      "objective": 0.9146265513867892,
+      "WBCAtt": {
+        "images": 2020,
+        "objects": 1010,
+        "TP": 1000,
+        "FP": 101,
+        "recall": 0.9900990099009901,
+        "precision": 0.9082652134423251,
+        "F1": 0.9474182851729038,
+        "FP_per_image": 0.05,
+        "negative_images": 1010,
+        "false_positive_negative_images": 35
+      },
+      "acquired_negative_image_FP_rate": 0.0353045013239188,
+      "static_single_cell": {
+        "correct": 962,
+        "objects": 1010,
+        "correct_recall": 0.9524752475247524,
+        "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+      }
+    }
+  },
+  "repair_acceptance": {
+    "model": "wbc_bccd160_devcam_20261021",
+    "checkpoint_sha256": "3d129883fef9823c89f854d4a5a8ffcfaebe030ff459d2e466f963e913c05654",
+    "quantized_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+    "threshold_q16": 52020,
+    "validation": {
+      "BCCD": {
+        "images": 209,
+        "objects": 87,
+        "TP": 87,
+        "FP": 6,
+        "recall": 1.0,
+        "precision": 0.9354838709677419,
+        "F1": 0.9666666666666667,
+        "FP_per_image": 0.028708133971291867,
+        "negative_images": 123,
+        "false_positive_negative_images": 5
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 108,
+          "FP": 11,
+          "objects": 121,
+          "recall": 0.8925619834710744,
+          "precision": 0.907563025210084,
+          "F1": 0.9
+        },
+        "EOS": {
+          "TP": 304,
+          "FP": 34,
+          "objects": 308,
+          "recall": 0.987012987012987,
+          "precision": 0.8994082840236687,
+          "F1": 0.9411764705882353
+        },
+        "LYM": {
+          "TP": 107,
+          "FP": 45,
+          "objects": 109,
+          "recall": 0.981651376146789,
+          "precision": 0.7039473684210527,
+          "F1": 0.8199233716475096
+        },
+        "MON": {
+          "TP": 133,
+          "FP": 21,
+          "objects": 144,
+          "recall": 0.9236111111111112,
+          "precision": 0.8636363636363636,
+          "F1": 0.8926174496644296
+        },
+        "NEU": {
+          "TP": 312,
+          "FP": 26,
+          "objects": 328,
+          "recall": 0.9512195121951219,
+          "precision": 0.9230769230769231,
+          "F1": 0.9369369369369369
+        }
+      },
+      "joint_macro_F1": 0.8981308457674224,
+      "joint_correct_recall": 0.9544554455445544,
+      "confusion_gt_pred_miss": [
+        [
+          108,
+          0,
+          5,
+          5,
+          0,
+          3
+        ],
+        [
+          0,
+          304,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          107,
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          6,
+          133,
+          1,
+          2
+        ],
+        [
+          4,
+          2,
+          0,
+          7,
+          312,
+          3
+        ]
+      ],
+      "objective": 0.9146265513867892,
+      "WBCAtt": {
+        "images": 2020,
+        "objects": 1010,
+        "TP": 1000,
+        "FP": 101,
+        "recall": 0.9900990099009901,
+        "precision": 0.9082652134423251,
+        "F1": 0.9474182851729038,
+        "FP_per_image": 0.05,
+        "negative_images": 1010,
+        "false_positive_negative_images": 35
+      },
+      "acquired_negative_image_FP_rate": 0.0353045013239188,
+      "static_single_cell": {
+        "correct": 962,
+        "objects": 1010,
+        "correct_recall": 0.9524752475247524,
+        "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+      }
+    },
+    "procedural_final": {
+      "seed": 2026102183,
+      "images": 1024,
+      "false_positive_images": 18,
+      "FP_rate": 0.017578125,
+      "not_independent_camera_data": true
+    },
+    "uniform_probes": [
+      {
+        "name": "uniform_0",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_16",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_32",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_64",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_96",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_128",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_192",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_255",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_rgb_[255, 0, 0]",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_rgb_[0, 255, 0]",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_rgb_[0, 0, 255]",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      },
+      {
+        "name": "uniform_rgb_[48, 40, 56]",
+        "boxes": [],
+        "scores": [],
+        "classes": []
+      }
+    ],
+    "development_screenshots": {
+      "user_empty_scene": {
+        "screenshot_sha256": "1da34887caf49138ec6bc84c9114cfcb2e883cc091f8911defe7482765e65eba",
+        "boxes": [],
+        "scores": [],
+        "classes": [],
+        "limitation": "Contains OSD; approximate replay, no clean raw stream or independent class label"
+      },
+      "historical_cell_unknown_true_class": {
+        "screenshot_sha256": "d1f81f8ac7f932833f76d4a4ccb9b01e58cac3e1724380601b6d2b7074aaff38",
+        "boxes": [
+          [
+            555,
+            249,
+            836,
+            519
+          ],
+          [
+            468,
+            181,
+            923,
+            622
+          ]
+        ],
+        "scores": [
+          53040,
+          52530
+        ],
+        "classes": [
+          3,
+          3
+        ],
+        "limitation": "Contains OSD; approximate replay, no clean raw stream or independent class label"
+      }
+    },
+    "postprocess": {
+      "recorded_utc": "2026-10-21T03:23:47.626647+00:00",
+      "training_run": "wbc_bccd160_objectmax_20261021",
+      "checkpoint_sha256": "3d129883fef9823c89f854d4a5a8ffcfaebe030ff459d2e466f963e913c05654",
+      "quantized_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+      "rationale": "VAL-only0.95 threshold passed public metrics and artificial background regressions but missed provided unlabelled post-OSD cell screenshot. Separate deployment calibration uses that provided development example plus room-negative. Preserve original failure, do not claim an independent camera test or VAL-only threshold.",
+      "weights_reselected": false,
+      "training_unchanged_after_freeze": true,
+      "screenshot_pixels_trained": false,
+      "screenshot_threshold_tuning": true,
+      "TEST_used": false,
+      "detection_score": "sigmoid_LUT(objectness)*255",
+      "type": "neural five-logit argmax",
+      "development_cell_approximate_ROI": [
+        540,
+        210,
+        830,
+        525
+      ],
+      "development_cell_class_label": null,
+      "grid": [
+        0.4,
+        0.42500000000000004,
+        0.45,
+        0.47500000000000003,
+        0.5,
+        0.525,
+        0.55,
+        0.5750000000000001,
+        0.6000000000000001,
+        0.625,
+        0.65,
+        0.675,
+        0.7000000000000001,
+        0.7250000000000001,
+        0.75,
+        0.775,
+        0.8,
+        0.8250000000000001,
+        0.8500000000000001,
+        0.875,
+        0.9,
+        0.925,
+        0.9500000000000001
+      ],
+      "selection": "same balanced public/fixed-augmented VAL objective, constrained by provided development room empty and cell IoU>=0.5 plus uniform checks; no TEST",
+      "gates": "Natural jointF1>=.88, BCCD recall>=.85 precision>=.75, fixed cameraVAL jointF1>=.70; 256 procedural VAL screening<=2% due coarse sample count; both larger1024-image stress regressions remain<=1%; all uniform and room probes empty, development cell localizes; full RTL/source/bit/timing binding",
+      "previous_VAL_only_failure": "C:\\Users\\cqm87\\Desktop\\2026\\cvp\\CameraVideoPath-on-fpga-yolo\\yolo\\runs\\wbc_bccd160_objectmax_20261021\\acceptance.json",
+      "source_hashes": {
+        "yolo/wbc_bccd/make_calibration_run.py": "0ae5f94d5f9f04c6f8b17ad525b27c45bc2d2ece812dbe454250a6b9788f512b",
+        "yolo/wbc_bccd/object_reference.py": "8f725353d8b1df7cfef19251665947b43e182dff580889d7ad20c35e75fc6dc9",
+        "yolo/wbc_bccd/evaluate_camera_calibrated.py": "aa880d8d5d0d08c4fc365df72925370f21c1d53c3b20cb86927aeeecf096280e",
+        "yolo/wbc_bccd/run_tests.py": "9bdac2c233f722e79f44687308d731ac311160093d1ee2f7652b6163a44e3fed",
+        "yolo/wbc_bccd/run_all_vectors.py": "23266bc76bf8530fb3363ecfe3c58ef8584c4c565b4664173897327b4c53d91f",
+        "yolo/wbc_bccd/tb_five_post.sv": "6bcacaa62963624bbef0165f8dda34f9c96c211d632d555577a6ef01fa4da0b9"
+      }
+    },
+    "camera_augmented_VAL": {
+      "BCCD": {
+        "images": 150,
+        "objects": 87,
+        "TP": 78,
+        "FP": 7,
+        "recall": 0.896551724137931,
+        "precision": 0.9176470588235294,
+        "F1": 0.9069767441860465,
+        "FP_per_image": 0.04666666666666667,
+        "negative_images": 64,
+        "false_positive_negative_images": 2
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 24,
+          "FP": 7,
+          "objects": 40,
+          "recall": 0.6,
+          "precision": 0.7741935483870968,
+          "F1": 0.676056338028169
+        },
+        "EOS": {
+          "TP": 39,
+          "FP": 7,
+          "objects": 40,
+          "recall": 0.975,
+          "precision": 0.8478260869565217,
+          "F1": 0.9069767441860465
+        },
+        "LYM": {
+          "TP": 35,
+          "FP": 18,
+          "objects": 40,
+          "recall": 0.875,
+          "precision": 0.660377358490566,
+          "F1": 0.7526881720430108
+        },
+        "MON": {
+          "TP": 34,
+          "FP": 12,
+          "objects": 40,
+          "recall": 0.85,
+          "precision": 0.7391304347826086,
+          "F1": 0.7906976744186046
+        },
+        "NEU": {
+          "TP": 35,
+          "FP": 13,
+          "objects": 40,
+          "recall": 0.875,
+          "precision": 0.7291666666666666,
+          "F1": 0.7954545454545454
+        }
+      },
+      "joint_macro_F1": 0.7843746948260752,
+      "joint_correct_recall": 0.835,
+      "confusion_gt_pred_miss": [
+        [
+          24,
+          1,
+          11,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          39,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          3,
+          0,
+          35,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          34,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          2,
+          35,
+          2
+        ]
+      ],
+      "objective": 0.8180303096340664,
+      "WBCAtt": {
+        "images": 264,
+        "objects": 200,
+        "TP": 196,
+        "FP": 28,
+        "recall": 0.98,
+        "precision": 0.875,
+        "F1": 0.9245283018867925,
+        "FP_per_image": 0.10606060606060606,
+        "negative_images": 64,
+        "false_positive_negative_images": 2
+      },
+      "acquired_negative_image_FP_rate": 0.03125
+    },
+    "extra_procedural_final": {
+      "seed": 2026102185,
+      "images": 1024,
+      "false_positive_images": 8,
+      "FP_rate": 0.0078125,
+      "artificial_stress_only": true
+    },
+    "checks": {
+      "VAL_choice_meets_declared_gates": true,
+      "VAL_macro_F1_at_least_088": true,
+      "BCCD_VAL_recall_at_least_085": true,
+      "BCCD_VAL_precision_at_least_075": true,
+      "all_uniform_probes_no_boxes": true,
+      "user_empty_scene_no_boxes": true,
+      "historical_cell_localization_development_sanity": true,
+      "source_only_camera_VAL_macroF1_at_least_070": true,
+      "extra_procedural_FP_at_most_001": true,
+      "both_artificial_stress_regressions_at_most_002": true
+    },
+    "gate_passed": true,
+    "threshold_uses_provided_development_frames": true,
+    "development_is_not_independent_camera_validation": true,
+    "camera_accuracy_validated": false,
+    "new_TEST_claim": false,
+    "acceptance_kind": "engineering_SRAM_trial_with_disclosed_residual_FP",
+    "original_gate_passed": false,
+    "original_checks": {
+      "VAL_choice_meets_declared_gates": true,
+      "VAL_macro_F1_at_least_088": true,
+      "BCCD_VAL_recall_at_least_085": true,
+      "BCCD_VAL_precision_at_least_075": true,
+      "all_uniform_probes_no_boxes": true,
+      "procedural_final_FP_at_most_001": false,
+      "user_empty_scene_no_boxes": true,
+      "historical_cell_localization_development_sanity": true,
+      "source_only_camera_VAL_macroF1_at_least_070": true,
+      "extra_procedural_FP_at_most_001": true
+    },
+    "engineering_trial_policy": {
+      "recorded_utc": "2026-10-21T03:26:56.730013+00:00",
+      "scope": "Reversible mainboard SRAM experiment requested by user; not production/camera accuracy acceptance",
+      "programming_authorization": "User requested WBCAtt+BCCD retraining, bit generation and board programming. User did not supply a1% or2% statistical limit.",
+      "original_1percent_gate_passed": false,
+      "original_failed_checks": [
+        "procedural_final_FP_at_most_001"
+      ],
+      "original_acceptance_sha256": "61719f4185be16d322c69e5154f39f3cfef6da1d8eefac2b51e8155bf2564743",
+      "engineering_trial_bound": "Both1024-image artificial stress regressions<=2%; this was a post-result engineering choice, not a pretraining accuracy claim.",
+      "residual_risk": "18/1024 and8/1024 artificial backgrounds still produce boxes; source negative crops have nonzero FP. Actual camera classification and HDMI unvalidated.",
+      "unrelaxed_requirements": "All uniform and provided room probes empty, provided cell development localizes, source/augmented VAL metrics pass, exact RTL/source/bit identity, setup/hold>=0, resources fit, correct PH1P35 chip, SRAM only.",
+      "checkpoint_sha256": "3d129883fef9823c89f854d4a5a8ffcfaebe030ff459d2e466f963e913c05654",
+      "quantized_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+      "threshold_q16": 52020,
+      "source_hashes": {
+        "yolo/wbc_bccd/export_board_trial.py": "f8610cceef08b1c07f961867ca7fa6c0bb347a4103b38971d2cefc6069ff2186"
+      }
+    }
+  },
+  "training_sources": [
+    "WBCAtt+",
+    "BCCD"
+  ],
+  "reused_TEST_regression": {
+    "metrics": {
+      "BCCD": {
+        "images": 171,
+        "objects": 71,
+        "TP": 70,
+        "FP": 9,
+        "recall": 0.9859154929577465,
+        "precision": 0.8860759493670886,
+        "F1": 0.9333333333333333,
+        "FP_per_image": 0.05263157894736842,
+        "negative_images": 103,
+        "false_positive_negative_images": 7
+      },
+      "five_classes": {
+        "BAS": {
+          "TP": 322,
+          "FP": 21,
+          "objects": 338,
+          "recall": 0.9526627218934911,
+          "precision": 0.9387755102040817,
+          "F1": 0.9456681350954479
+        },
+        "EOS": {
+          "TP": 874,
+          "FP": 71,
+          "objects": 895,
+          "recall": 0.976536312849162,
+          "precision": 0.9248677248677248,
+          "F1": 0.95
+        },
+        "LYM": {
+          "TP": 339,
+          "FP": 126,
+          "objects": 352,
+          "recall": 0.9630681818181818,
+          "precision": 0.7290322580645161,
+          "F1": 0.8298653610771114
+        },
+        "MON": {
+          "TP": 424,
+          "FP": 75,
+          "objects": 437,
+          "recall": 0.9702517162471396,
+          "precision": 0.8496993987975952,
+          "F1": 0.905982905982906
+        },
+        "NEU": {
+          "TP": 960,
+          "FP": 91,
+          "objects": 995,
+          "recall": 0.964824120603015,
+          "precision": 0.9134157944814463,
+          "F1": 0.9384164222873901
+        }
+      },
+      "joint_macro_F1": 0.913986564888571,
+      "joint_correct_recall": 0.9675174013921114,
+      "confusion_gt_pred_miss": [
+        [
+          322,
+          0,
+          8,
+          4,
+          0,
+          4
+        ],
+        [
+          1,
+          874,
+          1,
+          5,
+          5,
+          9
+        ],
+        [
+          0,
+          1,
+          339,
+          11,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          7,
+          424,
+          1,
+          4
+        ],
+        [
+          2,
+          4,
+          0,
+          20,
+          960,
+          9
+        ]
+      ],
+      "objective": 0.9129944789171452,
+      "WBCAtt": {
+        "images": 6034,
+        "objects": 3017,
+        "TP": 2991,
+        "FP": 312,
+        "recall": 0.9913821677162744,
+        "precision": 0.9055404178019982,
+        "F1": 0.9465189873417722,
+        "FP_per_image": 0.05170699370235333,
+        "negative_images": 3017,
+        "false_positive_negative_images": 84
+      },
+      "acquired_negative_image_FP_rate": 0.029166666666666667,
+      "static_single_cell": {
+        "correct": 2921,
+        "objects": 3017,
+        "correct_recall": 0.9681803115677826,
+        "selection": "Static new identity: nearest center; does not simulate temporal tracking"
+      }
+    },
+    "threshold_q16": 52020,
+    "weights_sha256": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+    "reused_TEST_not_new_untouched": true,
+    "used_for_selection": false
+  },
+  "build": {
+    "phase": "timing_pass_programmed_SRAM",
+    "programmed": true,
+    "board_validated": false,
+    "physical": {
+      "slice": 19016,
+      "eram": 94,
+      "dsp": 35,
+      "SWNS": 0.102,
+      "HWNS": 0.02,
+      "place_and_route": true,
+      "board_validated": false,
+      "elapsed_seconds": 394.97960448265076,
+      "video_fps_configured": 30,
+      "inference_interval_frames": 2,
+      "YOLO_Hz": 15,
+      "held_missed_detections": 2,
+      "max_display_cells": 1,
+      "full_English_names": true,
+      "selection_policy": "keep identity; otherwise nearest center",
+      "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+      "project": "td_project/camera_to_dsi_display.al",
+      "bit_path": "td_project\\camera_to_dsi_display_Runs\\phy_1\\camera_to_dsi_display.bit"
+    }
+  },
+  "board_validated": false,
+  "frozen_assets": {
+    "acceptance.json": "ef1a69bdbb2879b789df9816ba29543218d389ade068777fec9a7c094e096d78",
+    "camera_val.npz": "6e87ffe68050ac2e54de84c176440deebd8281a7fbf1b244f02f8ae429d4127a",
+    "camera_val_manifest.json": "af543a43b0e1d4b859a1a95ff8cbb23e8b9d05eecc9e33d60148753c65c3f444",
+    "data_audit.json": "3a619493eb1212c6b36c99fd74e870c625425dda917582903d3ea4764f9d5bb9",
+    "data_manifest.json": "ec0eb0405d4030996e3a6dd6742dff65f1caeb05e9b599876a171e0d9e5c9884",
+    "deployment_policy.json": "02ffee3f3f5696e7502fbd0c40e4302790649df0e571630d90401ee641038038",
+    "detector.pt": "3d129883fef9823c89f854d4a5a8ffcfaebe030ff459d2e466f963e913c05654",
+    "engineering_trial_policy.json": "31e323d8e5eec4d6c754ff3869b4521b5c1a01f95eb8a9516697b895707425b7",
+    "fp32_validation.json": "67372c8e5f65fc23962c02516a8a528520811c859dcb4effe2bdf6cc490b9740",
+    "frozen.json": "2896e38ed12997513eb262753d97a8975b65e7b60893b8d3de1ab7232413ab47",
+    "history.json": "325a336c8a969640c13add612fb4285797d11ee9e7529d3fa1a6140878ff4a76",
+    "integer_validation.json": "f6b450c7c46d9ba145e376cc8db8a3650c97cc3e2ccde498c3a022f17d417a80",
+    "original_acceptance.json": "61719f4185be16d322c69e5154f39f3cfef6da1d8eefac2b51e8155bf2564743",
+    "postprocess_protocol.json": "02ffee3f3f5696e7502fbd0c40e4302790649df0e571630d90401ee641038038",
+    "project_used.al": "e5773053140455e106b27c8890fd4b6ad5c2ff3dcc8225b0ba74e868bd27026c",
+    "protocol.json": "6c43218dd904928e21fd6dd2ca15b70ddb96ab17565d6fe2510e7fe627889708",
+    "qat_validation.json": "f0455d961c98b1bf673fc9efc7f7d478e83623f502ecc4ae90cdd0a869c997de",
+    "quantized.npz": "54419aeebe859ac1ebf3d0fc51732b5d8a54e1af4b7e016af2466fc21b465214",
+    "regression_source_hashes.json": "180acd257b5520ba771e7c846ccfca3a641e7ab35c4048520f5b27a6b999a8fe",
+    "rtl_vectors.zip": "31857edbe694e3676be62dae73cd52a0627a222a6eb329627cc2492c3044201a",
+    "test_regression.json": "04f6a539b04d68417b7a6f0ec7c01eb88798693e407085cf634d38e1038a21fa",
+    "training_source_hashes.json": "569f172989c9e1b58b3fdd217d293dbd014adaaa27cc2d9124c5366cb875af09",
+    "postprocess_sources/yolo/wbc_bccd/evaluate_camera_calibrated.py": "aa880d8d5d0d08c4fc365df72925370f21c1d53c3b20cb86927aeeecf096280e",
+    "postprocess_sources/yolo/wbc_bccd/export_board_trial.py": "f8610cceef08b1c07f961867ca7fa6c0bb347a4103b38971d2cefc6069ff2186",
+    "postprocess_sources/yolo/wbc_bccd/make_calibration_run.py": "0ae5f94d5f9f04c6f8b17ad525b27c45bc2d2ece812dbe454250a6b9788f512b",
+    "postprocess_sources/yolo/wbc_bccd/object_reference.py": "8f725353d8b1df7cfef19251665947b43e182dff580889d7ad20c35e75fc6dc9",
+    "postprocess_sources/yolo/wbc_bccd/run_all_vectors.py": "23266bc76bf8530fb3363ecfe3c58ef8584c4c565b4664173897327b4c53d91f",
+    "postprocess_sources/yolo/wbc_bccd/run_tests.py": "9bdac2c233f722e79f44687308d731ac311160093d1ee2f7652b6163a44e3fed",
+    "postprocess_sources/yolo/wbc_bccd/tb_five_post.sv": "6bcacaa62963624bbef0165f8dda34f9c96c211d632d555577a6ef01fa4da0b9"
+  }
+}

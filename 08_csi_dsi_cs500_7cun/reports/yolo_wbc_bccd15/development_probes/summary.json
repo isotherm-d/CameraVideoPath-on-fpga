@@ -1,0 +1,7 @@
+{
+  "model": "wbc_bccd160_devcam_20261021",
+  "alias": "wbc_bccd160_devcam_20261021_development_probes",
+  "probes": 5,
+  "exact_10_layer_RTL_replay_pass": true,
+  "camera_accuracy_validated": false
+}

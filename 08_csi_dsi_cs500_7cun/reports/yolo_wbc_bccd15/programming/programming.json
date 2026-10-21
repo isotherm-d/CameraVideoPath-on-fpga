@@ -1,0 +1,36 @@
+{
+  "recorded_utc": "2026-10-21T03:37:32.115957+00:00",
+  "model": "wbc_bccd160_devcam_20261021",
+  "device": "PH1P35MDG324",
+  "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+  "tool": "TD6.2",
+  "mode": "jtag",
+  "program_sram_success": true,
+  "flash_written": false,
+  "board_accuracy_validated": false,
+  "hdmi_validated": false,
+  "evidence": "correct chip; Tcl catch=0; synchronous download finished; no ERROR/FATAL",
+  "runtime": {
+    "video_fps_configured": 30,
+    "inference_interval_frames": 2,
+    "YOLO_Hz": 15,
+    "held_missed_detections": 2,
+    "display_atomic_snapshot": true,
+    "max_display_cells": 1,
+    "full_English_names": [
+      "Basophil",
+      "Eosinophil",
+      "Lymphocyte",
+      "Monocyte",
+      "Neutrophil"
+    ],
+    "selection_policy": "keep identity; otherwise nearest center"
+  },
+  "release_scope": "engineering_SRAM_trial_with_disclosed_residual_FP",
+  "original_1percent_artificial_background_gate_passed": false,
+  "artificial_background_FP_rates": [
+    0.017578125,
+    0.0078125
+  ],
+  "threshold_uses_provided_development_frames": true
+}

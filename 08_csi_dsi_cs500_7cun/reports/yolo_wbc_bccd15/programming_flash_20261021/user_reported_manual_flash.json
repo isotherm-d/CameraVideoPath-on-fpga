@@ -1,0 +1,10 @@
+{
+  "reported_local_date": "2026-10-21",
+  "user_statement": "flash我自己烧录好了",
+  "context": "After the agent's TD6.2 program_spi attempt returned PRG-8000 get tdo buffer failed and Tcl catch=1.",
+  "user_reported_flash_success": true,
+  "agent_independently_verified": false,
+  "associated_candidate_model": "wbc_bccd160_devcam_20261021",
+  "associated_candidate_bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
+  "bit_identity_confirmed_by_user": false
+}
