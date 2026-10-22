@@ -17,6 +17,11 @@ module design_top_wrapper (
 
     output wire       O_uart_tx,
 
+    // Eight-digit latency display through the onboard 74HC595 chain.
+    output wire       O_seg_sclk,
+    output wire       O_seg_data,
+    output wire       O_seg_latch,
+
     // ---- CAM CHECK/NET: 以太网调试通路 (ETHA, YT8531, RGMII 千兆) ----
     output wire [3:0] O_eth_rgmii_txd,
     output wire       O_eth_rgmii_tx_ctl,
@@ -61,6 +66,7 @@ module design_top_wrapper (
     wire [31:0] v2_value;wire [23:0] legacy_value;
     wire cfg_error,iic_error;wire adv_valid,adv_sof,adv_eof;
     wire [23:0] adv_rgb;wire [31:0] adv_frame_id,pack_frame_id;
+    wire [2:0] display_mode;
     wire [1535:0] adv_status;wire [127:0] sensor_diagnostics;wire adv_status_valid,adv_status_ready;
     wire net_overflow,net_tx_done;wire [31:0] net_tx_fid;
     wire [1:0]  S_cmd_mode;
@@ -375,7 +381,7 @@ cvp_advanced #(.V27(1)) advanced(
  .legacy_valid(legacy_valid),.legacy_cmd(legacy_cmd),.legacy_value(legacy_value),
  .cfg_clk(S_24m_clk),.i_cam_done(S_cam_cfg_done),.i_ae_done(S_ae_cfg_done),.i_iic_error(iic_error),.i_cfg_error(cfg_error),
  .sensor_req(S_ae_req),.sensor_exp_cfg(S_ae),.sensor_gain_cfg(S_ag),
- .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),.o_x(adv_x),.o_y(adv_y),.o_cfg_id(adv_cfg),
+ .o_valid(adv_valid),.o_sof(adv_sof),.o_eof(adv_eof),.o_rgb(adv_rgb),.o_frame_id(adv_frame_id),.o_x(adv_x),.o_y(adv_y),.o_cfg_id(adv_cfg),.o_display_mode(display_mode),
  .i_sensor_diagnostics(sensor_diagnostics),.status_data(adv_status),.status_valid(adv_status_valid),.status_ready(adv_status_ready),
  .i_net_overflow(net_overflow),.i_net_tx_done(net_tx_done),.i_net_tx_fid(net_tx_fid),.net_clk(S_gmii_125m),.net_rst_n(S_gmii_lock),
  .time_ticks(cnn_ticks),.result_done_tick(w_res_tick),
@@ -385,6 +391,14 @@ cvp_advanced #(.V27(1)) advanced(
 );
 
 // Joint YOLO detection/classification. All five boxes have independent types.
+cvp_latency_display u_latency_display(
+ .clk(S_100m_clk),.rst_n(S_rst_n),.i_ticks(cnn_ticks[31:0]),
+ .i_capture(camera_group_valid&&camera_group_sof),
+ .i_frame_sof(w_clean_valid&&w_clean_sof),.i_frame_id(w_clean_frame_id),.i_mode(display_mode),
+ .net_clk(S_gmii_125m),.net_rst_n(S_gmii_lock),.i_tx_done(net_tx_done),.i_tx_frame(net_tx_fid),
+ .o_sclk(O_seg_sclk),.o_data(O_seg_data),.o_latch(O_seg_latch),
+ .o_sample(),.o_latency_ticks(),.o_latency_us(),.o_bcd(),.o_valid());
+
 localparam N_BOX_W = 5;
 wire [N_BOX_W*48-1:0] w_det_box_xy;
 wire [N_BOX_W*3-1:0] w_det_classes;

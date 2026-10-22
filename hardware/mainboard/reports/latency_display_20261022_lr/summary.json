@@ -1,0 +1,83 @@
+{
+  "recorded_local": "2026-10-22T22:23:45.114357+08:00",
+  "status": "timing_pass_programmed_SRAM",
+  "revision": "correct physical left-to-right digit selection; timestamp and decimal conversion logic unchanged",
+  "user_report_for_previous_bit": "Manual board display works, but digits appear right-to-left",
+  "physical_digit_order": {
+    "leftmost_select": "0x01",
+    "rightmost_select": "0x80"
+  },
+  "display_example": "   24.053",
+  "unit": "ms",
+  "physical": {
+    "slice": 19479,
+    "eram": 94,
+    "dsp": 35,
+    "SWNS": 0.029,
+    "HWNS": 0.02,
+    "place_and_route": true,
+    "board_validated": false,
+    "elapsed_seconds": 516.4292070865631,
+    "video_fps_configured": 30,
+    "inference_interval_frames": 2,
+    "YOLO_Hz": 15,
+    "held_missed_detections": 2,
+    "max_display_cells": 1,
+    "full_English_names": true,
+    "selection_policy": "keep identity; otherwise nearest center",
+    "bit_sha256": "a6d57370ba5fa09ae8dc5339a441848a20504109f58c7aa304bc3c9fd6da85a6",
+    "project": "td_project/camera_to_dsi_display.al",
+    "bit_path": "td_project\\camera_to_dsi_display_Runs\\phy_1\\camera_to_dsi_display.bit"
+  },
+  "source_changes_vs_previous": [
+    "user_source/hdl_source/common/cvp_latency_display.v",
+    "td_project/camera_to_dsi_display.al"
+  ],
+  "latency_source_compile_order_85_to_75": true,
+  "other_build_sources_unchanged": 195,
+  "current_tests": {
+    "timestamp_conversion_and_safety_checks": 70,
+    "serial_words_and_physical_panel_direction": 32
+  },
+  "inherited_checks": {
+    "video_RTL": 42,
+    "packet_integrity": 2,
+    "python": 39,
+    "source_report": "../latency_display_20261022/summary.json",
+    "rerun_for_direction_only_change": false
+  },
+  "download_attempted": true,
+  "program_sram_success": true,
+  "board_display_direction_validated": false,
+  "flash_written": false,
+  "previous_bit_sha256": "1cdb33fcc3156381fb4ebbebc895da4024018184fda92dfff8048578319639d6",
+  "programming": {
+    "recorded_local": "2026-10-22T22:24:05.768054+08:00",
+    "device": "PH1P35MDG324",
+    "bit_sha256": "a6d57370ba5fa09ae8dc5339a441848a20504109f58c7aa304bc3c9fd6da85a6",
+    "mode": "jtag",
+    "program_sram_success": true,
+    "flash_written": false,
+    "board_display_direction_validated": false,
+    "evidence": "native chip identification and validation; Tcl catch=0; synchronous TD download completion"
+  },
+  "live_camera_stream_validated": true,
+  "live_stream_check": {
+    "duration_seconds": 9.986034499946982,
+    "warmup_seconds": 2.014075000071898,
+    "frames": 299,
+    "nonblack_frames": 299,
+    "fps": 29.964784741422015,
+    "complete_percent": 100.0,
+    "status_packets": 698,
+    "read_only": true,
+    "board_display_direction_validated": false,
+    "stream_error_start": 0,
+    "stream_error_end": 0,
+    "sensor_error_start": 0,
+    "sensor_error_end": 0,
+    "stream_fault_end": false,
+    "latest_frame_id": 1080,
+    "status": "PASS"
+  }
+}

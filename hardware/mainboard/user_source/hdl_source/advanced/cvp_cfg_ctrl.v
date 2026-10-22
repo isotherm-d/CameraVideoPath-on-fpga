@@ -70,7 +70,8 @@ module cvp_cfg_ctrl #(parameter MODE_COUNT=7)(
  assign o_sketch_width=i_sof&&pending?s_sketch_width:a_sketch_width;
  always @(posedge clk or negedge rst_n)begin
   if(!rst_n)begin
-   s_mode<=8'd0;a_mode<=8'd0;s_ae_en<=1'd0;a_ae_en<=1'd0;s_wb_mode<=2'd0;a_wb_mode<=2'd0;s_exposure<=16'd500;a_exposure<=16'd500;s_gain<=8'd108;a_gain<=8'd108;s_kelvin<=7'd65;a_kelvin<=7'd65;s_gain_r<=11'd344;a_gain_r<=11'd344;s_gain_g<=11'd256;a_gain_g<=11'd256;s_gain_b<=11'd451;a_gain_b<=11'd451;s_swap<=1'd0;a_swap<=1'd0;s_tone<=1'd0;a_tone<=1'd0;s_osd<=1'd1;a_osd<=1'd1;s_binary<=8'd130;a_binary<=8'd130;s_edge_low<=11'd45;a_edge_low<=11'd45;s_edge_high<=11'd90;a_edge_high<=11'd90;s_sketch_low<=11'd50;a_sketch_low<=11'd50;s_sketch_high<=11'd100;a_sketch_high<=11'd100;s_edge_width<=2'd1;a_edge_width<=2'd1;s_sketch_width<=2'd1;a_sketch_width<=2'd1;
+   // Power-on defaults: automatic exposure and calibrated white balance.
+   s_mode<=8'd0;a_mode<=8'd0;s_ae_en<=1'd1;a_ae_en<=1'd1;s_wb_mode<=2'd0;a_wb_mode<=2'd0;s_exposure<=16'd500;a_exposure<=16'd500;s_gain<=8'd108;a_gain<=8'd108;s_kelvin<=7'd65;a_kelvin<=7'd65;s_gain_r<=11'd344;a_gain_r<=11'd344;s_gain_g<=11'd256;a_gain_g<=11'd256;s_gain_b<=11'd451;a_gain_b<=11'd451;s_swap<=1'd0;a_swap<=1'd0;s_tone<=1'd0;a_tone<=1'd0;s_osd<=1'd1;a_osd<=1'd1;s_binary<=8'd130;a_binary<=8'd130;s_edge_low<=11'd45;a_edge_low<=11'd45;s_edge_high<=11'd90;a_edge_high<=11'd90;s_sketch_low<=11'd50;a_sketch_low<=11'd50;s_sketch_high<=11'd100;a_sketch_high<=11'd100;s_edge_width<=2'd1;a_edge_width<=2'd1;s_sketch_width<=2'd1;a_sketch_width<=2'd1;
    pending<=0;dirty<=0;shadow_id<=0;active_id<=0;commit_req<=0;
    o_reply_valid<=0;o_reply_req<=0;o_reply_cfg<=0;o_reply_status<=0;o_reply_value<=0;
    o_sensor_valid<=0;o_sensor_exp<=500;o_sensor_gain<=108;o_sync_rx_tick<=0;o_sync_id<=0;

@@ -5,8 +5,8 @@
   "TD_project_non_path_settings_unchanged": true,
   "original_template_hashes_verified": true,
   "bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58",
-  "pages": 24,
-  "pdf_sha256": "e8cc2aa9c3245824d91d68dec97741f05775bd59d091090a1b0e4f35d403da08",
+  "pages": 25,
+  "pdf_sha256": "71ddf4b1d95876181f60c5a492fbbd9f2a5f46212895894fa7fe7c0b66bb0e6a",
   "xelatex_warnings_or_missing_glyphs": false,
   "hardware_regressions_rerun_this_task": false,
   "all_pages_visually_reviewed": true,
@@ -22,5 +22,12 @@
     "V10_Release.json": "839f926c52e9d933f10e81a465a96f94ca2a0759e1f40c8dc43be74c472f3bfa",
     "Fit_Verification.json": "5a7b33e565cc4ffc0c4af532093364dd4ce0fd83c081e12882ef3952d39f7502",
     "Native_File_Readback.json": "ea746e786c5e5cc4f1eb1e76b86aad68e6a5a05717e4f5d9a0ca58b609c80368"
-  }
+  },
+  "completion_intro_revision": "Section 3.1 maps completed basics and extensions to contest 2.3 and 2.4, followed by blood microscopy application and completion statement",
+  "completion_intro_revision_checked_local": "2026-10-21T23:40:24.465248+08:00",
+  "microscopy_application_statement_source": "User supplied qualitative real-board microscopy usability statement; no new hardware experiment performed during this document edit",
+  "resource_tables_revision": "Mainboard and HDMI subboard resource tables use resource, used/total and utilization columns; requested timing rows and following two paragraphs removed",
+  "resource_tables_revision_checked_local": "2026-10-22T01:23:58.875345+08:00",
+  "hdmi_resource_source": "old/releases/v28/README.md; utilization recalculated from published counts, including LUT 7556/19600 = 38.55%; no new hardware build",
+  "hdmi_resource_source_sha256": "f9deff7a1c285eca65a5bc0eff7ae681c48b65fbb021bc1eeb770521bc453a9d"
 }

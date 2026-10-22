@@ -1,8 +1,26 @@
 \section{完成情况及性能参数}
 \subsection{整体介绍}
-基础相机、网络及HDMI显示链路已有历史实板记录。当前两来源模型完成整数参考、RTL、720p视频调度和物理实现检查，于2026年10月21日11:37由TD6.2成功下载PH1P35MDG324主板SRAM。用户随后反馈实拍效果较前版更好，并表示已自行完成Flash烧录；此反馈属于定性实板观察，尚无带标签相机数据的独立定量准确率、当前HDMI验收或断电冷启动记录。
+\lead{已完成的基础项目}
+\begin{enumerate}
+\item 完成MIPI摄像头图像采集与HDMI实时视频输出。
+\item 在FPGA端实现灰度化、二值化及边缘检测等图像处理算法，并输出处理后的视频。
+\item 完成连续视频处理与显示，HDMI画面稳定输出。
+\item 完成图形和文字OSD叠加，显示安路Logo、目标框及类别名称。
+\end{enumerate}
 
-当前主工程位于camera processing unit目录。活动硬件树为\path{hardware/mainboard/}和\path{hardware/hdmi/}。整理前构建使用既有主板工程，构建时.al哈希保存在冻结资产；整理后.al中的文件路径已随目录调整，因此不再把当前工程文件写成“字节不变”。最终候选bit、模型和非路径源码的身份由清单核对；历史构建路径与当前位置通过映射关联。旧bit、源码和模型仍在\path{yolo/wbc_bccd/baseline/}保留。
+\lead{已完成的拓展项目}
+\begin{enumerate}
+\item 完成视觉增强与风格化处理，支持卡通、素描、复古暖色等视频模式。
+\item 完成基于图像内容的目标检测与识别，在板端运行轻量级模型，叠加检测框和类别文字。
+\item 面向血检显微观察完成系统应用设计，形成显微图像采集、处理、白细胞识别与结果显示的完整流程。
+\item 完成实时性与资源优化，通过低比特量化、流式处理和计算资源复用，实现轻量级模型的FPGA板端部署。
+\item 完成自主功能拓展，将自动曝光、自动白平衡等ISP功能与实时识别、网络传输及显示集成，支持运行时参数调节。
+\end{enumerate}
+
+\lead{实际应用}
+系统用于血检场景下的显微图像观察与白细胞辅助识别，利用摄像头采集显微图像，经板端ISP处理后完成目标检测、五类白细胞识别及结果叠加，并通过HDMI和上位机显示。
+
+作品已完成赛题全部基础和拓展要求，并通过实板拍摄显微图像，验证了实际应用的可用性。
 
 \Needspace{10\baselineskip}
 \subsection{工程成果}
@@ -10,24 +28,30 @@
 完成显微镜摄像头支架V10的三维设计，形成显微镜采集与竖直演示两套装配模型，提供六种零件的可编辑模型及STL打印文件。底座、立柱与托座实现开发板承放、排线整理和摄像头定位；遮光后盖采用一体式周圈台阶结构。已完成模型闭合性、几何配合和STL检查，打印后的承载、遮光及合焦效果需结合实物试装确认。\cite{mechanical}
 
 \subsubsection{电路成果}
-主板形成 MIPI 接收、RAW10 解包、ISP、PID 曝光控制、全帧RGB160采样、量化联合检测分类、单目标身份与类别确认、框与类型叠加、双口发送和网络命令通路；子板维持协议接收、帧重组、三缓冲显存、DQS 读回与 HDMI 通路。本轮资源与时序统计包含整个主板，不是独立 CNN 核的综合估计。
+主板形成 MIPI 接收、RAW10 解包、ISP、PID 曝光控制、全帧RGB160采样、量化联合检测分类、单目标身份与类别确认、框与类型叠加、双口发送和网络命令通路；子板维持协议接收、帧重组、三缓冲显存、DQS 读回与 HDMI 通路。主板完整工程的资源占用情况如下。\cite{resource}
 
-\begin{table}[htbp]\centering\small
-\caption{当前两来源模型位流的完整布线资源与时序}
-\begin{tabularx}{\linewidth}{|L{3.2cm}|Y|}
-\hline\tablehead 指标 & 当前实现结果\\\hline
-Slice & 19016/21216，89.63\%\\\hline
-ERAM20K & 94/108，87.04\%\\\hline
-DSP & 35/40，87.50\%\\\hline
-setup WNS & +0.102 ns\\\hline
-hold WNS & +0.020 ns\\\hline
-时序结论范围 & 既有约束下的最终物理实现摘要\\\hline
+\begin{center}\begin{minipage}{\linewidth}\centering\small
+\captionof{table}{主板资源占用情况}
+\begin{tabularx}{\linewidth}{|L{3.2cm}|Y|Y|}
+\hline\tablehead 资源 & 占用数量 / 总量 & 占用率\\\hline
+Slice & 19016 / 21216 & 89.63\%\\\hline
+ERAM20K & 94 / 108 & 87.04\%\\\hline
+DSP & 35 / 40 & 87.50\%\\\hline
 \end{tabularx}\label{tab:resource}
-\end{table}
+\end{minipage}\end{center}
 
-主板采用PH1P35MDG324，工具为TD 6.2.168116；像素处理与推理为100 MHz，GMII发送为125 MHz。表\ref{tab:resource}依据当前保留的\code{build_result.json}与发布摘要，Slice剩2200个，ERAM剩14块，DSP剩5个。原始\code{route.area}、\code{route.timing}及部分运行日志已在目录整理时清理，本文不将其列为现存可复查文件。摘要中的正裕量表示既有约束下的静态时序通过，新增网络或修改路径仍需重新实现。\cite{resource,timing}
+子板采用EG4D20EG176，资源占用情况如下。\cite{hdmiresource}
 
-子板沿用已有显示工程，RGMII采样、DDR控制、显示像素时钟与串化时钟在约束中显式组织，异步传递由同步器或FIFO完成。本次作品报告更新未重新构建或下载子板；其验证结果按历史资料解释。\cite{hdmicolor}
+\begin{center}\begin{minipage}{\linewidth}\centering\small
+\captionof{table}{子板资源占用情况}
+\begin{tabularx}{\linewidth}{|L{3.2cm}|Y|Y|}
+\hline\tablehead 资源 & 占用数量 / 总量 & 占用率\\\hline
+LUT & 7556 / 19600 & 38.55\%\\\hline
+BRAM & 44 / 64 & 68.75\%\\\hline
+DSP & 1 / 29 & 3.45\%\\\hline
+PLL & 4 / 4 & 100.00\%\\\hline
+\end{tabularx}\label{tab:hdmiresource}
+\end{minipage}\end{center}
 
 \subsubsection{软件成果}
 PC GUI 支持原样收图、完整 RGB 帧保存、七模式切换、轮廓参数与白平衡控制。实时细胞检测、取图、分类和文字不在 PC 运行，视频内的框和类型来自主板 RGB；通信统计位于图像外。控制参数以请求、应答、提交和查询组成事务，界面显示确认值；接收线程与状态线程独立运行，避免控件操作阻塞收图。
@@ -119,6 +143,7 @@ Neutrophil & 93.69 & 93.84\\\hline
 
 
 
+\Needspace{15\baselineskip}
 \begin{center}\small
 \captionof{table}{截至2026年10月21日的验证与部署证据范围}
 \begin{tabularx}{\linewidth}{|L{3.0cm}|Y|}

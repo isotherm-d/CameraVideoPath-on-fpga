@@ -1,0 +1,174 @@
+{
+  "recorded_local": "2026-10-22T22:46:05.938929+08:00",
+  "status": "timing_pass_programmed_SRAM",
+  "revision": "left seven digits latency in ms with three decimals; rightmost digit actual completed-video mode 0..6",
+  "mode_source": "cvp_advanced last completed video frame mode; independent of the 200ms latency refresh",
+  "mode_map": {
+    "0": "original",
+    "1": "gray",
+    "2": "binary",
+    "3": "edge",
+    "4": "cartoon",
+    "5": "sketch",
+    "6": "sepia"
+  },
+  "latency_measurement_and_conversion_unchanged": true,
+  "physical": {
+    "slice": 19392,
+    "eram": 94,
+    "dsp": 35,
+    "SWNS": 0.103,
+    "HWNS": 0.02,
+    "place_and_route": true,
+    "board_validated": false,
+    "elapsed_seconds": 623.1907541751862,
+    "video_fps_configured": 30,
+    "inference_interval_frames": 2,
+    "YOLO_Hz": 15,
+    "held_missed_detections": 2,
+    "max_display_cells": 1,
+    "full_English_names": true,
+    "selection_policy": "keep identity; otherwise nearest center",
+    "bit_sha256": "3e94c144a753486a8b688ae6b3e5c6841523f0679d5b6ab91a67081b0c11898b",
+    "project": "td_project/camera_to_dsi_display.al",
+    "bit_path": "td_project\\camera_to_dsi_display_Runs\\phy_1\\camera_to_dsi_display.bit"
+  },
+  "source_changes_vs_previous": [
+    "user_source/hdl_source/advanced/cvp_advanced.v",
+    "user_source/hdl_source/common/cvp_latency_display.v",
+    "user_source/hdl_source/design_top_wrapper.v"
+  ],
+  "other_build_sources_unchanged": 194,
+  "tests": {
+    "latency_safety_and_conversion": 70,
+    "serial_display_words": 96,
+    "video_RTL": 43,
+    "packet_integrity": 2,
+    "python": 39
+  },
+  "download_attempted": true,
+  "program_sram_success": true,
+  "board_display_mode_validated": false,
+  "flash_written": false,
+  "previous_bit_sha256": "a6d57370ba5fa09ae8dc5339a441848a20504109f58c7aa304bc3c9fd6da85a6",
+  "programming": {
+    "recorded_local": "2026-10-22T22:46:28.411465+08:00",
+    "device": "PH1P35MDG324",
+    "bit_sha256": "3e94c144a753486a8b688ae6b3e5c6841523f0679d5b6ab91a67081b0c11898b",
+    "mode": "jtag",
+    "program_sram_success": true,
+    "flash_written": false,
+    "board_display_mode_validated": false,
+    "evidence": "native chip identification and validation; Tcl catch=0; synchronous TD download completion"
+  },
+  "live_video": {
+    "duration_seconds": 9.982415600097738,
+    "warmup_seconds": 2.017964099999517,
+    "frames": 299,
+    "nonblack_frames": 299,
+    "fps": 29.963869706714252,
+    "complete_percent": 100.0,
+    "status_packets": 699,
+    "read_only": true,
+    "board_display_mode_validated": false,
+    "stream_error_start": 0,
+    "stream_error_end": 0,
+    "sensor_error_start": 0,
+    "sensor_error_end": 0,
+    "stream_fault_end": false,
+    "latest_frame_id": 2134,
+    "status": "PASS"
+  },
+  "live_mode_switching": {
+    "status": "PASS",
+    "initial_mode": 0,
+    "restored_mode": 0,
+    "completed_frames": 95,
+    "modes": [
+      {
+        "requested_mode": 0,
+        "cfg_id": 1,
+        "frame_cfg_id": 1,
+        "actual_mode": 0,
+        "frame_id": 965,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 1,
+        "cfg_id": 2,
+        "frame_cfg_id": 2,
+        "actual_mode": 1,
+        "frame_id": 977,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 2,
+        "cfg_id": 3,
+        "frame_cfg_id": 3,
+        "actual_mode": 2,
+        "frame_id": 989,
+        "completed_frames_while_stable": 10,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 3,
+        "cfg_id": 4,
+        "frame_cfg_id": 4,
+        "actual_mode": 3,
+        "frame_id": 1001,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 4,
+        "cfg_id": 5,
+        "frame_cfg_id": 5,
+        "actual_mode": 4,
+        "frame_id": 1013,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 5,
+        "cfg_id": 6,
+        "frame_cfg_id": 6,
+        "actual_mode": 5,
+        "frame_id": 1025,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 6,
+        "cfg_id": 7,
+        "frame_cfg_id": 7,
+        "actual_mode": 6,
+        "frame_id": 1037,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      },
+      {
+        "requested_mode": 0,
+        "cfg_id": 8,
+        "frame_cfg_id": 8,
+        "actual_mode": 0,
+        "frame_id": 1049,
+        "completed_frames_while_stable": 11,
+        "stream_errors": 0,
+        "sensor_errors": 0
+      }
+    ],
+    "error": null,
+    "physical_digit_visual_confirmation": false
+  },
+  "live_video_validated": true,
+  "live_video_modes_validated": true
+}

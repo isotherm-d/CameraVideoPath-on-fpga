@@ -8,12 +8,12 @@ module tb_v26_keys;
  initial begin
   #31;rst=1;repeat(5)@(negedge clk);
   keys[0]=0;@(negedge clk);keys[0]=1;repeat(6)@(negedge clk);
-  if(n!=0)errors=errors+1;
-  keys[0]=0;repeat(14)@(negedge clk);if(n!=1)errors=errors+1;
-  repeat(14)@(negedge clk);if(n!=1)errors=errors+1;
+  if(n!=0||p!=0)errors=errors+1;
+  keys[0]=0;repeat(14)@(negedge clk);if(p!=1||n!=0)errors=errors+1;
+  repeat(14)@(negedge clk);if(p!=1||n!=0)errors=errors+1;
   keys[0]=1;repeat(8)@(negedge clk);
   keys[1]=0;repeat(14)@(negedge clk);if(p!=1||n!=1)errors=errors+1;
-  if(errors==0)$display("TEST_RESULT PASS keys_bounce_and_single_press");
+  if(errors==0)$display("TEST_RESULT PASS KEY2_previous_KEY3_next_bounce_and_single_press");
   else $display("TEST_RESULT FAIL keys %0d",errors);
   $finish;
  end

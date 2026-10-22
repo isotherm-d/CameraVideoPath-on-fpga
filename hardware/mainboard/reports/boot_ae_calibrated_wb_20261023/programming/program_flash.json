@@ -1,0 +1,12 @@
+{
+  "recorded_local": "2026-10-23T01:25:59.352054+08:00",
+  "device": "PH1P35MDG324",
+  "bit_sha256": "6ada7f0de86068ef30e96131a28916a69cb85b6c8da81277475e9fbb4f9638c1",
+  "mode": "program_spi",
+  "success": true,
+  "flash_written": true,
+  "verify_requested": true,
+  "evidence": "program_flash.log",
+  "cold_boot_validated": false,
+  "verify_completed": true
+}

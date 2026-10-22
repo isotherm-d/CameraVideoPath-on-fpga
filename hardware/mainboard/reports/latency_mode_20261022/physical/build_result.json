@@ -1,0 +1,20 @@
+{
+  "slice": 19392,
+  "eram": 94,
+  "dsp": 35,
+  "SWNS": 0.103,
+  "HWNS": 0.02,
+  "place_and_route": true,
+  "board_validated": false,
+  "elapsed_seconds": 623.1907541751862,
+  "video_fps_configured": 30,
+  "inference_interval_frames": 2,
+  "YOLO_Hz": 15,
+  "held_missed_detections": 2,
+  "max_display_cells": 1,
+  "full_English_names": true,
+  "selection_policy": "keep identity; otherwise nearest center",
+  "bit_sha256": "3e94c144a753486a8b688ae6b3e5c6841523f0679d5b6ab91a67081b0c11898b",
+  "project": "td_project/camera_to_dsi_display.al",
+  "bit_path": "td_project\\camera_to_dsi_display_Runs\\phy_1\\camera_to_dsi_display.bit"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "board_validated": false,
+  "source_hashes": {
+    "hardware\\mainboard\\user_source\\hdl_source\\common\\cvp_latency_display.v": "8ba70b39a7cada299ac680251a70c2ca01b854863da7765e87468a188e66feec",
+    "hardware\\mainboard\\user_source\\hdl_source\\common\\cvp_mailbox.v": "264396e9fca97983c4fdafca9a243c86cfb60e681518b25e4352dfea122c5885",
+    "hardware\\mainboard\\tools\\sim\\tb_latency_display.sv": "524e0b5b2f50ed4df93bda9f736cae6b748c6ca2933eb0187abe667a1c24202e"
+  }
+}

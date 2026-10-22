@@ -51,7 +51,9 @@ module tb_v26_pid_pipeline;
  end endtask
  initial begin
   #31;rst=1;wait(!dut.sensor_busy);repeat(40)@(negedge clk);
-  command(1,1,1);command(2,0,0); // Enable AE through the real configuration commit.
+  // No host command: power-on AE must drive the real sensor/gain/stats loop.
+  if(dut.cfg_ae_en!==1||dut.cfg_wb_mode!==0||dut.cfg_id!==0||dut.selected_r!==344||dut.selected_g!==256||dut.selected_b!==451)
+   $fatal(1,"power-on automatic exposure/calibrated WB defaults not active");
   for(f=0;f<140;f=f+1)begin image();if(dut.mean>=104&&dut.mean<=120&&first_dark==0)first_dark=f+1;end
   if(first_dark==0||first_dark>100||dut.mean<104||dut.mean>120||dut.digital_gain!=256||dut.sensor_gain!=108)errors=errors+1;
   $display("PIPELINE dark frames=%0d E=%0d DG=%0d mean=%0d",first_dark,dut.sensor_exp,dut.digital_gain,dut.mean);
@@ -64,7 +66,7 @@ module tb_v26_pid_pipeline;
   if(scene_first==0||dut.digital_gain!=256||dut.mean<104||dut.mean>120)errors=errors+1;
   $display("PIPELINE bright frames=%0d E=%0d DG=%0d mean=%0d",scene_first,dut.sensor_exp,dut.digital_gain,dut.mean);
   if(errors==0&&seen==460*128&&nonzero==seen&&!dut.fault&&dut.stream_errors==0&&sensor_transactions>1)
-   $display("TEST_RESULT PASS actual_PID_sensor_bridge_SOF_gain_stats_stream_pipeline frames=%0d transactions=%0d",seen/128,sensor_transactions);
+   $display("TEST_RESULT PASS actual_PID_sensor_bridge_SOF_gain_stats_stream_pipeline power_on_no_host_command frames=%0d transactions=%0d",seen/128,sensor_transactions);
   else $display("TEST_RESULT FAIL PID pipeline errors=%0d seen=%0d nonzero=%0d fault=%b stream=%0d",errors,seen,nonzero,dut.fault,dut.stream_errors);
   $finish;
  end

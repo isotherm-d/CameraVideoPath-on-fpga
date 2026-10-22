@@ -10,7 +10,7 @@
 | [hdmi](hdmi/) | HDMI 子板集成说明 |
 | [history](history/) | 早期方案与交接记录，按原日期保留 |
 
-当前硬件、模型、bit 和测试摘要以[主板发布报告](../hardware/mainboard/reports/yolo_wbc_bccd15/README.md)为准。
+当前硬件、bit、布局布线、下载及 live 状态记录以[2026-10-23 主板发布报告](../hardware/mainboard/reports/boot_ae_calibrated_wb_20261023/README.md)为准；数码管延迟/模式功能见[使用说明](mainboard/数码管延迟显示.md)，复位默认配置见[上电默认配置](mainboard/上电默认配置.md)。模型训练与识别指标仍见[两来源技术报告](reports/README_1021_WBCAtt与BCCD两来源重训.md)。
 历史发布位流及退役 CellNet 源码在 [old](../old/README.md)。
 
-比赛报告已根据当前活动硬件树更新，入口、模型/位流身份及部署范围见 [competition](competition/README.md)。专题文档保留原版本；历史构建路径按工程映射理解。LaTeX 辅助文件和运行日志保存在项目外的检查目录。
+比赛报告记录 WBCAtt+ 与 BCCD 识别工程及其 2026-10-21 部署证据；10-23 的显示和上电默认配置更新见上述主板发布报告。专题文档保留原版本；历史构建路径按工程映射理解。LaTeX 辅助文件和运行日志保存在项目外的检查目录。

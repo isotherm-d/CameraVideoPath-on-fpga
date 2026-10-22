@@ -1,0 +1,5 @@
+{
+  "timeout_seconds": 300,
+  "flash_state": "incomplete or unverified; complete rewrite required",
+  "last_stage": "SPI flash Page program and verify"
+}

@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "initial_mode": 0,
+  "restored_mode": 0,
+  "completed_frames": 114,
+  "modes": [
+    {
+      "requested_mode": 0,
+      "cfg_id": 1,
+      "frame_cfg_id": 1,
+      "actual_mode": 0,
+      "frame_id": 475,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 1,
+      "cfg_id": 2,
+      "frame_cfg_id": 2,
+      "actual_mode": 1,
+      "frame_id": 490,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 2,
+      "cfg_id": 3,
+      "frame_cfg_id": 3,
+      "actual_mode": 2,
+      "frame_id": 502,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 3,
+      "cfg_id": 4,
+      "frame_cfg_id": 4,
+      "actual_mode": 3,
+      "frame_id": 514,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 4,
+      "cfg_id": 5,
+      "frame_cfg_id": 5,
+      "actual_mode": 4,
+      "frame_id": 526,
+      "completed_frames_while_stable": 10,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 5,
+      "cfg_id": 6,
+      "frame_cfg_id": 6,
+      "actual_mode": 5,
+      "frame_id": 538,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 6,
+      "cfg_id": 7,
+      "frame_cfg_id": 7,
+      "actual_mode": 6,
+      "frame_id": 550,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    },
+    {
+      "requested_mode": 0,
+      "cfg_id": 8,
+      "frame_cfg_id": 8,
+      "actual_mode": 0,
+      "frame_id": 562,
+      "completed_frames_while_stable": 11,
+      "stream_errors": 0,
+      "sensor_errors": 0
+    }
+  ],
+  "error": null,
+  "physical_digit_visual_confirmation": false
+}

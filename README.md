@@ -2,19 +2,19 @@
 
 主板工程入口为 `hardware/mainboard/td_project/camera_to_dsi_display.al`；完整资料见[文档目录](docs/README.md)。发布文件校验：`python tools/check_project_layout.py --published`；不加参数则同时检查本地缓存与私有训练资产是否齐全。
 
-本次版本：[v2026.10.21](https://github.com/isotherm-d/CameraVideoPath-on-fpga/releases/tag/v2026.10.21)，统一主板、HDMI 子板、训练与文档目录，并更新 [24 页作品报告](docs/competition/作品报告.pdf)及[可编译 LaTeX 包](docs/competition/作品报告_LaTeX.zip)。机械结构说明依据显微镜摄像头支架 V10 设计；本次整理不改变当前模型和候选 bit。
+本次版本：[v2026.10.23](https://github.com/isotherm-d/CameraVideoPath-on-fpga/releases/tag/v2026.10.23)，增加板载数码管视频延迟/模式显示，设置上电自动曝光与标定白平衡默认值，并更新 [25 页作品报告](docs/competition/作品报告.pdf)及[可编译 LaTeX 包](docs/competition/作品报告_LaTeX.zip)。本次未更换识别模型。
 
 若以后移动整个文件夹，先运行 `python tools/configure_project_paths.py` 同步 TD 的本机路径与 HDMI logo ROM 路径。
 
 ## 当前主板识别版本
 
-主工程采用 **WBCAtt+ + BCCD 联合训练的 FPGA YOLO-style 检测与五分类**，模型 `wbc_bccd160_devcam_20261021`。最终候选 bit：[camera_to_dsi_display.bit](hardware/mainboard/reports/yolo_wbc_bccd15/current/physical/camera_to_dsi_display.bit)，SHA-256 `5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58`。
+主工程采用 **WBCAtt+ + BCCD 联合训练的 FPGA YOLO-style 检测与五分类**，模型 `wbc_bccd160_devcam_20261021`。当前发布 bit：[camera_to_dsi_display.bit](hardware/mainboard/reports/boot_ae_calibrated_wb_20261023/physical/camera_to_dsi_display.bit)，SHA-256 `6ada7f0de86068ef30e96131a28916a69cb85b6c8da81277475e9fbb4f9638c1`。本版本保留原 30 fps 视频与 15 Hz 推理，并增加八位数码管延迟/图像模式显示；复位默认开启自动曝光，白平衡使用 R/G/B Q8=344/256/451 标定预设。
 
 720p 全帧图像在 FPGA 内以 15 Hz 运行检测与分类，视频输出保持 30 fps；最多显示一个细胞框，在框左上角标出英文全称，跳过推理的帧沿用上一结果，短漏检也会暂时保留。识别、后处理、框选、文字叠加均在主板完成，PC 和 HDMI 接收的都是板端叠加结果。模型是面向本板实现的 YOLO-style 检测器，不是完整移植的 Ultralytics YOLO。
 
-物理实现使用 19016/21216 Slice、94/108 ERAM、35/40 DSP，setup/hold WNS 为 +0.102/+0.020 ns。WBCAtt+ 已使用 TEST 联合 macro-F1 为 91.40%；该 TEST 曾在前期实验中使用，结果不是独立盲测。两组程序化空场景误检分别为 1.76% 与 0.78%，原 1% 门槛未通过，当前仅作为工程试验版记录。阈值使用过开发图校准，详见[两来源技术报告](docs/reports/README_1021_WBCAtt与BCCD两来源重训.md)及[部署验证记录](hardware/mainboard/reports/yolo_wbc_bccd15/README.md)。
+当前物理实现使用 19561/21216 Slice、94/108 ERAM、35/40 DSP，setup/hold WNS 为 +0.003/+0.020 ns；部署与回归证据见[上电默认值发布记录](hardware/mainboard/reports/boot_ae_calibrated_wb_20261023/README.md)。WBCAtt+ 已使用 TEST 联合 macro-F1 为 91.40%；该 TEST 曾在前期实验中使用，结果不是独立盲测。两组程序化空场景误检分别为 1.76% 与 0.78%，原 1% 门槛未通过，当前仅作为工程试验版记录。阈值使用过开发图校准，详见[两来源技术报告](docs/reports/README_1021_WBCAtt与BCCD两来源重训.md)。
 
-用户反馈实拍效果较前版更好，并表示已自行完成 Flash 烧录；本机 TD6.2 的 Flash 操作未通过 TDO 读回校验，手动烧录使用的文件哈希及冷启动未由本机独立核实，记录见 `hardware/mainboard/reports/yolo_wbc_bccd15/programming_flash_20261021/`。SRAM 构建与候选 bit 的资源、时序和哈希记录保留在本仓库。
+当前 bit 已通过 TD6.2 写入并回读校验 SPI Flash；随后以只读接收器验证 299 帧非黑画面、29.966 fps、完整率 100%，视频流与传感器错误计数未增长。状态回读确认复位默认 AE 开启及标定白平衡值；物理断电再上电尚未验收，数码管的实物观感与板载按键方向也未独立确认。详细记录见 `hardware/mainboard/reports/boot_ae_calibrated_wb_20261023/`。
 
 CellNet32、中心640/固定480分类及单 WBCAtt 模型是更早的原型实验，不属于当前主工程；本次发布以 WBCAtt+ 与 BCCD 联合训练及活动硬件树为准。`yolo/five/` 中保留的共享模块供部分训练脚本复用。
 
@@ -117,6 +117,8 @@ CellNet32、中心640/固定480分类及单 WBCAtt 模型是更早的原型实�
 用户表示已自行把较好版本烧入 Flash。自动 Flash 尝试的 TDO 校验失败仍单独留档；本仓库不把本机失败日志标记为成功，也没有对用户手动烧录的 bit 身份或断电冷启动作独立验证。SRAM 下载记录和用户反馈见 `hardware/mainboard/reports/yolo_wbc_bccd15/`。
 
 ## 版本历史
+
+- **[v2026.10.23](https://github.com/isotherm-d/CameraVideoPath-on-fpga/releases/tag/v2026.10.23) 主板显示与上电默认值更新**：新增八位数码管延迟及图像模式显示；KEY3递增、KEY2递减；复位默认自动曝光开启、标定白平衡 R/G/B Q8=344/256/451。布局布线、视频回归、Flash 写入回读及只读视频/状态验证通过；物理冷启动与数码管实物观感未独立验收。识别模型未更换。
 
 - **2026-10-21 WBCAtt+ + BCCD 主线试验版**：160×160全帧 YOLO-style 检测/五分类，15Hz 推理、单框全称显示；物理时序通过。用户报告实拍较前版更好并已自行烧录 Flash，手动烧录哈希未独立核验；原1%程序化背景误检门槛未通过，详见本轮报告。
 

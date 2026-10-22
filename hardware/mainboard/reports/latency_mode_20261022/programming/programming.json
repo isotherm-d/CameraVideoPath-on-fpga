@@ -1,0 +1,10 @@
+{
+  "recorded_local": "2026-10-22T22:46:28.411465+08:00",
+  "device": "PH1P35MDG324",
+  "bit_sha256": "3e94c144a753486a8b688ae6b3e5c6841523f0679d5b6ab91a67081b0c11898b",
+  "mode": "jtag",
+  "program_sram_success": true,
+  "flash_written": false,
+  "board_display_mode_validated": false,
+  "evidence": "native chip identification and validation; Tcl catch=0; synchronous TD download completion"
+}

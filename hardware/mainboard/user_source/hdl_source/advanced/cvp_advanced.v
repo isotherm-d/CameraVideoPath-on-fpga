@@ -7,7 +7,7 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0,
  input cfg_clk,i_cam_done,i_ae_done,i_iic_error,i_cfg_error,
  output sensor_req,output [15:0] sensor_exp_cfg,sensor_gain_cfg,
  output o_valid,o_sof,o_eof,output [23:0] o_rgb,output [31:0] o_frame_id,
- output reg [11:0] o_x,o_y,output reg [15:0] o_cfg_id,
+ output reg [11:0] o_x,o_y,output reg [15:0] o_cfg_id,output [2:0] o_display_mode,
  output [1535:0] status_data,output status_valid,input status_ready,
  input [127:0] i_sensor_diagnostics,
  input i_net_overflow,input i_net_tx_done,input [31:0] i_net_tx_fid,input net_clk,net_rst_n,
@@ -195,6 +195,8 @@ module cvp_advanced #(parameter W=1280,H=720,V27=0,
  end
  reg [63:0] process_tick,last_capture,last_process,last_eof,last_tx_tick;
  reg [31:0] last_fid,sensor_errors,last_tx_fid;reg [15:0] last_cfg;reg [7:0] last_mode;
+ // Mode of the last completed video frame, shared by OSD/status and the panel.
+ assign o_display_mode=last_mode[2:0];
  wire [31:0] stream_errors,stream_bad_fid,stream_bad_pixels;
  wire [5:0] stream_history,stream_last;
  wire [7:0] stream_recovery;

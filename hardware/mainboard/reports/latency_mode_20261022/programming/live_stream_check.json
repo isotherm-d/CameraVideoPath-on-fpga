@@ -1,0 +1,18 @@
+{
+  "duration_seconds": 9.982415600097738,
+  "warmup_seconds": 2.017964099999517,
+  "frames": 299,
+  "nonblack_frames": 299,
+  "fps": 29.963869706714252,
+  "complete_percent": 100.0,
+  "status_packets": 699,
+  "read_only": true,
+  "board_display_mode_validated": false,
+  "stream_error_start": 0,
+  "stream_error_end": 0,
+  "sensor_error_start": 0,
+  "sensor_error_end": 0,
+  "stream_fault_end": false,
+  "latest_frame_id": 2134,
+  "status": "PASS"
+}

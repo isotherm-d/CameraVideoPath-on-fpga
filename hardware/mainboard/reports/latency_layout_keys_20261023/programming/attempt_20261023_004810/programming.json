@@ -1,0 +1,9 @@
+{
+  "recorded_local": "2026-10-23T00:31:30.198645+08:00",
+  "device": "PH1P35MDG324",
+  "bit_sha256": "f6f9c2495e631b6ddcc4e168fa34ca5232e6cdf7baeea88c2df19cd4c1cc2c0e",
+  "program_sram_success": false,
+  "flash_written": false,
+  "reason": "read_device_id transfer failed; server exited; Windows no present mainboard USB-JTAG device",
+  "log": "program_sram.log"
+}

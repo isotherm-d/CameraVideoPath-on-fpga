@@ -14,6 +14,11 @@ set_pin_assignment	{ O_screen_pwm } 		{ LOCATION = R11; IOSTANDARD = LVCMOS33; D
 
 set_pin_assignment	{ O_uart_tx }			{ LOCATION = J3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; PULLTYPE = NONE; }
 
+# F02 hardware manual, section 16: onboard 74HC595 eight-digit display.
+set_pin_assignment { O_seg_sclk }  { LOCATION = C11; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
+set_pin_assignment { O_seg_latch } { LOCATION = B11; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
+set_pin_assignment { O_seg_data }  { LOCATION = E8; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 8; }
+
 # ---- CAM CHECK/NET: ETHA 网口(引脚依据《04_以太网管脚定义表-J1.xlsx》,
 #      并与 05_rgmii_loop 例程约束交叉验证一致; TXCK 的 OUTDEL 为 MAC 侧延时) ----
 set_pin_assignment	{ O_eth_rgmii_txd[0] }	{ LOCATION = P3; IOSTANDARD = LVCMOS33; DRIVESTRENGTH = 16; SLEWRATE = FAST; }

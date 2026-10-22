@@ -39,7 +39,7 @@ class App:
         self.mode.current(0)
         self.mode.grid(row=self.row,column=0,columnspan=3,padx=6,sticky="ew");self.row+=1
         self.mode.bind("<<ComboboxSelected>>",lambda e:self.submit({0:self.mode.current()}))
-        self.ae=tk.BooleanVar(value=False)
+        self.ae=tk.BooleanVar(value=True)
         self.toggle(panel,"自动曝光",self.ae,lambda:self.submit({1:int(self.ae.get())}))
         self.exp=self.scale(panel,"手动曝光设定（半行，62～1800）",62,1800,500,lambda:self.manual_exposure())
         self.sensor_gain=self.scale(panel,"手动模拟增益（档位16～143）",16,143,108,lambda:self.manual_gain())
@@ -153,13 +153,9 @@ class App:
             if "matched_tx_tick" in metadata:
                 tx_ms=(metadata["matched_tx_tick"]-metadata["capture_tick"])/100000
                 lat_text+=f" | FPGA 帧首→发完 {tx_ms:.2f} ms"
-            for result in self.control.inference_results(metadata["frame_id"]):
-                bbox=result["result_bbox"]
-                x0,y0,x1,y1=((bbox>>shift)&65535 for shift in (48,32,16,0))
-                if 0<=x0<x1<=1280 and 0<=y0<y1<=720:
-                    cv2.rectangle(frame,(x0,y0),(x1-1,y1-1),(0,255,0),2)
-                    cv2.putText(frame,f"C{result['result_class']} ROI{result['result_roi']}",(x0,max(16,y0-4)),
-                                cv2.FONT_HERSHEY_SIMPLEX,.5,(0,255,0),1)
+            # Detection boxes and class names are already baked into FPGA RGB.
+            # Diagnostic result packets continue while SW1 hides that overlay;
+            # repainting them here would bypass SW1 and create flashing boxes.
         text=f"{self.fps if fresh else 0:.1f} fps complete={self.complete:.0f}%"
         if metadata:text+=f" {MODE_NAMES[metadata['mode']] if metadata['mode']<7 else '?'} F{metadata['frame_id']}"
         display=Image.fromarray(frame)

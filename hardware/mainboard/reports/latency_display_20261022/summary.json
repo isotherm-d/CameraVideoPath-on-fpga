@@ -1,0 +1,53 @@
+{
+  "recorded_local": "2026-10-22T21:49:23.375523+08:00",
+  "status": "timing_pass_not_programmed",
+  "model_unchanged": "wbc_bccd160_devcam_20261021",
+  "baseline_nonchanged_source_hashes_checked": 200,
+  "existing_video_and_YOLO_wiring_preserved": true,
+  "new_pins": {
+    "O_seg_sclk": "C11",
+    "O_seg_latch": "B11",
+    "O_seg_data": "E8"
+  },
+  "measurement": {
+    "start": "first accepted RAW10 group into ISP",
+    "end": "same-frame final video UDP packet MAC completion, including <0.1us notification CDC",
+    "display_unit": "ms",
+    "fractional_digits": 3,
+    "update_ms": 200,
+    "stale_ms": 1000
+  },
+  "physical": {
+    "slice": 19554,
+    "eram": 94,
+    "dsp": 35,
+    "SWNS": 0.101,
+    "HWNS": 0.021,
+    "place_and_route": true,
+    "board_validated": false,
+    "elapsed_seconds": 620.3812818527222,
+    "video_fps_configured": 30,
+    "inference_interval_frames": 2,
+    "YOLO_Hz": 15,
+    "held_missed_detections": 2,
+    "max_display_cells": 1,
+    "full_English_names": true,
+    "selection_policy": "keep identity; otherwise nearest center",
+    "bit_sha256": "1cdb33fcc3156381fb4ebbebc895da4024018184fda92dfff8048578319639d6",
+    "project": "td_project/camera_to_dsi_display.al",
+    "bit_path": "td_project\\camera_to_dsi_display_Runs\\phy_1\\camera_to_dsi_display.bit"
+  },
+  "slice_delta_vs_previous": 538,
+  "tests": {
+    "video_RTL": 42,
+    "packet_integrity": 2,
+    "python": 39,
+    "latency_and_serial_display": "PASS"
+  },
+  "connected_JTAG_device": "EG4D20EG176",
+  "download_attempted": false,
+  "program_sram_success": false,
+  "board_display_validated": false,
+  "flash_written": false,
+  "rollback_bit_sha256": "5bc2dfee5ef0980b69b3749871bcd768298c5b37af3dcdb67af45930c8ceff58"
+}
